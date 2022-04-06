@@ -1,6 +1,6 @@
+/**/__pycache__
 src/**/*.xlsx
 tst/**/*.xlsx
 *~$*.xlsx
-linha_parser.py
 /**/data
 /**/features
