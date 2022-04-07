@@ -1,17 +1,22 @@
+from dataclasses import dataclass, field
 from datetime import date
+from typing import List, Optional
 
 
+@dataclass
 class Contrato:
-    numero: str
-    edital: str
-    delegatario: str
-    codigo_empresa: int
-    valor_contrato: str
-    linhas_id: list
-    data_assinatura: date
-    data_inicio: date
-    n_parcelas: int
-    carencia: int
+    numero: str = None
+    edital: str = None
+    delegatario: str = None
+    codigo_empresa: int = None
+    valor_contrato: str = None
+    linhas_id: Optional[List[int]] = None
+    data_assinatura: date = None
+    data_inicio: str = None
+    n_parcelas: int = None
+    carencia: int = None
 
-    def __init__(self) -> None:
-        pass
+
+c = Contrato()
+c.data_assinatura = date(2022, 4, 6)
+print(c.data_assinatura)
