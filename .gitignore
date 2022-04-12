@@ -4,3 +4,4 @@ tst/**/*.xlsx
 *~$*.xlsx
 /**/data
 /**/features
+tst*.*

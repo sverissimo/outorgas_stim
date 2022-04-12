@@ -1,5 +1,5 @@
 from pandas import DataFrame
-from utils.replace_labels import rename_fields
+from utils.rename_columns import rename_columns
 
 
 def filter_series(df, field_tuples_list: DataFrame) -> DataFrame:
@@ -8,7 +8,7 @@ def filter_series(df, field_tuples_list: DataFrame) -> DataFrame:
     base_data = df.loc[::, selected_fields]
     base_columns = list(base_data.columns)
     base_columns = list(
-        filter(lambda f: f != None, map(lambda f: rename_fields(f), base_columns))
+        filter(lambda f: f != None, map(lambda f: rename_columns(f), base_columns))
     )
 
     base_data.columns = base_columns

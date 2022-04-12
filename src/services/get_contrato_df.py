@@ -2,7 +2,7 @@ from pandas import DataFrame
 from utils.filter_series import filter_series
 from utils.parse_contrato import parse_contrato
 from utils.parse_df import parse_df
-from utils.replace_labels import fields as field_tuples_list
+from utils.rename_columns import fields as field_tuples_list
 
 
 def get_contrato_df(df: DataFrame) -> DataFrame:
