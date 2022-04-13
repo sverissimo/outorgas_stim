@@ -1,70 +1,69 @@
-from decimal import Decimal
 import json
+import re
 import pandas as pd
-from domain.Contrato import Contrato
-from domain.Contrato_2014 import Contrato_2014
-from services.get_contrato_df import get_contrato_df
 from services.get_tjlp import get_tjlp
 from utils.format_contract_object import format_object
 from utils.get_debt import get_debt
 from utils.insert_tjlp import insert_tjlp
-from utils.parse_df import parse_df
-
 import locale
-
 from utils.rename_columns import rename_columns
 
 locale.setlocale(locale.LC_ALL, "pt-BR")
 
 
-def app():
-    path_to_file = "../data/Contratos 2014-2016.xlsx"
+def app(sheet):
 
-    all_data = pd.read_excel("../data/Contratos 2014-2016.xlsx", sheet_name="Nov14")
+    all_data: pd.DataFrame = pd.read_excel(
+        "../data/Contratos 2014-2016.xlsx", sheet_name=sheet
+    )
     tjlp = get_tjlp()
-    all_data = all_data.loc[[0]]
 
-    rename_columns(all_data)
+    all_data.dropna(thresh=30, inplace=True)
+    all_data.fillna(0, inplace=True)
+    all_data.columns = all_data.columns.astype(str)
 
-    first_contract = all_data.to_dict(orient="records")[0]
+    all_contracts_in_a_sheet = []
 
-    format_object(first_contract)
-    insert_tjlp(tjlp, first_contract)
-    get_debt(contract=first_contract)
+    for idx, row in all_data.iterrows():
 
-    # print(first_contract['pagamentos'])
+        data: pd.DataFrame = all_data.loc[[idx]]
 
-    for pg in first_contract["pagamentos"]:
-        #    if pg["status"].find("PAGO") == 0:
-        print(pg)
+        rename_columns(data)
 
-    exit()
+        single_contract = data.to_dict(orient="records")[0]
 
-    """ mock_data = open("tst.json", "w", encoding="utf-8")
-    json.dump(first_contract, mock_data, ensure_ascii=False)
-    mock_data.close() """
+        format_object(single_contract)
+        insert_tjlp(tjlp, single_contract)
+        get_debt(contract=single_contract)
 
-    """ f = open("tst.py", "w")
-    f.write(str(first_contract))
-    f.close """
+        f_unpaid = open("unpaid_status.txt", "a")
+        for pg in single_contract["pagamentos"]:
+            if (
+                str(pg["status"]).find("PAGO") == -1
+                and str(pg["status"]).find("EM ABERTO") == -1
+            ):
+                print(pg["status"], pg["vencimento"])
+                f_unpaid.write(str(pg["status"]) + " \n")
 
-    # keys = Contrato().__dict__.keys()
+        all_contracts_in_a_sheet.append(single_contract)
 
-    # dl = all_data.to_dict(orient="records")
+    f_unpaid.close()
 
-    """ a = Contrato_2014(path_to_file=path_to_file)
-    a.get_df() """
-    """ contrato_df = get_contrato_df(all_data)
-    parsed_contrato_df = parse_df(contrato_df)
-    print(parsed_contrato_df) """
-
-    """ first_contract = all_data.head(1)
-    contrato_20_14 = all_data.iloc[[18]]
-    """
-    # print("first_contract: \n", contrato_20_14)
-
-    exit()
+    mock_data = open(f"contratos_{sheet}.json", "w", encoding="utf-8")
+    json.dump(all_contracts_in_a_sheet, mock_data, ensure_ascii=False)
+    mock_data.close()
 
 
 if __name__ == "__main__":
-    app()
+
+    all_data = pd.read_excel("../data/Contratos 2014-2016.xlsx", None)
+    all_sheets = all_data.keys()
+
+    pattern = re.compile(r"\w{3}\d{2}")
+    filtered_sheets = list(filter(pattern.match, all_sheets))
+    # app("Dez14")
+
+    for f_sheet in filtered_sheets:
+        app(f_sheet)
+
+    exit()

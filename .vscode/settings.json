@@ -1,8 +1,12 @@
 {
     "python.formatting.provider": "black",
     "cSpell.words": [
+        "fillna",
         "iloc",
         "inplace",
+        "iterrows",
+        "LTDA",
+        "pgto",
         "SICAR",
         "tjlp"
     ]
