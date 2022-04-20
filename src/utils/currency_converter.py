@@ -1,5 +1,7 @@
 import locale
 
+locale.setlocale(locale.LC_ALL, "pt-BR")
+
 
 def to_real(value):
     formatted_value = locale.currency(value, symbol=True, grouping=True)

@@ -1,8 +1,8 @@
-from decimal import Decimal
+from utils.currency_converter import to_decimal
 
 
 def get_debt(contract: dict):
-    debt = contract["valor_outorga"]
+    debt = to_decimal(contract["valor_outorga"])
     i = 0
     for pg in contract["pagamentos"]:
         pg["tjlp"] = pg["tjlp"].replace("%", "").replace(",", ".")
