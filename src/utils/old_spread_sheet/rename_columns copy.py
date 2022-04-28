@@ -3,22 +3,16 @@ import pandas as pd
 
 
 fields = [
-    ("Nº contrato", "numero_contrato"),
+    ("Nº contrato", "numero"),
     ("Edital", "edital"),
     ("Cód. Empresa", "codigo_empresa"),
     ("Nome Empresa", "razao_social"),
-    ("Contribuinte", "razao_social"),
     ("CNPJ", "cnpj"),
-    ("Status", "status"),
     ("Linha(s)", "linhas_id"),
     ("Valor do contrato", "valor_outorga"),
     ("Valor da outorga", "valor_outorga"),
-    ("Valor Pago", "valor"),
     ("N° parcelas", "n_parcelas"),
-    ("Número da Guia", "numero_guia"),
     ("Data da assinatura", "data_assinatura"),
-    ("Data Vencimento", "vencimento_parcela"),
-    ("Data Pagamento", "data_pagamento"),
 ]
 
 
@@ -31,10 +25,20 @@ def should_drop(column):
 def rename_columns(df: pd.DataFrame):
 
     df.rename(columns=dict(fields), inplace=True)
-
+    df["data_assinatura"] = df["data_assinatura"].astype(str)
     columns = df.columns.to_list()
+    invalid_date_pattern = re.compile(r"(31/(02)?(04)?(06)?(09)?(11)?)")
+
     for c in columns:
         if should_drop(c):
             df.drop(columns=[c], inplace=True)
 
+        if re.search(
+            r"vencimento (\d{1,2}| ?Parcela)+",
+            c,
+            re.IGNORECASE,
+        ):
+            a = re.search(invalid_date_pattern, str(df[c]))
+            if not a:
+                df[c] = pd.to_datetime(df[c], infer_datetime_format=True)
     pass

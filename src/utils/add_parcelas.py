@@ -6,7 +6,7 @@ import pandas as pd
 from utils.validate_dates import fix_invalid_dates
 
 
-def format_object(contract: dict):
+def add_parcelas(contract: dict):
 
     pagamentos = []
     keys_to_delete = []
@@ -29,21 +29,21 @@ def format_object(contract: dict):
             pgto["vencimento"] = v.to_pydatetime().strftime("%Y-%m-%d")
 
             # A ultima parcela não foi preenchida como 'PAGO'
-            last_payment = v > datetime(2020, 1, 30)
+            """  last_payment = v > datetime(2020, 1, 30)
             if last_payment:
-                pgto["status"] = "PAGO"
+                pgto["status"] = "PAGO" """
 
             keys_to_delete.append(k)
 
         if k.lower().find("valor ") != -1:
-            pgto["valor"] = v
+            # pgto["valor"] = v
             keys_to_delete.append(k)
 
         if k.lower().find("status") != -1:
-            pgto["status"] = v
+            # pgto["status"] = v
             keys_to_delete.append(k)
 
-        if len(pgto.keys()) > 3:
+        if len(pgto.keys()) > 0:
             pagamentos.append(pgto)
             pgto = {}
 

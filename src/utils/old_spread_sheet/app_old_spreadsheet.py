@@ -2,8 +2,9 @@ import json
 import re
 import pandas as pd
 from services.get_tjlp import get_tjlp
-from utils.delayed_payments import fix_delayed_payments
-from utils.format_contract_object import format_object
+from utils.add_parcelas import add_parcelas
+
+# from utils.delayed_payments import fix_delayed_payments
 from utils.get_debt import get_debt
 from utils.insert_tjlp import insert_tjlp
 from utils.parse_contrato import parse_contrato
@@ -37,15 +38,16 @@ def app(sheet):
 
         single_contract = data.to_dict(orient="records")[0]
 
-        format_object(single_contract)
+        add_parcelas(single_contract)
 
         insert_tjlp(tjlp, single_contract)
 
-        get_debt(contract=single_contract)
+        # get_debt(contract=single_contract)
 
         # fix_delayed_payments(single_contract)
         all_contracts_in_a_sheet.append(single_contract)
 
+    return all_contracts_in_a_sheet
     mock_data = open(f"contratos_{sheet}.json", "w", encoding="utf-8")
     json.dump(all_contracts_in_a_sheet, mock_data, ensure_ascii=False)
     mock_data.close()
@@ -60,9 +62,9 @@ if __name__ == "__main__":
     pattern = re.compile(r"\w{3}\d{2}")
     filtered_sheets = list(filter(pattern.match, all_sheets))
 
-    # app("Abr15")
+    app("Nov14")
 
-    for f_sheet in filtered_sheets:
-        app(f_sheet)
+    """ for f_sheet in filtered_sheets:
+        app(f_sheet) """
 
     exit()
