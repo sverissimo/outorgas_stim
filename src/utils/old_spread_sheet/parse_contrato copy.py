@@ -1,5 +1,4 @@
 from pandas import DataFrame
-from utils.currency_converter import to_real
 from utils.format_cnpj import format_cnpj
 from utils.linha_parser import linha_parser
 

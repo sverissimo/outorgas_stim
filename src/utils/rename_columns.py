@@ -4,6 +4,7 @@ import pandas as pd
 
 fields = [
     ("Nº contrato", "numero_contrato"),
+    ("Nº Contrato", "numero_contrato"),
     ("Edital", "edital"),
     ("Cód. Empresa", "codigo_empresa"),
     ("Nome Empresa", "razao_social"),
