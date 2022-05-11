@@ -25,6 +25,7 @@ def add_contracts(sheet):
         parse_contrato(data)
 
         single_contract = data.to_dict(orient="records")[0]
+        # print(single_contract["data_assinatura"])
 
         all_contracts_in_a_sheet.append(single_contract)
 
@@ -40,7 +41,7 @@ if __name__ == "__main__":
     pattern = re.compile(r"\w{3}\d{2}")
     filtered_sheets = list(filter(pattern.match, all_sheets))
 
-    # add_contracts("Dez14")
+    # add_contracts("Mai15")
 
     for f_sheet in filtered_sheets:
         add_contracts(f_sheet)

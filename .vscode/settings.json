@@ -1,6 +1,7 @@
 {
-    "python.formatting.provider": "black",
+    "python.formatting.provider": "autopep8",
     "cSpell.words": [
+        "cotacao",
         "fillna",
         "iloc",
         "inplace",
@@ -9,5 +10,8 @@
         "pgto",
         "SICAR",
         "tjlp"
-    ]
+    ],
+    "files.exclude": {
+        "**/__pycache__": true
+    }
 }

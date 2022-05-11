@@ -1,3 +1,5 @@
+/venv
+/Lib
 /**/__pycache__
 src/**/*.xlsx
 tst/**/*.xlsx
@@ -7,3 +9,5 @@ tst/**/*.xlsx
 tst*.*
 contratos*.json
 *.txt
+.env
+pyvenv.cfg
