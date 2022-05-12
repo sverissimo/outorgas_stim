@@ -8,10 +8,19 @@
         "iterrows",
         "LTDA",
         "pgto",
+        "sicar",
         "SICAR",
         "tjlp"
     ],
     "files.exclude": {
         "**/__pycache__": true
-    }
+    },
+    "python.linting.pylintEnabled": false,
+    "python.linting.enabled": false,
+    "python.linting.mypyEnabled": true,
+    "python.testing.pytestArgs": [
+        "."
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
 }

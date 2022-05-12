@@ -1,4 +1,4 @@
-from services.get_contracts_from_db import get_contracts
+from data_access_layer.Mongo_dao import Mongo_dao
 
 contracts_to_test = [
     ("24/2014", 56, 589.40),
@@ -11,7 +11,8 @@ contracts_to_test = [
 
 def get_payment(n_contrato: str, idx: int):
 
-    contracts = get_contracts({"numero_contrato": n_contrato})
+    mongo_client = Mongo_dao
+    contracts = mongo_client.get_contracts({"numero_contrato": n_contrato})
     assert type(contracts) == list
     assert len(contracts) > 0
 

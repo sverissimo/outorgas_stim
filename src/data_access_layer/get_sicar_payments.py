@@ -1,11 +1,10 @@
-from pprint import pprint
 from typing import List
 import pandas as pd
 
 from utils.rename_columns import rename_columns
 
 
-def add_payments(contract: dict):
+def get_payments(contract: dict):
 
     #guias = pd.read_excel("../../data/all_guias.xlsx")
     guias = pd.read_excel(
@@ -15,12 +14,12 @@ def add_payments(contract: dict):
     rename_columns(guias)
     linha = str(contract["linhas_id"][0])
 
-    contrato23_payments = guias.loc[guias.Linha.str.contains(linha)]
-    contrato23_payments.reset_index(inplace=True)
+    contrato_payments = guias.loc[guias.Linha.str.contains(linha)]
+    contrato_payments.reset_index(inplace=True)
 
     pagamentos = []
 
-    for idx, row in contrato23_payments.iterrows():
+    for idx, row in contrato_payments.iterrows():
 
         row["data_pagamento"] = pd.to_datetime(
             row["data_pagamento"],
@@ -64,5 +63,5 @@ def add_payments(contract: dict):
 
     for pg in pagamentos:
         pg["data_pagamento"] = pg["data_pagamento"].strftime("%Y-%m-%d")
-    contract["pagamentos"] = pagamentos
-    return contract
+
+    return pagamentos

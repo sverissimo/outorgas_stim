@@ -1,18 +1,16 @@
 from os.path import exists
+import subprocess
 from flask import Flask, jsonify, make_response
-from lib.create_mongo_contracts import create_contracts
-from services.add_payments import add_payments
+from data_access_layer.Mongo_dao import Mongo_dao
+from data_access_layer.create_mongo_contracts import create_contracts
+from data_access_layer.get_sicar_payments import get_payments
 from services.get_contracts_from_db import get_contracts_from_db
-from services.get_contracts_from_sheet import get_contracts_from_sheet
-from services.get_tjlp_bndes import get_tjlp_bndes
-from services.get_tjlp_sef import get_tjlp_sef
-from main import main
-from dotenv import load_dotenv, find_dotenv
-
-# load_dotenv(find_dotenv())
+from data_access_layer.get_contracts_from_sheet import get_contracts_from_sheet
+from services.get_tjlp import get_tjlp
 
 
 app = Flask(__name__)
+entity_manager = Mongo_dao()
 
 
 @app.route('/')
@@ -41,18 +39,19 @@ def insert_payments():
 
     full_contracts = []
 
-    for s in sample:
-        contract_with_payments = add_payments((s))
-        full_contracts.append(contract_with_payments)
+    for contract in sample:
+        payments = add_payments((contract))
+
+        contract['pagamentos'] = payments
+        full_contracts.append(contract)
+
     #print('contracts: ', contracts)
-    # return 'contracts'
     return jsonify(full_contracts)
-    # add_payments()
 
 
 @app.route('/tjlp_sef')
 async def tjlp_sef():
-    response = get_tjlp_sef()
+    response = get_tjlp(source='sef', update_only=False)
     return jsonify(response)
 
 
@@ -65,8 +64,19 @@ async def tjlp_bndes(update=False):
 
     get_only_update = True if update == 'update' else False
 
-    response = await get_tjlp_bndes(get_only_update)
+    response = await get_tjlp(source='bndes', update_only=get_only_update)
     return jsonify(response)
+
+
+@app.route('/backup_db/<drop>')
+def backup_db(drop=False):
+    if drop:
+        subprocess.call
+
+    subprocess.call(['mongodump', '--db', 'outorgas' '.'])
+    print('Db backup created.')
+
+    pass
 
 
 if __name__ == '__main__':

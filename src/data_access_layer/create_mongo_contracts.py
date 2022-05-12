@@ -1,4 +1,4 @@
-from lib.mongo_client import get_db
+""" from mongo_client import get_db
 
 
 def create_contracts(contracts: list):
@@ -14,3 +14,4 @@ def create_contracts(contracts: list):
         return
 
     contratos.insert_many(contracts)
+ """
