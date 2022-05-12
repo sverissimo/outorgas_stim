@@ -13,7 +13,7 @@ def test_year_to_month_rate():
     # Testando método da classe Tjlp
     tjlp = Tjlp()
     yr2 = '6,00%'
-    mr2 = tjlp.year_to_month_rate(yr2)
+    mr2 = year_to_month_rate(yr2)
     mr2 = round(mr2, 6)
     print(f'a 6% year rate should be: {mr2*100}% monthly')
     assert mr2 == 0.004868

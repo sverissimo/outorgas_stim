@@ -1,14 +1,27 @@
 import re
 import pandas as pd
-from lib.create_mongo_contracts import create_contracts
 from utils.parse_contrato import parse_contrato
 from utils.rename_columns import rename_columns
 
 
-def add_contracts(sheet):
+def get_contracts_from_sheet(sheet: str or None):
+
+    if not sheet:
+        all_data = pd.read_excel("data/Contratos 2014-2016.xlsx", None)
+        all_sheets = all_data.keys()
+
+        pattern = re.compile(r"\w{3}\d{2}")
+        filtered_sheets = list(filter(pattern.match, all_sheets))
+
+        all_contracts = []
+
+        for f_sheet in filtered_sheets:
+            all_contracts.append(get_contracts_from_sheet(f_sheet))
+            print(f"Contracts in ${f_sheet} are done processing.")
+        return all_contracts
 
     all_data: pd.DataFrame = pd.read_excel(
-        "../data/Contratos 2014-2016.xlsx", sheet_name=sheet, usecols=range(0, 11)
+        "data/Contratos 2014-2016.xlsx", sheet_name=sheet, usecols=range(0, 11)
     )
 
     all_data.dropna(thresh=8, inplace=True)
@@ -25,12 +38,11 @@ def add_contracts(sheet):
         parse_contrato(data)
 
         single_contract = data.to_dict(orient="records")[0]
-        # print(single_contract["data_assinatura"])
 
         all_contracts_in_a_sheet.append(single_contract)
 
-    create_contracts(all_contracts_in_a_sheet)
     print(f"Contracts in ${sheet} are done processing.")
+    return all_contracts_in_a_sheet
 
 
 if __name__ == "__main__":
@@ -41,9 +53,9 @@ if __name__ == "__main__":
     pattern = re.compile(r"\w{3}\d{2}")
     filtered_sheets = list(filter(pattern.match, all_sheets))
 
-    # add_contracts("Mai15")
+    # get_contracts_from_sheet("Mai15")
 
     for f_sheet in filtered_sheets:
-        add_contracts(f_sheet)
+        get_contracts_from_sheet(f_sheet)
 
     exit()

@@ -7,9 +7,9 @@ from utils.rename_columns import rename_columns
 
 def add_payments(contract: dict):
 
-    contract["pagamentos"] = []
-
-    guias = pd.read_excel("../data/all_guias.xlsx")
+    #guias = pd.read_excel("../../data/all_guias.xlsx")
+    guias = pd.read_excel(
+        "C:\\Users\\m1107819\\Coding\\outorgas\\data\\all_guias.xlsx")
     guias.dropna(how="all", axis=0, inplace=True)
     guias = guias[guias["Status"] == "Quitada"]
     rename_columns(guias)
@@ -44,7 +44,8 @@ def add_payments(contract: dict):
             if type(el) == tuple
         ]
         same_month_index: int = (
-            len(repeated) - 1 - repeated[::-1].index(True) if True in repeated else None
+            len(repeated) - 1 -
+            repeated[::-1].index(True) if True in repeated else None
         )
 
         # Se mais de um pg for feito no mesmo mês, acumula o valor ao invés de append o pg
@@ -63,4 +64,5 @@ def add_payments(contract: dict):
 
     for pg in pagamentos:
         pg["data_pagamento"] = pg["data_pagamento"].strftime("%Y-%m-%d")
-    return pagamentos
+    contract["pagamentos"] = pagamentos
+    return contract

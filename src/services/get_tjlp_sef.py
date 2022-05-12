@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def get_tjlp() -> dict:
+def get_tjlp_sef() -> dict:
     tjlp_uri = pd.read_html(
         "https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/pagamentos-e-parcelamentos/taxa-de-juros-de-longo-prazo-tjlp",
     )
@@ -19,7 +19,8 @@ def get_tjlp() -> dict:
 
     # Formata e converte str para float
     tjlp_all.fillna("0", inplace=True)
-    tjlp_all = tjlp_all.applymap(lambda x: x.replace("%", "").replace(",", "."))
+    tjlp_all = tjlp_all.applymap(
+        lambda x: x.replace("%", "").replace(",", "."))
     tjlp_all.drop(columns=["Mês/Ano"], inplace=True)
     tjlp_all = tjlp_all.apply(lambda x: x.astype(float))
 
