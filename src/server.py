@@ -1,10 +1,9 @@
+import json
 from os.path import exists
 import subprocess
 from flask import Flask, jsonify, make_response
 from data_access_layer.Mongo_dao import Mongo_dao
-from data_access_layer.create_mongo_contracts import create_contracts
 from data_access_layer.get_sicar_payments import get_payments
-from services.get_contracts_from_db import get_contracts_from_db
 from data_access_layer.get_contracts_from_sheet import get_contracts_from_sheet
 from services.get_tjlp import get_tjlp
 
@@ -24,23 +23,28 @@ def get_contracts(create=False):
     if create and create != 'create':
         return f'Opção inválida ({create})', 404
 
-    contracts = get_contracts_from_sheet(None)
     if create == 'create':
-        # create_contracts(contracts)
+        contracts = get_contracts_from_sheet(None)
+        return jsonify(contracts)
+        entity_manager.create_contracts(contracts)
         return f'{len(contracts)} Spreadsheets of contracts parsed and added to MongoDB.'
+
+    contracts = entity_manager.get_contracts()
 
     return jsonify(contracts)
 
 
 @app.route('/add_payments')
 def insert_payments():
-    contracts = get_contracts_from_db()
+    contracts = entity_manager.get_contracts()
     sample = contracts[0:2]
 
     full_contracts = []
 
     for contract in sample:
-        payments = add_payments((contract))
+
+        #payments = entity_manager.insert_payments((contract))
+        payments = get_payments(contract)
 
         contract['pagamentos'] = payments
         full_contracts.append(contract)

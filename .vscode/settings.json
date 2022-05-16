@@ -19,7 +19,9 @@
     "python.linting.enabled": false,
     "python.linting.mypyEnabled": true,
     "python.testing.pytestArgs": [
-        "."
+        ".",
+        "--verbose",
+        "-s"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true

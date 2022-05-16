@@ -53,6 +53,7 @@ class Mongo_dao():
         entity_manager = get_db().contratos
         result = entity_manager.find(query, {'_id': 0})
         result = list(result)
+        print('result: ', result)
 
         return result
 

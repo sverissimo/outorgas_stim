@@ -16,8 +16,8 @@ def get_contracts_from_sheet(sheet: str or None):
         all_contracts = []
 
         for f_sheet in filtered_sheets:
-            all_contracts.append(get_contracts_from_sheet(f_sheet))
-            print(f"Contracts in ${f_sheet} are done processing.")
+            all_contracts = all_contracts + get_contracts_from_sheet(f_sheet)
+
         return all_contracts
 
     all_data: pd.DataFrame = pd.read_excel(
@@ -25,7 +25,6 @@ def get_contracts_from_sheet(sheet: str or None):
     )
 
     all_data.dropna(thresh=8, inplace=True)
-
     all_data.columns = all_data.columns.astype(str)
 
     all_contracts_in_a_sheet = []
