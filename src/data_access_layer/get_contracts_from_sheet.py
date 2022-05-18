@@ -4,17 +4,19 @@ from utils.parse_contrato import parse_contrato
 from utils.rename_columns import rename_columns
 
 
-def get_contracts_from_sheet(sheet: str or None):
+def get_contracts_from_sheet(sheet: str or None = None) -> list:
 
     if not sheet:
         all_data = pd.read_excel("data/Contratos 2014-2016.xlsx", None)
         all_sheets = all_data.keys()
 
+        # Seleciona apenas as planilhas com nome "Mes/aa"
         pattern = re.compile(r"\w{3}\d{2}")
         filtered_sheets = list(filter(pattern.match, all_sheets))
 
         all_contracts = []
 
+        # Chama a própria função para cada planilha do arquivo xlsx e retorna list de dicts
         for f_sheet in filtered_sheets:
             all_contracts = all_contracts + get_contracts_from_sheet(f_sheet)
 

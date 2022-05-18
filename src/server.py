@@ -1,9 +1,7 @@
-import json
-from os.path import exists
 import subprocess
 from flask import Flask, jsonify, make_response
 from data_access_layer.Mongo_dao import Mongo_dao
-from data_access_layer.get_sicar_payments import get_payments
+from services.insert_payments_service import insert_payments_service
 from data_access_layer.get_contracts_from_sheet import get_contracts_from_sheet
 from services.get_tjlp import get_tjlp
 
@@ -37,20 +35,12 @@ def get_contracts(create=False):
 @app.route('/add_payments')
 def insert_payments():
     contracts = entity_manager.get_contracts()
-    sample = contracts[0:2]
+    all_payments = insert_payments_service(contracts, insert=True)
 
-    full_contracts = []
+    return jsonify(all_payments)
 
-    for contract in sample:
-
-        #payments = entity_manager.insert_payments((contract))
-        payments = get_payments(contract)
-
-        contract['pagamentos'] = payments
-        full_contracts.append(contract)
-
-    #print('contracts: ', contracts)
-    return jsonify(full_contracts)
+    #sample = contracts[0:2]
+    #all_payments = insert_payments_service(sample, insert=True)
 
 
 @app.route('/tjlp_sef')

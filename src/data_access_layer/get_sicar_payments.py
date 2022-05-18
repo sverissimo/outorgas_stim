@@ -61,6 +61,11 @@ def get_payments(contract: dict):
                 }
             )
 
+        n_contrato = contract['numero_contrato']
+
+    print(
+        f'##### get_sicar_payments.py: Done processing {len(pagamentos)} payments to contract nº {n_contrato}')
+    # Depois de usar as datas de pagamento como struct_date, formata p string YYYY-mm-dd
     for pg in pagamentos:
         pg["data_pagamento"] = pg["data_pagamento"].strftime("%Y-%m-%d")
 
