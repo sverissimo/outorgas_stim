@@ -1,7 +1,7 @@
 from pandas import DataFrame
 from utils.format_cnpj import format_cnpj
 from utils.linha_parser import linha_parser
-from utils.validate_dates import fix_data_assinatura
+from utils.validate_dates import parse_data_assinatura
 
 
 def parse_contrato(contrato_df: DataFrame) -> DataFrame:
@@ -21,7 +21,7 @@ def parse_contrato(contrato_df: DataFrame) -> DataFrame:
         lambda row: format_cnpj(str(row)))
 
     contrato_df["data_assinatura"] = contrato_df["data_assinatura"].apply(
-        lambda row: fix_data_assinatura(row)
+        lambda row: parse_data_assinatura(row)
     )
 
     # return contrato_df

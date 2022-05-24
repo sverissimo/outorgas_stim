@@ -23,12 +23,10 @@ def get_contracts(create=False):
 
     if create == 'create':
         contracts = get_contracts_from_sheet(None)
-        return jsonify(contracts)
         entity_manager.create_contracts(contracts)
         return f'{len(contracts)} Spreadsheets of contracts parsed and added to MongoDB.'
 
     contracts = entity_manager.get_contracts()
-
     return jsonify(contracts)
 
 

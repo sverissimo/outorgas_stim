@@ -1,22 +1,17 @@
-from src.data_access_layer.Mongo_dao import Mongo_dao
 from services.insert_payments_service import insert_payments_service
 
-entity_manager = Mongo_dao()
 
+def test_get_payments(get_db_contracts):
 
-def test_get_payments():
-
-    contracts = entity_manager.get_contracts()
+    contracts = get_db_contracts
 
     assert len(contracts) == 97
 
     print('There should be 97 contracts stored in the database. ✓')
-    #sample = contracts[0:2]
-    #all_payments = insert_payments_service(sample, insert=False)
 
     c1_pg = contracts[0]['pagamentos']
     last_contract_pg = contracts[len(contracts) - 1]['pagamentos']
-    # print('c1_pg: ', c1_pg)
+
     print(f'payments for first contract: ', len(c1_pg))
     print(f'payments for last contract: ', len(last_contract_pg))
     assert c1_pg[0]['valor'] == 266.93

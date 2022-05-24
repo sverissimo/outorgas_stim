@@ -14,7 +14,7 @@ def fix_invalid_dates(date: str):
     return date
 
 
-def fix_data_assinatura(date):
+def parse_data_assinatura(date):
     if type(date) != str:
         return date
 

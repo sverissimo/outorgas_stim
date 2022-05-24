@@ -1,7 +1,7 @@
-from os.path import exists
 import subprocess
 from config.mongo_client import client, get_db, UpdateOne
 from config import env
+from utils.should_update_file import should_update_file
 
 
 class Mongo_dao():
@@ -26,11 +26,15 @@ class Mongo_dao():
         return output.stdout
 
     def drop_db(self, backup=True):
-        backup_exists = exists(self.BACKUP_FOLDER)
+        days = 5
+        backup_exists = should_update_file(self.BACKUP_FOLDER, days)
 
-        if not backup_exists:
+        if not backup_exists or backup:
             print('Creating backup first...')
             self.backup_db()
+        else:
+            print(f'MongoDB backup at least {days} days ago, skipping backup.')
+
         client.drop_database('outorgas')
         print('Outorgas DB dropped.')
 
@@ -69,3 +73,11 @@ class Mongo_dao():
         ), payments))
 
         entity_manager.bulk_write(updates)
+
+    def insert_tjlp_bndes(self, tjlp_bndes):
+        entity_manager = get_db()
+        entity_manager.tjlp_bndes.insert_many(tjlp_bndes)
+
+    def insert_tjlp_sef(self, tjlp_sef):
+        entity_manager = get_db()
+        entity_manager.tjlp_sef.insert_many(tjlp_sef)

@@ -5,6 +5,7 @@ mongo_client = Mongo_dao()
 
 def test_backup_db():
     result = mongo_client.backup_db()
+    print('result: ', result)
     success_message = 'done dumping outorgas.contratos'
 
     print('message_index: ', result.find(success_message))
@@ -13,12 +14,12 @@ def test_backup_db():
 
 def test_drop_db():
 
-    db_list_before = mongo_client.client.list_database_names()
-    mongo_client.drop_db()
-    db_list_after = mongo_client.client.list_database_names()
+    mongo_client.drop_db(backup=False)
+
+    dbs = mongo_client.client.list_database_names()
 
     print('### Testing mode: Outorgas DB dropped! ###')
-    assert len(db_list_before) - len(db_list_after) == 1
+    assert 'outorgas'not in dbs
 
 
 def test_restore_db():
