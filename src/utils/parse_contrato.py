@@ -14,9 +14,11 @@ def parse_contrato(contrato_df: DataFrame) -> DataFrame:
         lambda row: int(row)
     )
 
-    contrato_df["n_parcelas"] = contrato_df["n_parcelas"].apply(lambda row: int(row))
+    contrato_df["n_parcelas"] = contrato_df["n_parcelas"].apply(
+        lambda row: int(row))
 
-    contrato_df["cnpj"] = contrato_df["cnpj"].apply(lambda row: format_cnpj(str(row)))
+    contrato_df["cnpj"] = contrato_df["cnpj"].apply(
+        lambda row: format_cnpj(str(row)))
 
     contrato_df["data_assinatura"] = contrato_df["data_assinatura"].apply(
         lambda row: fix_data_assinatura(row)
