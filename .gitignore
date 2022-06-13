@@ -8,6 +8,5 @@ tst/**/*.xlsx
 /**/features
 tst*.*
 contratos*.json
-*.txt
 .env
 pyvenv.cfg

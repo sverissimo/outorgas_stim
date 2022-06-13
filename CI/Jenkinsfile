@@ -1,0 +1,87 @@
+pipeline {
+    agent any
+    environment {        
+        String SCRIPTS_FOLDER = pwd()
+        String ENV_FOLDER = "C:\\Jenkins\\jobs_env_vars\\outorgas"
+        String PY_REL_PATH = "venv\\Scripts\\python.exe"
+        String PYTEST_REL_PATH = "venv\\Scripts\\pytest.exe"
+        APP_FOLDER = null
+        ENV_FILE = null
+        python = null
+        pytest = null
+    }    
+
+    stages {
+        stage('#### Preparation ####') {
+             steps {                                
+                echo "${env.scriptsFolder}"
+                script {                                   
+                    ENV_FILE = readFile("${ENV_FOLDER}\\.env")
+                    //groovyScripts = load "${SCRIPTS_FOLDER}\\CI\\scripts.groovy"
+                    def location = env.BRANCH_NAME ? "${SCRIPTS_FOLDER}\\CI\\scripts.groovy" : "C:\\Users\\m1107819\\Coding\\outorgas\\CI\\scripts.groovy"
+                    
+                    groovyScripts = load location
+                    APP_FOLDER =  groovyScripts.getDotEnvValue('APP_FOLDER')                        
+                    python = "${APP_FOLDER}\\${PY_REL_PATH}"                    
+                    pytest = "${APP_FOLDER}\\${PYTEST_REL_PATH}"
+                    
+                    println "*** App folder is ---> ${APP_FOLDER}"
+                    println "*** Current branch is ---> ${env.BRANCH_NAME}"
+                }                
+            }
+        }
+        stage('#### Build ####') {
+            when{
+               expression {
+                    true | env.BRANCH_NAME == 'main'
+                }
+            }
+            steps {
+                echo 'simulating build step...'
+                bat """
+                cd ${APP_FOLDER} 
+                type requirements.txt
+                """
+            }
+            //bat(pip install -r requirements)
+        }        
+        stage('#### Test ####') {
+            when{
+               expression {
+                    true | env.BRANCH_NAME == 'main'
+                }
+            }
+            steps {                
+                bat """
+                ${python} --version
+                cd ${APP_FOLDER}                
+                ${pytest} ./src/tests/unit/
+                """                
+                //${pytest} -s --ignore-glob=**\\integration\\*
+            }
+        } 
+        stage('#### Deploy ####') {
+            when{
+               expression {
+                    true | env.BRANCH_NAME == 'main'
+                }
+            }
+            steps {
+                bat """
+                cd ${APP_FOLDER}
+                pm2 status
+                git --version
+                """                
+            }
+        }   
+    }
+    
+     post{
+        success {
+            echo '++++++++ Alright, pipeline runned sucessfully.'            
+        }
+        failure {
+            echo '-------- Somehting went wrong running Jenkins jobs...'            
+        }
+    }
+}
