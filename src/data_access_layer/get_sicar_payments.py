@@ -1,5 +1,6 @@
 from typing import List
 import pandas as pd
+from config import env
 
 from utils.rename_columns import rename_columns
 
@@ -7,8 +8,7 @@ from utils.rename_columns import rename_columns
 def get_payments(contract: dict):
 
     #guias = pd.read_excel("../../data/all_guias.xlsx")
-    guias = pd.read_excel(
-        "C:\\Users\\m1107819\\Coding\\outorgas\\data\\all_guias.xlsx")
+    guias = pd.read_excel(f"{env.APP_FOLDER}\\data\\all_guias.xlsx")
     guias.dropna(how="all", axis=0, inplace=True)
     guias = guias[guias["Status"] == "Quitada"]
     rename_columns(guias)

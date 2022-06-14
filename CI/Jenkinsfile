@@ -40,7 +40,7 @@ pipeline {
                 echo 'simulating build step...'
                 bat """
                 cd ${APP_FOLDER} 
-                type requirements.txt
+                pip list
                 """
             }
             //bat(pip install -r requirements)
@@ -48,7 +48,7 @@ pipeline {
         stage('#### Test ####') {
             when{
                expression {
-                    true | env.BRANCH_NAME == 'main'
+                    env.BRANCH_NAME == 'main'
                 }
             }
             steps {                
@@ -63,14 +63,14 @@ pipeline {
         stage('#### Deploy ####') {
             when{
                expression {
-                    true | env.BRANCH_NAME == 'main'
+                    env.BRANCH_NAME == 'main'
                 }
             }
             steps {
                 bat """
                 cd ${APP_FOLDER}
                 pm2 status
-                git --version
+                git pull
                 """                
             }
         }   

@@ -10,3 +10,6 @@ tst*.*
 contratos*.json
 .env
 pyvenv.cfg
+packages_to_uninstall.txt
+requirements_backup.txt
+pytest.ini
