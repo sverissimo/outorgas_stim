@@ -16,12 +16,12 @@ pipeline {
              steps {                                
                 echo "${env.scriptsFolder}"
                 script {                                   
-                    ENV_FILE = readFile("${ENV_FOLDER}\\.env")
-                    //groovyScripts = load "${SCRIPTS_FOLDER}\\CI\\scripts.groovy"
-                    def location = env.BRANCH_NAME ? "${SCRIPTS_FOLDER}\\CI\\scripts.groovy" : "C:\\Users\\m1107819\\Coding\\outorgas\\CI\\scripts.groovy"
+                    ENV_FILE = readFile("${ENV_FOLDER}\\.env") //Utilizado pela função groovyScripts.getDotEnvValue()
                     
-                    groovyScripts = load location
+                    def groovyFilePath = env.BRANCH_NAME ? "${SCRIPTS_FOLDER}\\CI\\scripts.groovy" : "C:\\Users\\m1107819\\Coding\\outorgas\\CI\\scripts.groovy"                    
+                    groovyScripts = load groovyFilePath                    
                     APP_FOLDER =  groovyScripts.getDotEnvValue('APP_FOLDER')                        
+                    
                     python = "${APP_FOLDER}\\${PY_REL_PATH}"                    
                     pytest = "${APP_FOLDER}\\${PYTEST_REL_PATH}"
                     
@@ -37,13 +37,12 @@ pipeline {
                 }
             }
             steps {
-                echo 'simulating build step...'
+                echo 'Build step -> installing dependencies listed in requirements.txt...'
                 bat """
-                cd ${APP_FOLDER} 
-                pip list
+                cd ${APP_FOLDER}\\venv\\Scripts 
+                activate && pip install -r ..\\..\\requirements.txt
                 """
-            }
-            //bat(pip install -r requirements)
+            }            
         }        
         stage('#### Test ####') {
             when{
@@ -54,10 +53,9 @@ pipeline {
             steps {                
                 bat """
                 ${python} --version
-                cd ${APP_FOLDER}                
-                ${pytest} ./src/tests/unit/
-                """                
-                //${pytest} -s --ignore-glob=**\\integration\\*
+                cd ${APP_FOLDER}\\venv\\Scripts 
+                activate && cd ..\\.. && ${pytest} ./src/tests/unit/
+                """                                
             }
         } 
         stage('#### Deploy ####') {
@@ -68,10 +66,10 @@ pipeline {
             }
             steps {
                 bat """
-                cd ${APP_FOLDER}
-                pm2 status
-                git pull
-                """                
+                cd ${APP_FOLDER}\\venv\\Scripts 
+                activate && cd ..\\.. && cd && git pull
+                """                               
+                bat "pm2 status"
             }
         }   
     }
