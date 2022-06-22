@@ -1,4 +1,6 @@
 import subprocess
+from waitress import serve
+import logging
 from flask import Flask, jsonify, make_response
 from data_access_layer.Mongo_dao import Mongo_dao
 from services.insert_payments_service import insert_payments_service
@@ -72,4 +74,9 @@ def backup_db(drop=False):
 
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=5000, debug=True, load_dotenv=True)
+    logger = logging.getLogger('waitress')
+    logger.setLevel(logging.INFO)
+    serve(app, host='localhost', port=5000)
+
+    # DEVELOPMENT
+    # app.run(host='localhost', port=5000, debug=True, load_dotenv=True)
