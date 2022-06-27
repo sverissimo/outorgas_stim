@@ -37,7 +37,12 @@ pipeline {
                 }
             }
             steps {
-                echo 'Build step -> installing dependencies listed in requirements.txt...'
+                echo 'Build step -> Updating files and installing dependencies listed in requirements.txt...'
+                bat """
+                cd ${APP_FOLDER}\\venv\\Scripts 
+                activate && cd ..\\.. && cd && git pull
+                """  
+                
                 bat """
                 cd ${APP_FOLDER}\\venv\\Scripts 
                 activate && pip install -r ..\\..\\requirements.txt
@@ -64,12 +69,12 @@ pipeline {
                     env.BRANCH_NAME == 'main'
                 }
             }
-            steps {
+            steps {                                             
                 bat """
                 cd ${APP_FOLDER}\\venv\\Scripts 
-                activate && cd ..\\.. && cd && git pull
-                """                               
-                bat "pm2 status"
+                activate && cd ..\\.. && pm2 restart outorgas
+                """
+                //activate && cd ..\\.. && pm2 restart ${APP_FOLDER}\\src\\server.py --name outorgas --interpreter ${APP_FOLDER}\\venv\\Scripts\\python.exe
             }
         }   
     }
