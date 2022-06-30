@@ -2,6 +2,7 @@
     "python.formatting.provider": "autopep8",
     "cSpell.words": [
         "cotacao",
+        "datatables",
         "fillna",
         "iloc",
         "inplace",

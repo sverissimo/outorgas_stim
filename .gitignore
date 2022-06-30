@@ -13,3 +13,5 @@ pyvenv.cfg
 packages_to_uninstall.txt
 requirements_backup.txt
 pytest.ini
+/**/node_modules
+/**/dist
