@@ -8,9 +8,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.9.3",
+    "@emotion/styled": "^11.9.3",
+    "@mui/icons-material": "^5.8.4",
+    "@mui/material": "^5.8.6",
+    "@types/mui-datatables": "^3.7.9",
+    "mui-datatables": "^4.2.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "react-query": "^3.39.1"
+    "react-query": "^3.39.1",
+    "sass": "^1.53.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",
