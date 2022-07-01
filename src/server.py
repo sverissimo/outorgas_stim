@@ -12,9 +12,18 @@ app = Flask(__name__)
 entity_manager = Mongo_dao()
 
 
+@app.after_request
+def apply_caching(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers["X-Frame-Options"] = "DENY"
+    return response
+
+
 @app.route('/')
 def home():
-    return 'API de gestão de outorgas do transporte intermunicipal. Ver endpoints em docs.'
+    resp_test = 'API de gestão de outorgas do transporte intermunicipal. Ver endpoints em docs...'
+    resp = make_response(resp_test, 200)
+    return resp
 
 
 @app.route('/get_contracts')
