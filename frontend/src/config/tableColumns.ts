@@ -1,4 +1,5 @@
 import { MUIDataTableColumnOptions } from "mui-datatables"
+import { formatDate } from "../utils/formatDate"
 
 interface Column {
     name: string,
@@ -43,6 +44,10 @@ export const columns: Column[] = [
         options: {
             filter: true,
             sort: true,
+            customBodyRender: (value, tableMeta, updateValue) => {
+                //return value
+                return formatDate(value)
+            },
         }
     }, {
         name: "edital",
@@ -75,7 +80,6 @@ export const columns: Column[] = [
             filter: false,
             sort: false,
             customBodyRender: (value, tableMeta, updateValue) => {
-                console.log("🚀 ~ file: tableColumns.ts ~ line 80 ~ value", Array.isArray(value))
                 return value.join()
             }
         }

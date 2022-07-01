@@ -39,6 +39,7 @@ export const OutorgaTable = () => {
         delete el.pagamentos
         return el
     })
+
     const options: MUIDataTableOptions = {
         filterType: 'dropdown' as FilterType,
         selectableRowsHideCheckboxes: true,
@@ -48,11 +49,9 @@ export const OutorgaTable = () => {
 
     return (
 
-        <Container maxWidth={false}>
+        <Container maxWidth={"xl"}>
             <ThemeProvider theme={getMuiTheme()}>
-
                 <MUIDataTable
-
                     title={"Contratos de Outorga"}
                     data={data2}
                     columns={columns}
