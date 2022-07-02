@@ -39,6 +39,14 @@ export const columns: Column[] = [
         }
     },
     {
+        name: "numero_contrato",
+        label: "Número do Contrato",
+        options: {
+            filter: false,
+            sort: false,
+        }
+    },
+    {
         name: "data_assinatura",
         label: "Data de Assinatura",
         options: {
@@ -58,22 +66,6 @@ export const columns: Column[] = [
         }
     },
     {
-        name: "n_parcelas",
-        label: "Número de Parcelas",
-        options: {
-            filter: false,
-            sort: false,
-        }
-    },
-    {
-        name: "numero_contrato",
-        label: "Número do Contrato",
-        options: {
-            filter: false,
-            sort: false,
-        }
-    },
-    {
         name: "linhas_id",
         label: "Linhas",
         options: {
@@ -82,6 +74,14 @@ export const columns: Column[] = [
             customBodyRender: (value, tableMeta, updateValue) => {
                 return value.join()
             }
+        }
+    },
+    {
+        name: "n_parcelas",
+        label: "Número de Parcelas",
+        options: {
+            filter: false,
+            sort: false,
         }
     },
     {

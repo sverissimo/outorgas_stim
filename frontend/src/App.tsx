@@ -1,6 +1,9 @@
 import { QueryClient, QueryClientProvider } from 'react-query'
+import { BrowserRouter } from 'react-router-dom'
 import { Header } from './components/Header'
-import { OutorgaTable } from './pages/OutorgaTable'
+import { AppRouter } from './Routes'
+
+
 
 function App() {
 
@@ -8,8 +11,10 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Header />
-      <OutorgaTable />
+      <BrowserRouter>
+        <Header />
+        <AppRouter />
+      </BrowserRouter>
     </QueryClientProvider>
   )
 }

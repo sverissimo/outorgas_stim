@@ -5,6 +5,9 @@ export const getMuiTheme = () => createTheme({
     components: {
         MuiTableCell: {
             styleOverrides: {
+                body: {
+                    cursor: "pointer !important"
+                },
                 /* root: {
                     backgroundColor: "blue !important"
                 }, */

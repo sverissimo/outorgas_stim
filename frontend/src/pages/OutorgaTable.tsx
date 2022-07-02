@@ -6,8 +6,9 @@ import { Container, ThemeProvider } from "@mui/material";
 import { getMuiTheme } from "../config/tableStyles";
 import '../styles.scss'
 import { textLabels } from "../config/tableLables";
+import { useNavigate } from "react-router-dom";
 
-interface IContract {
+export interface IContract {
     cnpj: String,
     codigo_empresa: String,
     data_assinatura: String,
@@ -20,13 +21,11 @@ interface IContract {
 
 export const OutorgaTable = () => {
 
-    const api = new Api()
-
-    const { isLoading, data, error } = useQuery('tst', () => api.get('/api/get_contracts'), { cacheTime: 0, retry: false })
+    const
+        api = new Api()
+        , { isLoading, data, error } = useQuery('tst', () => api.get('/api/get_contracts'), { cacheTime: 0, retry: false })
         , data1: Array<IContract> = data && JSON.parse(data)
-
-    //const columns = ['razao_social', 'cnpj', 'codigo_empresa', 'data_assinatura', 'edital', 'n_parcelas', 'numero_contrato', 'valor_outorga']
-
+    let navigate = useNavigate()
 
     if (isLoading)
         return <h1> "Loading..."</h1>
@@ -35,16 +34,20 @@ export const OutorgaTable = () => {
         return <h4>An error has occurred: {JSON.stringify(error)} </h4>
 
     const data2 = data1.map(el => {
-        //delete el.linhas_id
-        delete el.pagamentos
-        return el
+        const { pagamentos, ...contractInfo } = el
+        return contractInfo
     })
 
     const options: MUIDataTableOptions = {
         filterType: 'dropdown' as FilterType,
         selectableRowsHideCheckboxes: true,
         textLabels: textLabels,
-        responsive: 'simple'
+        responsive: 'simple',
+        onRowClick: (rowData, rowMeta): void => {
+            console.log(rowData, rowMeta)
+            const nContrato = rowData[3].replace('/', '-')
+            navigate(`/contrato/${nContrato}`, { state: data1[rowMeta.dataIndex] })
+        }
     }
 
     return (
