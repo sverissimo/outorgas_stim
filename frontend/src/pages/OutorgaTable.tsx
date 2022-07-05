@@ -7,25 +7,27 @@ import { getMuiTheme } from "../config/tableStyles";
 import '../styles.scss'
 import { textLabels } from "../config/tableLables";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useEffect } from "react";
+import { Contract } from '../interfaces/Contract'
 
-export interface IContract {
-    cnpj: String,
-    codigo_empresa: String,
-    data_assinatura: String,
-    edital: String,
-    linhas_id?: String,
-    n_parcelas: String,
-    numero_contrato: String,
-    pagamentos?: any
+
+type IState = {
+    contracts: Contract[]
 }
 
 export const OutorgaTable = () => {
 
     const
         api = new Api()
-        , { isLoading, data, error } = useQuery('tst', () => api.get('/api/get_contracts'), { cacheTime: 0, retry: false })
-        , data1: Array<IContract> = data && JSON.parse(data)
+        , [state, setState] = useState({} as IState)
+        , { isLoading, data, error } = useQuery('tst', () => api.get('/api/get_contracts'), { retry: false })
+
     let navigate = useNavigate()
+
+    useEffect(() => {
+        setState({ ...state, contracts: data })
+    }, [data])
 
     if (isLoading)
         return <h1> "Loading..."</h1>
@@ -33,10 +35,7 @@ export const OutorgaTable = () => {
     if (error)
         return <h4>An error has occurred: {JSON.stringify(error)} </h4>
 
-    const data2 = data1.map(el => {
-        const { pagamentos, ...contractInfo } = el
-        return contractInfo
-    })
+
 
     const options: MUIDataTableOptions = {
         filterType: 'dropdown' as FilterType,
@@ -44,9 +43,8 @@ export const OutorgaTable = () => {
         textLabels: textLabels,
         responsive: 'simple',
         onRowClick: (rowData, rowMeta): void => {
-            console.log(rowData, rowMeta)
             const nContrato = rowData[3].replace('/', '-')
-            navigate(`/contrato/${nContrato}`, { state: data1[rowMeta.dataIndex] })
+            navigate(`/contrato/${nContrato}`, { state: { ...data[rowMeta.dataIndex] } })
         }
     }
 
@@ -56,7 +54,7 @@ export const OutorgaTable = () => {
             <ThemeProvider theme={getMuiTheme()}>
                 <MUIDataTable
                     title={"Contratos de Outorga"}
-                    data={data2}
+                    data={state.contracts}
                     columns={columns}
                     options={options}
                 />

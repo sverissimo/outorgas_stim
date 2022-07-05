@@ -7,7 +7,17 @@ import { AppRouter } from './Routes'
 
 function App() {
 
-  const queryClient = new QueryClient
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+        retry: false,
+        staleTime: 2 * 60 * 60 * 1000 //2h
+      }
+    }
+  })
 
   return (
     <QueryClientProvider client={queryClient}>

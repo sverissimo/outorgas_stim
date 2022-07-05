@@ -7,6 +7,6 @@ export class Api {
                 'Access-Control-Allow-Origin': '*'
             }
         })
-        return await response.text()
+        return await response.json()
     }
 }

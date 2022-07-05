@@ -85,6 +85,13 @@ export const columns: Column[] = [
         }
     },
     {
+        name: "parcelas_pagas",
+        label: "Pagamentos efetuados",
+        options: {
+            filter: false
+        }
+    },
+    {
         name: "valor_outorga",
         label: "Valor da Outorga",
         options: {
