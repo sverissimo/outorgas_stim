@@ -1,10 +1,10 @@
-from data_access_layer.Mongo_dao import Mongo_dao
+from data_access_layer.Contract_dao import Contract_dao
 
-mongo_client = Mongo_dao()
+contract_dao = Contract_dao()
 
 
 def test_get_contracts_from_mongodb():
-    contracts = mongo_client.get_contracts()
+    contracts = contract_dao.get_contracts()
 
     print('Contracts retrieved, first one is numbered: ',
           contracts[0]['numero_contrato'], '\nNow running tests...')

@@ -1,4 +1,5 @@
-from data_access_layer.Mongo_dao import Mongo_dao, get_db
+from data_access_layer.Mongo_dao import Mongo_dao
+from data_access_layer.Tjlp_dao import Tjlp_dao
 from services.get_tjlp import get_tjlp
 
 
@@ -18,7 +19,7 @@ def test_insert_tjlp_sef():
 
 
 def test_get_tjlp_sef_from_db():
-    _set20 = get_db().tjlp_sef.find_one({'_id': '9-2020'})
-    print('_set20: ', _set20)
+    _set20 = Tjlp_dao('tjlp_sef').find('9-2020')
     assert _set20['mes'].year == 2020
+    assert _set20['mes'].month == 9
     assert _set20['taxa'] == 0.004092
