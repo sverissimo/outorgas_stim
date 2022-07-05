@@ -39,7 +39,6 @@ class Mongo_dao():
         print('Outorgas DB dropped.')
 
     def create_contracts(self, contracts: list):
-
         contratos = get_db().contratos
         first_contract_n = contracts[0]["numero_contrato"]
         search = list(contratos.find({"numero_contrato": first_contract_n}))
@@ -51,16 +50,6 @@ class Mongo_dao():
             return
         else:
             contratos.insert_many(contracts)
-
-    def get_contracts(self, query: dict or None = {}):
-
-        entity_manager = get_db().contratos
-        result = entity_manager.find(query, {'_id': 0})
-        result = list(result)
-        print('Mongo_dao.get_contracts() -> contracts retrieved, first one is numbered: ',
-              result[0]['numero_contrato'])
-
-        return result
 
     def insert_payments(self, payments: list):
         entity_manager = get_db().contratos

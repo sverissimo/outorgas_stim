@@ -15,3 +15,4 @@ requirements_backup.txt
 pytest.ini
 /**/node_modules
 /**/dist
+bndes_tjlp_scraping_data.txt
