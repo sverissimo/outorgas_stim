@@ -1,5 +1,5 @@
 import { MUIDataTableColumnOptions } from "mui-datatables"
-import { formatDate } from "../utils/formatDate"
+import { formatDate } from "../utils/dateUtil"
 
 interface Column {
     name: string,

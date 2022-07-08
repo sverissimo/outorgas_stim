@@ -1,4 +1,4 @@
-const { formatDate } = require("../utils/formatDate")
+const { formatDate } = require("../utils/dateUtil")
 
 
 
