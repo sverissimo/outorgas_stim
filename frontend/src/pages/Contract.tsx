@@ -1,17 +1,24 @@
 import { useQuery } from "react-query"
-import { Link, Outlet, useLocation, useMatch, useParams } from "react-router-dom"
+import { Link, useLocation, useParams } from "react-router-dom"
 import { Api } from "../api/Api"
+import { Contract as IContract } from "../interfaces/Contract"
+import { Tjlp } from '../interfaces/Tjlp'
+import { getDebt } from "../utils/getDebt"
 
+interface UseLocationState {
+    parcelas_pagas: number,
+    tjlpBndes: Tjlp[]
+}
 
-export const Contract = () => {
+export const Contract: React.FC = () => {
 
     const
-        { numeroContrato } = useParams()
+        api = new Api()
         , location = useLocation()
-        , { state, pathname } = location
-        , api = new Api()
+        , state: UseLocationState = location.state as UseLocationState
+        , { numeroContrato } = useParams()
         , { isLoading, data, error } = useQuery('contract', () => api.get(`/api/get_contract/${numeroContrato}`))
-    console.log("🚀 ~ file: Contract.tsx ~ line 14 ~ Contract ~ data", data)
+
 
     if (isLoading)
         return <h1> "Loading..."</h1>
@@ -19,10 +26,13 @@ export const Contract = () => {
     if (error)
         return <h4>An error has occurred: {JSON.stringify(error)} </h4>
 
-    const { pagamentos, ...contractInfo } = data
-    contractInfo.parcelasPagas = state.parcelas_pagas
+    const
+        { pagamentos, ...contractInfo } = data
+        , { tjlpBndes, parcelas_pagas } = state
 
+    contractInfo.parcelasPagas = parcelas_pagas
 
+    const debtSum = getDebt(contractInfo.valor_outorga, pagamentos, tjlpBndes)
 
     return (
         <>
@@ -33,8 +43,11 @@ export const Contract = () => {
             <p>
                 {JSON.stringify(contractInfo)}
             </p>
-            {
-                pagamentos.map(({ data_pagamento, numero_guia, valor }, i) => (
+            <p>
+                *-************************** {JSON.stringify(debtSum)}
+            </p>
+            {/*  {
+                pagamentos.map(({ data_pagamento, numero_guia, valor }: Pagamento, i: number) => (
                     <div key={numero_guia}>
                         <h4>
                             Pagamento número {i}
@@ -45,8 +58,8 @@ export const Contract = () => {
                             <li>Valor:  {valor} </li>
                         </ul>
                     </div>
-                ))}
-            {/* <Outlet /> */}
+                ))} */}
+
         </>
     )
 }

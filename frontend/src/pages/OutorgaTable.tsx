@@ -1,4 +1,4 @@
-import { useQuery } from "react-query"
+import { useQueries, useQuery } from "react-query"
 import { Api } from "../api/Api"
 import MUIDataTable, { FilterType, MUIDataTableOptions } from 'mui-datatables';
 import { columns } from '../config/tableColumns'
@@ -10,10 +10,12 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
 import { Contract } from '../interfaces/Contract'
+import { Tjlp } from "../interfaces/Tjlp";
 
 
 type IState = {
     contracts: Contract[]
+    tjlpBndes: Tjlp
 }
 
 export const OutorgaTable = () => {
@@ -21,15 +23,24 @@ export const OutorgaTable = () => {
     const
         api = new Api()
         , [state, setState] = useState({} as IState)
-        , { isLoading, data, error } = useQuery('tst', () => api.get('/api/get_contracts'), { retry: false })
+
+    const queryMultiple = () => {
+        const contracts = useQuery('contracts', () => api.get('/api/get_contracts'))
+        const tjlpBndes = useQuery('tjlpBndes', () => api.get('/api/tjlp/bndes'))
+        return [contracts, tjlpBndes]
+    }
+    const [
+        { isLoading: loadingContracts, data: contracts, error },
+        { isLoading: loadingTjlp, data: tjlpBndes },
+    ] = queryMultiple()
 
     let navigate = useNavigate()
 
     useEffect(() => {
-        setState({ ...state, contracts: data })
-    }, [data])
+        setState({ ...state, contracts, tjlpBndes })
+    }, [contracts, tjlpBndes])
 
-    if (isLoading)
+    if (loadingContracts || loadingTjlp)
         return <h1> "Loading..."</h1>
 
     if (error)
@@ -44,7 +55,12 @@ export const OutorgaTable = () => {
         responsive: 'simple',
         onRowClick: (rowData, rowMeta): void => {
             const nContrato = rowData[3].replace('/', '-')
-            navigate(`/contrato/${nContrato}`, { state: { ...data[rowMeta.dataIndex] } })
+            navigate(`/contrato/${nContrato}`, {
+                state: {
+                    parcelas_pagas: contracts[rowMeta.dataIndex].parcelas_pagas,
+                    tjlpBndes
+                }
+            })
         }
     }
 

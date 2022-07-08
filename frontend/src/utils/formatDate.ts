@@ -16,3 +16,10 @@ export function formatDate(stringDate: string) {
     return formattedDate
 }
 
+export function fixTimeZone(stringDate: string): Date {
+    const
+        date: Date = new Date(stringDate)
+        , adjustTimeZoneHours = 3 * 60 * 60 * 1000
+    date.setTime(date.getTime() + adjustTimeZoneHours)
+    return date
+}
