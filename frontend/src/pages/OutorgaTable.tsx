@@ -13,7 +13,7 @@ import { Contract } from '../interfaces/Contract'
 import { Tjlp } from "../interfaces/Tjlp";
 
 
-type IState = {
+type State = {
     contracts: Contract[]
     tjlpBndes: Tjlp
 }
@@ -22,11 +22,11 @@ export const OutorgaTable = () => {
 
     const
         api = new Api()
-        , [state, setState] = useState({} as IState)
+        , [state, setState] = useState({} as State)
 
     const queryMultiple = () => {
         const contracts = useQuery('contracts', () => api.get('/api/get_contracts'))
-        const tjlpBndes = useQuery('tjlpBndes', () => api.get('/api/tjlp/bndes'))
+            , tjlpBndes = useQuery('tjlpBndes', () => api.get('/api/tjlp/bndes'))
         return [contracts, tjlpBndes]
     }
     const [
@@ -46,13 +46,13 @@ export const OutorgaTable = () => {
     if (error)
         return <h4>An error has occurred: {JSON.stringify(error)} </h4>
 
-
-
     const options: MUIDataTableOptions = {
         filterType: 'dropdown' as FilterType,
         selectableRowsHideCheckboxes: true,
         textLabels: textLabels,
         responsive: 'simple',
+        rowsPerPage: 25,
+        rowsPerPageOptions: [10, 25, 50],
         onRowClick: (rowData, rowMeta): void => {
             const nContrato = rowData[3].replace('/', '-')
             navigate(`/contrato/${nContrato}`, {
@@ -63,9 +63,7 @@ export const OutorgaTable = () => {
             })
         }
     }
-
     return (
-
         <Container maxWidth={"xl"}>
             <ThemeProvider theme={getMuiTheme()}>
                 <MUIDataTable
@@ -76,14 +74,5 @@ export const OutorgaTable = () => {
                 />
             </ThemeProvider>
         </Container>
-
-
     )
 }
-
-{/* <MUIDataTable
-            title={"Employee List"}
-            data={data}
-            columns={columns}
-            options={options}
-        /> */}

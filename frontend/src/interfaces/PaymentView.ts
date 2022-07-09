@@ -1,5 +1,5 @@
 export interface PaymentView {
-    mes: Date
+    mes: any
     tjlp: number
     tjlpEfetiva: number
     saldoAntesPg: number

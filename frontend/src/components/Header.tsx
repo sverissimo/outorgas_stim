@@ -1,8 +1,12 @@
-import { useQueryClient } from "react-query"
-
+import './header.scss'
+import GarageOutlined from '@mui/icons-material/GarageOutlined';
 export const Header = () => {
-    const data = useQueryClient()
+
     return (
-        <div>Header</div>
+        <div className="headerContainer">
+            <h3>
+                Sistema de gestão de outorgas do Transporte Intermunicipal de MG
+            </h3>
+        </div>
     )
 }

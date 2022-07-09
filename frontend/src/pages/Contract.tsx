@@ -1,8 +1,10 @@
+import MUIDataTable, { FilterType, MUIDataTableOptions } from "mui-datatables"
 import { useQuery } from "react-query"
 import { Link, useLocation, useParams } from "react-router-dom"
 import { Api } from "../api/Api"
-import { Contract as IContract } from "../interfaces/Contract"
+import { ContractInfo } from "../components/ContractInfo"
 import { Tjlp } from '../interfaces/Tjlp'
+import { dateToFormattedString } from "../utils/dateUtil"
 import { getDebt } from "../utils/getDebt"
 
 interface UseLocationState {
@@ -17,8 +19,7 @@ export const Contract: React.FC = () => {
         , location = useLocation()
         , state: UseLocationState = location.state as UseLocationState
         , { numeroContrato } = useParams()
-        , { isLoading, data, error } = useQuery('contract', () => api.get(`/api/get_contract/${numeroContrato}`))
-
+        , { isLoading, data, error } = useQuery(`contract${numeroContrato}`, () => api.get(`/api/get_contract/${numeroContrato}`))
 
     if (isLoading)
         return <h1> "Loading..."</h1>
@@ -32,34 +33,32 @@ export const Contract: React.FC = () => {
 
     contractInfo.parcelasPagas = parcelas_pagas
 
-    const debtSum = getDebt(contractInfo.valor_outorga, pagamentos, tjlpBndes)
+    const
+        debtSum = getDebt(contractInfo.valor_outorga, pagamentos, tjlpBndes)
+        , headers = Object.keys(debtSum[0])
+        , options: MUIDataTableOptions = {
+            filterType: 'dropdown' as FilterType,
+            selectableRowsHideCheckboxes: true,
+            responsive: 'simple',
+            rowsPerPage: 100,
+            rowsPerPageOptions: [25, 50, 100]
+        }
+
+    debtSum.forEach(el => el.mes = dateToFormattedString(el.mes))
 
     return (
-        <>
-            <div>Contract</div>
+        <div className="container">
+            <ContractInfo contract={contractInfo} />
             <Link to='/outorgas'>
                 Back to outorgas
             </Link>
-            <p>
-                {JSON.stringify(contractInfo)}
-            </p>
-            <p>
-                *-************************** {JSON.stringify(debtSum)}
-            </p>
-            {/*  {
-                pagamentos.map(({ data_pagamento, numero_guia, valor }: Pagamento, i: number) => (
-                    <div key={numero_guia}>
-                        <h4>
-                            Pagamento número {i}
-                        </h4>
-                        <ul>
-                            <li>Data pg: {data_pagamento} </li>
-                            <li>NGuia: {numero_guia}  </li>
-                            <li>Valor:  {valor} </li>
-                        </ul>
-                    </div>
-                ))} */}
 
-        </>
+            <MUIDataTable
+                title={`Saldo do contrato nº ${contractInfo.numero_contrato}`}
+                data={debtSum}
+                columns={headers}
+                options={options}
+            />
+        </div>
     )
 }

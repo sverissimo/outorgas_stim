@@ -1,0 +1,36 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    //justify-content: space-between;
+    border: 1px solid #888;
+    border-radius: 20px;
+    background-color: #eee;
+    width: 90%;
+    margin: 0 auto;
+}
+
+.titleContainer {
+    display: flex;
+    justify-content: center;
+    font-size: medium;
+    font-weight: 700;
+    padding: 0.5rem 0;
+}
+
+.cellContainer {
+    display: flex;
+    flex-wrap: wrap;
+    //justify-content: space-between;    
+    margin: 0 auto;
+}
+
+.cell {    
+    padding: 0.2rem 0.7rem;
+    width: 100px ;
+    font-size: 0.6rem;   
+}
+
+.cellTitle {    
+    font-weight: 700;
+}
