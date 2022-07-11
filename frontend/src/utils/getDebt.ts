@@ -4,7 +4,14 @@ import { Tjlp } from "../interfaces/Tjlp"
 import { firstCommonDateIndex, fixTimeZone, isSameMonthAndYear } from "./dateUtil"
 import { twoDigits } from "./formatNumber"
 
-
+/**
+ * Retorna uma array de pagamentos e saldo devedor corrigido desde a assinatura do contrato até a presente data
+ * @param amount 
+ * @param payments 
+ * @param tjlp 
+ * @param customFirstPg 
+ * @returns 
+ */
 export const getDebt = (amount: number, payments: Payment[], tjlp: Tjlp[], customFirstPg?: any) => {
 
   amount = twoDigits(amount)

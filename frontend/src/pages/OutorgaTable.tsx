@@ -1,4 +1,4 @@
-import { useQueries, useQuery } from "react-query"
+import { useQuery } from "react-query"
 import { Api } from "../api/Api"
 import MUIDataTable, { FilterType, MUIDataTableOptions } from 'mui-datatables';
 import { columns } from '../config/tableColumns'
@@ -49,6 +49,7 @@ export const OutorgaTable = () => {
     const options: MUIDataTableOptions = {
         filterType: 'dropdown' as FilterType,
         selectableRowsHideCheckboxes: true,
+        print: false,
         textLabels: textLabels,
         responsive: 'simple',
         rowsPerPage: 25,
@@ -57,7 +58,7 @@ export const OutorgaTable = () => {
             const nContrato = rowData[3].replace('/', '-')
             navigate(`/contrato/${nContrato}`, {
                 state: {
-                    parcelas_pagas: contracts[rowMeta.dataIndex].parcelas_pagas,
+                    parcelasPagas: contracts[rowMeta.dataIndex].parcelasPagas,
                     tjlpBndes
                 }
             })
