@@ -1,10 +1,10 @@
 export interface Contract {
     cnpj: String,
-    codigo_empresa: String,
-    data_assinatura: String,
+    codigoEmpresa: String,
+    dataAssinatura: String,
     edital: String,
-    linhas_id?: String,
-    n_parcelas: String,
-    numero_contrato: String,
+    linhasId?: String,
+    nParcelas: String,
+    numeroContrato: String,
     pagamentos?: any
 }

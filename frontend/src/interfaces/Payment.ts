@@ -1,5 +1,5 @@
 export interface Payment {
-    data_pagamento: string
-    numero_guia: string
+    dataPagamento: string
+    numeroGuia: string
     valor: number
 }

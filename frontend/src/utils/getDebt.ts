@@ -12,12 +12,12 @@ export const getDebt = (amount: number, payments: Payment[], tjlp: Tjlp[], custo
   let i = 0
   const
     debtSum = [] as Array<PaymentView>
-    , indexToBegin: number = firstCommonDateIndex(payments[0].data_pagamento, tjlp)
+    , indexToBegin: number = firstCommonDateIndex(payments[0].dataPagamento, tjlp)
     , adjustedTjlp: Tjlp[] = tjlp.slice(indexToBegin, -1)
 
   for (let t of adjustedTjlp) {
 
-    const pg = payments.find(el => isSameMonthAndYear(el.data_pagamento, t.mes))
+    const pg = payments.find(el => isSameMonthAndYear(el.dataPagamento, t.mes))
 
     let
       tjlpAmount = 0

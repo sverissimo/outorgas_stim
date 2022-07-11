@@ -34,7 +34,7 @@ export const Contract: React.FC = () => {
     contractInfo.parcelasPagas = parcelas_pagas
 
     const
-        debtSum = getDebt(contractInfo.valor_outorga, pagamentos, tjlpBndes)
+        debtSum = getDebt(contractInfo.valorOutorga, pagamentos, tjlpBndes)
         , headers = Object.keys(debtSum[0])
         , options: MUIDataTableOptions = {
             filterType: 'dropdown' as FilterType,
@@ -52,9 +52,8 @@ export const Contract: React.FC = () => {
             <Link to='/outorgas'>
                 Back to outorgas
             </Link>
-
             <MUIDataTable
-                title={`Saldo do contrato nº ${contractInfo.numero_contrato}`}
+                title={`Saldo do contrato nº ${contractInfo.numeroContrato}`}
                 data={debtSum}
                 columns={headers}
                 options={options}

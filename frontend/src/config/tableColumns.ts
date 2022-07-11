@@ -4,14 +4,15 @@ import { formatDate } from "../utils/dateUtil"
 interface Column {
     name: string,
     label: string,
-    options: MUIDataTableColumnOptions
+    options: MUIDataTableColumnOptions,
+    type?: string
 }
 
-['razao_social', 'cnpj', 'codigo_empresa', 'data_assinatura', 'edital', 'n_parcelas', 'numero_contrato', 'valor_outorga']
+//['razao_social', 'cnpj', 'codigo_empresa', 'data_assinatura', 'edital', 'n_parcelas', 'numero_contrato', 'valor_outorga']
 
 export const columns: Column[] = [
     {
-        name: "razao_social",
+        name: "razaoSocial",
         label: "Razão Social",
         options: {
             filter: true,
@@ -31,7 +32,7 @@ export const columns: Column[] = [
         }
     },
     {
-        name: "codigo_empresa",
+        name: "codigoEmpresa",
         label: "Código da Empresa",
         options: {
             filter: true,
@@ -39,7 +40,7 @@ export const columns: Column[] = [
         }
     },
     {
-        name: "numero_contrato",
+        name: "numeroContrato",
         label: "Número do Contrato",
         options: {
             filter: false,
@@ -47,8 +48,9 @@ export const columns: Column[] = [
         }
     },
     {
-        name: "data_assinatura",
+        name: "dataAssinatura",
         label: "Data de Assinatura",
+        type: 'date',
         options: {
             filter: true,
             sort: true,
@@ -66,7 +68,7 @@ export const columns: Column[] = [
         }
     },
     {
-        name: "linhas_id",
+        name: "linhasId",
         label: "Linhas",
         options: {
             filter: false,
@@ -77,7 +79,7 @@ export const columns: Column[] = [
         }
     },
     {
-        name: "n_parcelas",
+        name: "nParcelas",
         label: "Número de Parcelas",
         options: {
             filter: false,
@@ -85,14 +87,14 @@ export const columns: Column[] = [
         }
     },
     {
-        name: "parcelas_pagas",
+        name: "parcelasPagas",
         label: "Pagamentos efetuados",
         options: {
             filter: false
         }
     },
     {
-        name: "valor_outorga",
+        name: "valorOutorga",
         label: "Valor da Outorga",
         options: {
             filter: true,

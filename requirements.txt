@@ -21,6 +21,7 @@ pluggy==1.0.0
 py==1.11.0
 pycodestyle==2.8.0
 pyee==8.1.0
+pyhumps==3.7.2
 pymongo==4.1.1
 pyparsing==3.0.9
 pytest==7.1.2
