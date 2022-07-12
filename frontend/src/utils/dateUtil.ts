@@ -3,7 +3,7 @@ import { ptBR } from 'date-fns/locale'
 import { Tjlp } from '../interfaces/Tjlp'
 
 //******************MIGHT BE A GOOD IDEA TO PLACE THIS IN A FRONTEND DATA ASSEMBLER, TO NORMALIZE TZ******************* */
-export function formatDate(stringDate: string) {
+export function formatDate(stringDate: any) {
 
     const
         date: Date = new Date(stringDate)

@@ -6,12 +6,13 @@ export const getMuiTheme = () => createTheme({
         MuiTableCell: {
             styleOverrides: {
                 body: {
-                    cursor: "pointer !important"
+                    cursor: "pointer !important",
+                    fontSize: '0.6rem !important'
                 },
                 /* root: {
                     backgroundColor: "blue !important"
                 }, */
-                /* head: { backgroundColor: "blue !important" } */
+                //head: { fontSize: '0.5rem !important' }
             }
         }
     }

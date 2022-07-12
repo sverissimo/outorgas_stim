@@ -1,4 +1,4 @@
-import { getDebt } from '../utils/getDebt'
+import { getDebt } from '../services/getDebt'
 import payments23_2014 from './mockData/payments_23_2014.json'
 import payments21_2015 from './mockData/payments_21_2015.json'
 import tjlpBndes from './mockData/tjlp_bndes.json'

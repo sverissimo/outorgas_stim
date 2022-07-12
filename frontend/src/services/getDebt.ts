@@ -1,8 +1,8 @@
 import { Payment } from "../interfaces/Payment"
 import { PaymentView } from "../interfaces/PaymentView"
 import { Tjlp } from "../interfaces/Tjlp"
-import { firstCommonDateIndex, fixTimeZone, isSameMonthAndYear } from "./dateUtil"
-import { twoDigits } from "./formatNumber"
+import { firstCommonDateIndex, fixTimeZone, isSameMonthAndYear } from "../utils/dateUtil"
+import { twoDigits } from "../utils/formatNumber"
 
 /**
  * Retorna uma array de pagamentos e saldo devedor corrigido desde a assinatura do contrato até a presente data
@@ -46,6 +46,7 @@ export const getDebt = (amount: number, payments: Payment[], tjlp: Tjlp[], custo
 
     const debtCell: PaymentView = {
       mes: fixTimeZone(t.mes),
+      numeroGuia: pg?.numeroGuia,
       tjlp: tjlpRate,
       tjlpEfetiva: tjlpAmount,
       saldoAntesPg: amountBeforePayment,

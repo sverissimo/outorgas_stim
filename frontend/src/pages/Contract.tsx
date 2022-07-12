@@ -8,10 +8,10 @@ import { textLabels } from "../config/tableLables"
 import { Tjlp } from '../interfaces/Tjlp'
 import { dateToFormattedString } from "../utils/dateUtil"
 import { exportToXlsx } from "../utils/exportToXls"
-import { getDebt } from "../utils/getDebt"
+import { getDebt } from "../services/getDebt"
 
 interface UseLocationState {
-    parcelas_pagas: number,
+    parcelasPagas: number,
     tjlpBndes: Tjlp[]
 }
 
@@ -32,9 +32,9 @@ export const Contract: React.FC = () => {
 
     const
         { pagamentos, ...contractInfo } = data
-        , { tjlpBndes, parcelas_pagas } = state
+        , { tjlpBndes, parcelasPagas } = state
 
-    contractInfo.parcelasPagas = parcelas_pagas
+    contractInfo.parcelasPagas = parcelasPagas
 
     const
         debtSum = getDebt(contractInfo.valorOutorga, pagamentos, tjlpBndes)
@@ -47,7 +47,6 @@ export const Contract: React.FC = () => {
             print: false,
             textLabels: textLabels,
             filter: false,
-
             onDownload: (buildHead, buildBody, columns, data) => {
                 const csvData = buildHead(columns) + buildBody(data)
                 exportToXlsx(`Contrato ${contractInfo.numeroContrato}`, csvData)

@@ -3,7 +3,7 @@ export const twoDigits = (value: number): number => {
 }
 
 export const toPercentage = (value: number): string => {
-    value = twoDigits(value * 100)
+    value = Number((value * 100).toFixed(4))
     let formatted: string = '' + value
     return formatted.replace('.', ',') + '%'
 }
