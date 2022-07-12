@@ -10,7 +10,7 @@ from services.get_tjlp import get_tjlp
 entity_manager = Mongo_dao()
 
 
-@app.route('/get_contracts/create')
+@app.route('/create_contracts')
 def create_contracts(create):
 
     if create == 'create':

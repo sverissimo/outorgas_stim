@@ -1,3 +1,4 @@
+from json import load
 from flask import jsonify, make_response
 from __main__ import app
 from data_access_layer.Tjlp_dao import Tjlp_dao
@@ -16,6 +17,13 @@ def home():
 def get_contracts():
     entity_manager = Contract_dao()
     contracts = entity_manager.list()
+    return jsonify(contracts)
+
+
+@app.route('/get_contracts_and_payments')
+def get_contracts_and_payments():
+    entity_manager = Contract_dao()
+    contracts = entity_manager.list(get_payments=True)
     return jsonify(contracts)
 
 

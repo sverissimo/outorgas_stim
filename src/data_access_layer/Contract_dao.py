@@ -6,7 +6,12 @@ class Contract_dao(Entity):
         super().__init__('contratos')
         self.search_key = 'numero_contrato'
 
-    def list(self):
+    def list(self, get_payments: bool = False):
+
+        fields_to_exclude = ['_id', 'pagamentos']
+        if get_payments:
+            fields_to_exclude = ['_id']
+
         response = self.entity_manager.aggregate(
             [
                 {'$set':
@@ -14,7 +19,7 @@ class Contract_dao(Entity):
                      'parcelas_pagas': {'$size': '$pagamentos'}
                  }
                  },
-                {'$unset': ['_id', 'pagamentos']}
+                {'$unset': fields_to_exclude}
             ]
 
         )
