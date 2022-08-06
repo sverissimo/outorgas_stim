@@ -9,9 +9,11 @@ class Tjlp_dao(Entity):
 
     def find(self, filter: str):
         key = self.search_key
-
         query = {key: filter}
-        response = self.entity_manager.find_one(query)
-        print('query: ', query)
 
+        response = self.entity_manager.find_one(query)
         return response
+
+    def find_last_record(self):
+        response = self.entity_manager.find({}).sort("mes", -1).limit(1)
+        return list(response)

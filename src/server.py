@@ -23,9 +23,9 @@ def apply_caching(response: Response):
 
 if __name__ == '__main__':
     # PRODUCTION
-    """  logger = logging.getLogger('waitress')
-     logger.setLevel(logging.INFO)
-     serve(app, host='localhost', port=5000) """
+    logger = logging.getLogger('waitress')
+    logger.setLevel(logging.INFO)
+    serve(app, host='localhost', port=5000)
 
-    app.run(host='localhost', port=5000, debug=True,
-            load_dotenv=True)  # DEVELOPMENT
+    """ app.run(host='localhost', port=5000, debug=True,
+            load_dotenv=True)  # DEVELOPMENT """

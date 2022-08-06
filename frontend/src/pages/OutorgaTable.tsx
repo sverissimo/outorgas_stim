@@ -12,11 +12,11 @@ import { useEffect } from "react";
 import { Contract } from '../interfaces/Contract'
 import { Tjlp } from "../interfaces/Tjlp";
 
-
 type State = {
     contracts: Contract[]
     tjlpBndes: Tjlp
 }
+
 
 export const OutorgaTable = () => {
 
@@ -25,7 +25,8 @@ export const OutorgaTable = () => {
         , [state, setState] = useState({} as State)
 
     const queryMultiple = () => {
-        const contracts = useQuery('contracts', () => api.get('/api/get_contracts'))
+        //const contracts = useQuery('contracts', () => api.get('/api/get_contracts'))
+        const contracts = useQuery('contracts', () => api.get('/api/get_contracts_and_payments'))
             , tjlpBndes = useQuery('tjlpBndes', () => api.get('/api/tjlp/bndes'))
         return [contracts, tjlpBndes]
     }
@@ -41,7 +42,7 @@ export const OutorgaTable = () => {
     }, [contracts, tjlpBndes])
 
     if (loadingContracts || loadingTjlp)
-        return <h1> "Loading..."</h1>
+        return <h1> "Carregando..."</h1>
 
     if (error)
         return <h4>An error has occurred: {JSON.stringify(error)} </h4>

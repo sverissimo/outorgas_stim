@@ -1,8 +1,9 @@
-from json import load
 from flask import jsonify, make_response
 from __main__ import app
 from data_access_layer.Tjlp_dao import Tjlp_dao
 from data_access_layer.Contract_dao import Contract_dao
+from data_access_layer.Mongo_dao import Mongo_dao
+from data_access_layer.get_tjlp_bndes import get_tjlp_bndes
 import admin_routes
 
 
@@ -40,3 +41,15 @@ def get_tjlp(source):
     entity_manager = Tjlp_dao(f'tjlp_{source}')
     response = entity_manager.list()
     return jsonify(response)
+
+
+@app.route('/tjlp/update-<source>')
+def update_tjlp(source):
+    updates = None
+    entity_manager = Mongo_dao()
+
+    if source == 'tjlp_bndes':
+        updates = get_tjlp_bndes(update=True)
+        if updates:
+            entity_manager.insert_tjlp_bndes(updates)
+            return jsonify(updates)

@@ -20,7 +20,7 @@ export const getDebt = (amount: number, payments: Payment[], tjlp: Tjlp[], custo
   const
     debtSum = [] as Array<PaymentView>
     , indexToBegin: number = firstCommonDateIndex(payments[0].dataPagamento, tjlp)
-    , adjustedTjlp: Tjlp[] = tjlp.slice(indexToBegin, -1)
+    , adjustedTjlp: Tjlp[] = tjlp.slice(indexToBegin)
 
   for (let t of adjustedTjlp) {
 

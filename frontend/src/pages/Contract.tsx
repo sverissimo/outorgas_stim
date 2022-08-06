@@ -25,7 +25,7 @@ export const Contract: React.FC = () => {
         , { isLoading, data, error } = useQuery(`contract${numeroContrato}`, () => api.get(`/api/get_contract/${numeroContrato}`))
 
     if (isLoading)
-        return <h1> "Loading..."</h1>
+        return <h1> "Carregando..."</h1>
 
     if (error)
         return <h4>An error has occurred: {JSON.stringify(error)} </h4>
@@ -60,7 +60,9 @@ export const Contract: React.FC = () => {
         <div className="container">
             <ContractInfo contract={contractInfo} />
             <Link to='/outorgas'>
-                Back to outorgas
+                <p>
+                    Volar para contratos
+                </p>
             </Link>
             <MUIDataTable
                 title={`Saldo do contrato nº ${contractInfo.numeroContrato}`}

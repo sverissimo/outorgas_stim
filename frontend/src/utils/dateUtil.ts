@@ -35,9 +35,10 @@ export function firstCommonDateIndex(stringDate: string, tjlpArray: Tjlp[]): num
         , firstYear = firstPgDate.getFullYear()
 
     const firstCommonDateIndex = tjlpArray
-        .findIndex(el => fixTimeZone(el.mes).getMonth() === firstMonth
-            &&
-            fixTimeZone(el.mes).getFullYear() === firstYear
+        .findIndex(
+            el => fixTimeZone(el.mes).getMonth() === firstMonth
+                &&
+                fixTimeZone(el.mes).getFullYear() === firstYear
         )
 
     return firstCommonDateIndex
