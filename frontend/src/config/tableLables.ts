@@ -15,7 +15,7 @@ export const textLabels: Partial<MUIDataTableTextLabels> = {
     },
     toolbar: {
         search: "Procurar",
-        downloadCsv: "Download CSV",
+        downloadCsv: "Exportar para excel",
         print: "Imprimir",
         viewColumns: "Exibir/ocultar colunas",
         filterTable: "Filtrar",

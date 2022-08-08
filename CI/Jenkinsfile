@@ -33,21 +33,36 @@ pipeline {
         stage('#### Build ####') {
             when{
                expression {
-                    true | env.BRANCH_NAME == 'main'
+                    env.BRANCH_NAME == 'frontend' | env.BRANCH_NAME == 'main'
                 }
             }
             steps {
-                echo 'Build step -> Updating files and installing dependencies listed in requirements.txt...'
-                bat """
-                cd ${APP_FOLDER}\\venv\\Scripts 
-                activate && cd ..\\.. && cd && git pull
-                """  
-                
-                bat """
-                cd ${APP_FOLDER}\\venv\\Scripts 
-                activate && pip install -r ..\\..\\requirements.txt
-                """
-            }            
+                script {
+                    if (env.BRANCH_NAME == 'main'){
+                        echo 'Build step: BACKEND -> Updating files and installing dependencies listed in requirements.txt...'
+                        bat """
+                        cd ${APP_FOLDER}\\venv\\Scripts 
+                        activate && cd ..\\.. && cd && git pull
+                        """  
+                        
+                        bat """
+                        cd ${APP_FOLDER}\\venv\\Scripts 
+                        activate && pip install -r ..\\..\\requirements.txt
+                        """
+                    } else {
+                        echo 'Build step: FRONTEND -> Updating files and installing dependencies listed in package.json...'
+                        bat """
+                        cd ${APP_FOLDER}\\frontend
+                        git pull
+                        """
+                        
+                        bat """
+                        cd ${APP_FOLDER}\\frontend
+                        npm i --legacy-peer-deps && yarn build
+                        """                    
+                    }
+                }
+            }                        
         }        
         stage('#### Test ####') {
             when{
@@ -72,7 +87,7 @@ pipeline {
             steps {                                             
                 bat """
                 cd ${APP_FOLDER}\\venv\\Scripts 
-                activate && cd ..\\.. && pm2 restart outorgas
+                activate && cd ..\\.. && pm2 restart outorgas_server
                 """
                 //activate && cd ..\\.. && pm2 restart ${APP_FOLDER}\\src\\server.py --name outorgas --interpreter ${APP_FOLDER}\\venv\\Scripts\\python.exe
             }
