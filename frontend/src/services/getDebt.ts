@@ -53,7 +53,8 @@ export const getDebt = (amount: number, payments: Payment[], tjlp: Tjlp[], custo
       valorPago: monthPaidValue,
       saldoDevedor: updatedDebt
     }
-    debtSum.push(debtCell)
+    if (debtCell.mes <= new Date()) //Limita a listagem do débito à presente data (tjlp pode estar 2meses a frente)
+      debtSum.push(debtCell)
     i++
   }
   return debtSum
