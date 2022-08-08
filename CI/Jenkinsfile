@@ -58,7 +58,7 @@ pipeline {
                         
                         bat """
                         cd ${APP_FOLDER}\\frontend
-                        npm i --legacy-peer-deps && yarn build
+                        npm i --legacy-peer-deps && npm run build
                         """                    
                     }
                 }
