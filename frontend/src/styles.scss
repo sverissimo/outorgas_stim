@@ -1,3 +1,7 @@
+h1 {
+    font-size: 1.5rem;
+}
+
 .container {
     display: flex;
     flex-direction: column;
@@ -5,25 +9,31 @@
     margin: 0 auto;
 }
 
-.tss-gm6zfk-MUIDataTableHeadCell-fixedHeader {
-    background-color: #DDD !important;
-    font-weight: 600 !important;
-    font-size: 0.75rem !important;
-    padding: 8px 0 !important;
-    
+.link {
+    color: darkblue;
+    font-size: 0.85rem;
+    text-decoration: none;
+    font-weight: 500;
 }
 
+//Table header
+.tss-gm6zfk-MUIDataTableHeadCell-fixedHeader {
+    background-color: #f2f2f4 !important;
+    font-weight: 600 !important;
+    font-size: 0.75rem !important;
+    padding: 8px 0 !important;    
+}
+
+//Table orderBy buttons
 .css-1w1rijm-MuiButtonBase-root-MuiButton-root {
     text-transform: none !important;
     font-weight: 600 !important;
-    font-size: 0.75rem !important;    
+    font-size: 0.68rem !important;
     padding-left: 0 !important;
     &:first-child {
         padding-left: 20px !important;
-    }
-    
+    }    
 }
-
 
 .css-1ex1afd-MuiTableCell-root{
     font-size: 0.7rem !important;
@@ -33,6 +43,28 @@
     }
     &:last-child {
         padding: 10px 0 10px 20px !important;
+    }    
+}
+
+//Table icons
+.css-i4bv87-MuiSvgIcon-root {
+    &[data-testid="SearchIcon"] {
+        color: rgb(218, 135, 34);
     }
-    //text-align: center !important;
+    &[data-testid="CloudDownloadIcon"] {
+        color: rgb(0, 100, 139);
+    }
+    &[data-testid="ViewColumnIcon"] {
+        color: rgb(205, 75, 149);
+    }
+    &[data-testid="FilterListIcon"] {
+        color: darkcyan
+    }    
+}
+
+//Table buttons
+.css-78trlr-MuiButtonBase-root-MuiIconButton-root {
+    &:hover {
+        filter: brightness(1.3);
+   }
 }

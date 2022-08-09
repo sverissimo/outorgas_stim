@@ -12,7 +12,23 @@ export const getMuiTheme = () => createTheme({
                 /* root: {
                     backgroundColor: "blue !important"
                 }, */
-                //head: { fontSize: '0.5rem !important' }
+                head: { fontSize: '0.68rem !important' }
+            }
+        },
+        MuiToolbar: {
+            styleOverrides: {
+                root: {
+                    //backgroundColor: 'pink'
+                }
+            }
+        },
+        MuiTypography: {
+            styleOverrides: {
+                h6: {
+                    fontSize: '1rem',
+                    fontWeight: 600,
+                    fontFamily: 'Segoe UI, Tahoma, Verdana, Roboto'
+                }
             }
         }
     }
