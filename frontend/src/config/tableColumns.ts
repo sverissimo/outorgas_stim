@@ -1,5 +1,6 @@
 import { MUIDataTableColumnOptions } from "mui-datatables"
 import { formatDate } from "../utils/dateUtil"
+import { toCurrency } from "../utils/formatNumber"
 
 interface Column {
     name: string,
@@ -55,8 +56,7 @@ export const columns: Column[] = [
             filter: true,
             sort: true,
             customBodyRender: (value, tableMeta, updateValue) => {
-                //return value
-                return formatDate(value)
+                return new Date(value).toLocaleDateString('pt-BR')
             },
         }
     }, {
@@ -100,7 +100,7 @@ export const columns: Column[] = [
             filter: true,
             sort: true,
             customBodyRender: (value, tableMeta, updateValue) => {
-                return Number(value).toFixed(2)
+                return toCurrency(Number(value))
             }
         }
     }
