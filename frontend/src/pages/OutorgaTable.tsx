@@ -11,6 +11,8 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { Contract } from '../interfaces/Contract'
 import { Tjlp } from "../interfaces/Tjlp";
+import { jsonToXlsx } from "../utils/exportToXls";
+import { tableDataToJson } from "../utils/tableDataToJson";
 
 type State = {
     contracts: Contract[]
@@ -63,6 +65,13 @@ export const OutorgaTable = () => {
                     tjlpBndes
                 }
             })
+        },
+        onDownload: (buildHead, buildBody, columns, data) => {
+            const
+                formattedData = tableDataToJson(columns, data)
+                , today = new Date().toLocaleDateString()
+            jsonToXlsx(`Outorgas em ${today}`, formattedData)
+            return false
         }
     }
     return (

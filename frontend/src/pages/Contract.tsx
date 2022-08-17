@@ -8,7 +8,7 @@ import { debtColumns } from "../config/debtSummary"
 import { textLabels } from "../config/tableLables"
 import { Tjlp } from '../interfaces/Tjlp'
 import { dateToFormattedString } from "../utils/dateUtil"
-import { exportToXlsx } from "../utils/exportToXls"
+import { csvToXlsx } from "../utils/exportToXls"
 import { getDebt } from "../services/getDebt"
 import { toCurrency } from "../utils/formatNumber"
 import { getMuiTheme } from "../config/tableStyles"
@@ -49,7 +49,7 @@ export const Contract: React.FC = () => {
             filter: false,
             onDownload: (buildHead, buildBody, columns, data) => {
                 const csvData = buildHead(columns) + buildBody(data)
-                exportToXlsx(`Contrato ${contractInfo.numeroContrato}`, csvData)
+                csvToXlsx(`Contrato ${contractInfo.numeroContrato}`, csvData)
                 return false
             }
         }
