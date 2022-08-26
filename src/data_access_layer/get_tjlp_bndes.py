@@ -33,6 +33,8 @@ async def get_tjlp_bndes(update: bool or None):
         last_entry = Tjlp_dao('tjlp_bndes').find_last_record()
         last_tjlp_record = last_entry[0]
 
+        print('Last tjlp_update available: ', tjlp_update)
+
         if last_tjlp_record['_id'] == tjlp_update[len(tjlp_update) - 1]['_id']:
             print('Db already updated, skipping...')
             await browser.close()

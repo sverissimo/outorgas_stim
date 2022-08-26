@@ -6,6 +6,7 @@ from data_access_layer.Mongo_dao import Mongo_dao
 from services.insert_payments_service import insert_payments_service
 from data_access_layer.get_contracts_from_sheet import get_contracts_from_sheet
 from services.get_tjlp import get_tjlp
+from services.Tjlp_service import Tjlp_service
 
 entity_manager = Mongo_dao()
 
@@ -49,6 +50,16 @@ async def tjlp_bndes(update=False):
 
     response = await get_tjlp(source='bndes', update_only=get_only_update)
     return jsonify(response)
+
+
+@app.route('/update_tjlp_bndes')
+async def update_tjlp_bndes():
+    tjlp_service = Tjlp_service('bndes')
+    update = await tjlp_service.update()
+    if update:
+        return jsonify(update)
+    else:
+        return f'{update} need for update.'
 
 
 @app.route('/backup_db/<drop>')
