@@ -17,3 +17,4 @@ pytest.ini
 /**/dist
 bndes_tjlp_scraping_data.txt
 bndes_tjlp_update.txt
+ecosystem.config.js
