@@ -21,3 +21,11 @@ class Entity():
         print('query: ', query)
 
         return response
+
+    def insert_one(self, entity: dict):
+        result = self.entity_manager.insert_one(entity)
+        return result
+
+    def insert_many(self, entity: list):
+        result = self.entity_manager.insert_many(entity)
+        return result

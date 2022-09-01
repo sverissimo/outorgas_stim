@@ -1,7 +1,11 @@
 import pandas as pd
 
+"""
+Consolida em uma única planilha as planilhas oriundas do SICAR (vêm divididas por padrão)
+"""
 
-def create_spreadsheet():
+
+def merge_sicar_spreadsheets():
     guias_part1 = pd.read_excel(
         "../../data/guias_2011-2015_20_04_22.xls",
         sheet_name="Guias de Arrecadação",
@@ -31,4 +35,4 @@ def create_spreadsheet():
 
 
 if __name__ == "__main__":
-    create_spreadsheet()
+    merge_sicar_spreadsheets()
