@@ -4,9 +4,9 @@ contract_dao = Contract_dao()
 
 
 def test_get_contracts_from_mongodb():
-    contracts = contract_dao.get_contracts()
+    contracts = contract_dao.list()
 
-    print('Contracts retrieved, first one is numbered: ',
+    print('\n\nContracts retrieved, first one is numbered: ',
           contracts[0]['numero_contrato'], '\nNow running tests...')
 
     assert len(contracts) == 97

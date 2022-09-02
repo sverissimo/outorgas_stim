@@ -18,3 +18,4 @@ pytest.ini
 bndes_tjlp_scraping_data.txt
 bndes_tjlp_update.txt
 ecosystem.config.js
+src/tests/mock_data/empresas_cadti.json

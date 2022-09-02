@@ -1,29 +1,41 @@
-#from config.mongo_client import client, get_db, UpdateOne
-#from create_contracts_collection import create_contracts_collection
-#from extract_linhas_from_contracts import extract_linhas_from_contracts
-from migrations.extract_linhas_from_contracts import extract_linhas_from_contracts
-
-""" from get_all_contracts_from_spreadsheet import get_all_contracts_from_spreadsheet
-from create_linhas_collection import create_linhas_collection
-from ContractsBuilder import ContractsBuilder """
 from data_access_layer.get_empresas_from_cadti import get_empresas_from_cadti
-#from BasicContractDirector import BasicContractDirector
-from migrations.BasicContractDirector import BasicContractDirector
+from database.migrations.ContractsBuilder import ContractsBuilder
+from database.migrations.LinhasBuilder import LinhasBuilder
+from database.migrations.Director import Director
 
 
-def run_migrations():
+def run_contracts_migration(empresas=None):
+    if not empresas:
+        empresas = get_empresas_from_cadti()
 
-    empresas = get_empresas_from_cadti()
-    raw_contracts = BasicContractDirector().construct(empresas)
-    print('raw_contracts: ', dir(raw_contracts[0]))
-    return
+    contracts_builder = ContractsBuilder(empresas)
+    contracts_director = Director(contracts_builder)
+    contracts = contracts_director.get_full_contracts()
+    print('Contracts generated successfully. First one is: ', contracts[0])
+    return contracts
+    """ for c in contracts:
+        del c['razao_social']
+        del c['data_assinatura']
+        print('contracts: ', c)
+    print('contracts: ', len(contracts)) """
 
-    linhas = extract_linhas_from_contracts(raw_contracts)
-    #linhas_result = create_linhas_collection(linhas)
-    print('linhas_result: ', linhas)
-    contracts_with_lines = raw_contracts
 
-    # contracts_builder.add_empresa_data(empresas)
+def run_linhas_migration(empresas=None):
+    if not empresas:
+        empresas = get_empresas_from_cadti()
 
-    create_contracts_collection(db, )
-    pass
+    linhas_builder = LinhasBuilder(empresas)
+    linhas_director = Director(linhas_builder)
+    linhas = linhas_director.get_all_linhas()
+    print('Linhas generated successfully. First one is: ', linhas[0])
+    return linhas
+    """ for l in linhas:
+        print(l)
+    print('linhas: ', len(linhas)) """
+
+
+def run_migrations(empresas_from_cadti=None):
+    if not empresas_from_cadti:
+        empresas_from_cadti = get_empresas_from_cadti()
+    run_linhas_migration(empresas_from_cadti)
+    run_contracts_migration(empresas_from_cadti)
