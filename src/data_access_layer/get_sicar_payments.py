@@ -18,6 +18,7 @@ def get_payments(contract: dict):
     contrato_payments.reset_index(inplace=True)
 
     pagamentos = []
+    n_contrato = contract['numero_contrato']
 
     for idx, row in contrato_payments.iterrows():
 
@@ -61,7 +62,7 @@ def get_payments(contract: dict):
                 }
             )
 
-        n_contrato = contract['numero_contrato']
+        #n_contrato = contract['numero_contrato']
 
     print(
         f'##### get_sicar_payments.py: Done processing {len(pagamentos)} payments to contract nº {n_contrato}')

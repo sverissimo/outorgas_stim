@@ -1,5 +1,5 @@
 import subprocess
-from config.mongo_client import client, get_db, UpdateOne
+from config.mongo_client import client, get_db
 from config import env
 from utils.should_update_file import should_update_file
 
@@ -50,17 +50,6 @@ class MongoDao():
             return
         else:
             contratos.insert_many(contracts)
-
-    def insert_payments(self, payments: list):
-        entity_manager = get_db().contratos
-
-        updates = list(map(lambda pg: UpdateOne(
-            {'numero_contrato': pg['numero_contrato']},
-            {'$set': {
-                'pagamentos': pg['pagamentos']}
-             }
-        ), payments))
-        entity_manager.bulk_write(updates)
 
     def update_razao_social(self, empresas: list):
         entity_manager = get_db().contratos

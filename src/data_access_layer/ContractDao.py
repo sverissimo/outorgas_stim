@@ -1,4 +1,5 @@
 from data_access_layer.Entity import Entity
+from config.mongo_client import UpdateOne
 
 
 class ContractDao(Entity):
@@ -24,3 +25,14 @@ class ContractDao(Entity):
 
         )
         return list(response)
+
+    def insert_payments(self, payments: list):
+
+        updates = list(map(lambda pg: UpdateOne(
+            {'numero_contrato': pg['numero_contrato']},
+            {'$set': {
+                'pagamentos': pg['pagamentos']}
+             }
+        ), payments))
+
+        self.entity_manager.bulk_write(updates)
