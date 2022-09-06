@@ -1,7 +1,7 @@
 from data_access_layer.Entity import Entity
 
 
-class Contract_dao(Entity):
+class ContractDao(Entity):
     def __init__(self) -> None:
         super().__init__('contratos')
         self.search_key = 'numero_contrato'

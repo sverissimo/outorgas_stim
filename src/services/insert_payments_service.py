@@ -1,11 +1,11 @@
 from data_access_layer.get_sicar_payments import get_payments
-from data_access_layer.Mongo_dao import Mongo_dao
+from data_access_layer.MongoDao import MongoDao
 
 
 def insert_payments_service(contracts: list, insert: bool = True) -> list:
 
     updates = []
-    entity_manager = Mongo_dao()
+    entity_manager = MongoDao()
 
     log_count = 0
 

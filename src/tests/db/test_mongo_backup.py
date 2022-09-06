@@ -1,6 +1,6 @@
-from data_access_layer.Mongo_dao import Mongo_dao
+from data_access_layer.MongoDao import MongoDao
 
-mongo_client = Mongo_dao()
+mongo_client = MongoDao()
 
 
 def test_backup_db():

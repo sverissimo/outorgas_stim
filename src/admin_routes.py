@@ -2,13 +2,13 @@
 import subprocess
 from flask import jsonify, make_response
 from __main__ import app
-from data_access_layer.Mongo_dao import Mongo_dao
+from data_access_layer.MongoDao import MongoDao
 from services.insert_payments_service import insert_payments_service
 from data_access_layer.get_contracts_from_sheet import get_contracts_from_sheet
 from services.get_tjlp import get_tjlp
 from services.Tjlp_service import Tjlp_service
 
-entity_manager = Mongo_dao()
+entity_manager = MongoDao()
 
 
 @app.route('/create_contracts')

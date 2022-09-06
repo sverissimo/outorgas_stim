@@ -1,6 +1,6 @@
-from data_access_layer.Contract_dao import Contract_dao
+from data_access_layer.ContractDao import ContractDao
 
-contract_dao = Contract_dao()
+contract_dao = ContractDao()
 
 
 def test_get_contracts_from_mongodb():

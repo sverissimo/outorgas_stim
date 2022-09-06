@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Literal
 from data_access_layer.get_tjlp_bndes import get_tjlp_bndes
 from data_access_layer.get_tjlp_sef import get_tjlp_sef
-from data_access_layer.Mongo_dao import Mongo_dao
+from data_access_layer.MongoDao import MongoDao
 
 SOURCE = Literal['bndes', 'sef']
 
@@ -22,7 +22,7 @@ class Tjlp_service:
         if self.source == 'bndes':
             tjlp_bndes_update = await get_tjlp_bndes(update=True)
             if tjlp_bndes_update:
-                entity_manager = Mongo_dao()
+                entity_manager = MongoDao()
                 entity_manager.insert_tjlp_bndes(tjlp_bndes_update)
             return tjlp_bndes_update
 

@@ -2,7 +2,7 @@
 from playwright.async_api import async_playwright
 import asyncio
 from utils.parse_tjlp_bndes import parse_tjlp
-from data_access_layer.Tjlp_dao import Tjlp_dao
+from data_access_layer.TjlpDao import TjlpDao
 
 
 async def get_tjlp_bndes(update: bool or None):
@@ -30,7 +30,7 @@ async def get_tjlp_bndes(update: bool or None):
             data.append(text)
 
         tjlp_update = parse_tjlp(data)
-        last_entry = Tjlp_dao('tjlp_bndes').find_last_record()
+        last_entry = TjlpDao('tjlp_bndes').find_last_record()
         last_tjlp_record = last_entry[0]
 
         print('Last tjlp_update available: ', tjlp_update)

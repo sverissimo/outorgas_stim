@@ -1,7 +1,7 @@
 from data_access_layer.Entity import Entity
 
 
-class Tjlp_dao(Entity):
+class TjlpDao(Entity):
     def __init__(self, collection: str or None = None) -> None:
         super().__init__(collection)
         self.search_key = '_id'

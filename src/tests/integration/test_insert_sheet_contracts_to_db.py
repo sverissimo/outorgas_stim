@@ -1,5 +1,5 @@
 from config.mongo_client import client
-from data_access_layer.Mongo_dao import Mongo_dao
+from data_access_layer.MongoDao import MongoDao
 from data_access_layer.get_contracts_from_sheet import get_contracts_from_sheet
 
 
@@ -12,7 +12,7 @@ def test_insert_sheet_contracts_to_db():
     contracts_to_insert = get_contracts_from_sheet()
     print('Contracts extracted from Spreadsheets.')
 
-    entity_manager = Mongo_dao()
+    entity_manager = MongoDao()
     entity_manager.create_contracts(contracts_to_insert)
     print('Contracts inserted into mongoDB.')
 

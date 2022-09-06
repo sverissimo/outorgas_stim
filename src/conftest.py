@@ -1,7 +1,7 @@
 import os
 from pytest import fixture
-from data_access_layer.Mongo_dao import Mongo_dao
-from data_access_layer.Contract_dao import Contract_dao
+from data_access_layer.MongoDao import MongoDao
+from data_access_layer.ContractDao import ContractDao
 
 
 @fixture
@@ -13,6 +13,6 @@ def get_mock_data_folder():
 @fixture
 def get_db_contracts():
 
-    entity_manager = Contract_dao()
+    entity_manager = ContractDao()
     contracts = entity_manager.list()
     return contracts

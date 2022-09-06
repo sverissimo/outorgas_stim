@@ -28,4 +28,5 @@ class Entity():
 
     def insert_many(self, entity: list):
         result = self.entity_manager.insert_many(entity)
+        print('New objects ids (showing head only):', result.inserted_ids[:5])
         return result

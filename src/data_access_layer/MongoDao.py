@@ -4,7 +4,7 @@ from config import env
 from utils.should_update_file import should_update_file
 
 
-class Mongo_dao():
+class MongoDao():
 
     client = client
     BACKUP_FOLDER = env.MONGO_BACKUP_FOLDER
