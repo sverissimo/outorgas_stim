@@ -36,7 +36,8 @@ export const Contract: React.FC = () => {
     const
         { pagamentos, ...contractInfo } = data
         , { tjlpBndes, parcelasPagas } = state
-        , debtSum = getDebt(contractInfo.valorOutorga, pagamentos, tjlpBndes)
+        , debtSum = getDebt(contractInfo.valorOutorga, contractInfo.dataAssinatura, pagamentos, tjlpBndes)
+
 
         , options: MUIDataTableOptions = {
             filterType: 'dropdown' as FilterType,

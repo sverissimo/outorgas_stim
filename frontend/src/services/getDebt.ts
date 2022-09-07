@@ -12,11 +12,22 @@ import { twoDigits } from "../utils/formatNumber"
  * @param customFirstPg 
  * @returns 
  */
-export const getDebt = (amount: number, payments: Payment[], tjlp: Tjlp[], customFirstPg?: any) => {
+export const getDebt = (amount: number, dataAssinatura: string, payments: Payment[], tjlp: Tjlp[], customFirstPg?: any) => {
 
   amount = twoDigits(amount)
-
   let i = 0
+    , firstPayment = {} as Payment
+
+  //Caso não haja pgs, cria uma instância de Payment e adiciona à array "payments".
+  if (!payments.length) {
+    firstPayment = {
+      dataPagamento: dataAssinatura,
+      numeroGuia: '',
+      valor: 0
+    }
+    payments.push(firstPayment)
+  }
+
   const
     debtSum = [] as Array<PaymentView>
     , indexToBegin: number = firstCommonDateIndex(payments[0].dataPagamento, tjlp)
