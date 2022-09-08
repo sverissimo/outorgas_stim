@@ -56,13 +56,6 @@ class MongoDao():
         for e in empresas:
             filter = {'codigo_empresa': e['codigo_empresa']}
             update = {'$set': {'razao_social': e['razao_social']}}
-            result = entity_manager.update_many(filter=filter, update=update)
+            result = entity_manager.update_many(
+                filter=filter, update=update)
             print('result: ', result.matched_count, result.modified_count)
-
-    def insert_tjlp_bndes(self, tjlp_bndes):
-        entity_manager = get_db()
-        entity_manager.tjlp_bndes.insert_many(tjlp_bndes)
-
-    def insert_tjlp_sef(self, tjlp_sef):
-        entity_manager = get_db()
-        entity_manager.tjlp_sef.insert_many(tjlp_sef)

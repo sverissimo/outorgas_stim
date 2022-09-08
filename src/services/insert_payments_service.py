@@ -1,5 +1,5 @@
 from typing import List
-from data_access_layer.get_sicar_payments import get_payments
+from data_access_layer.SicarDao import SicarDao
 from data_access_layer.ContractDao import ContractDao
 from domain.Contrato import Contrato
 
@@ -11,7 +11,7 @@ def insert_payments_service(contracts: List[Contrato], insert: bool = True) -> l
     log_count = 0
 
     for contract in contracts:
-        payments = get_payments(contract)
+        payments = SicarDao.get_payments(contract)
 
         updates.append({
             'numero_contrato': contract['numero_contrato'],

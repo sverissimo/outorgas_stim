@@ -1,11 +1,22 @@
-from data_access_layer.MongoDao import MongoDao
 from data_access_layer.TjlpDao import TjlpDao
-from services.get_tjlp import get_tjlp
+from services.Tjlp_service import Tjlp_service
+
+
+def test_get_tjlp_sef():
+    tjlp_sef_service = Tjlp_service(source='sef')
+    tjlp_sef = tjlp_sef_service.get_tjlp_sef()
+
+    if tjlp_sef:
+        print('tjlp_sef_GET: \n(Showing the last 10 results...)\n',
+              tjlp_sef)
+    else:
+        print(f'{tjlp_sef}: DB already up to date.')
 
 
 def test_insert_tjlp_sef():
-    entity_manager = MongoDao()
-    tjlp_sef_list = get_tjlp(source='sef', update_only=False)
+    tjlp_sef_service = Tjlp_service(source='sef')
+    tjlp_sef_list = tjlp_sef_service.get_tjlp_sef()
+
     assert tjlp_sef_list[0]['mes'].year == 2009
     assert tjlp_sef_list[0]['taxa'] == 0.005208
 
@@ -15,6 +26,7 @@ def test_insert_tjlp_sef():
     assert set20['mes'].year == 2020
     assert set20['taxa'] == 0.004092
 
+    entity_manager = TjlpDao()
     entity_manager.insert_tjlp_sef(tjlp_sef_list)
 
 

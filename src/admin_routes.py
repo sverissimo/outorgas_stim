@@ -27,15 +27,10 @@ async def tjlp_sef():
 
 
 @app.route('/create_tjlp_bndes')
-@app.route('/create_tjlp_bndes/<update>')
-async def tjlp_bndes(update=False):
+async def tjlp_bndes():
 
-    if type(update) == str and update != 'update':
-        return make_response(f'{update} route not found...', 404)
-
-    get_only_update = True if update == 'update' else False
-
-    response = await get_tjlp(source='bndes', update_only=get_only_update)
+    tjlp_service = Tjlp_service('bndes')
+    response = await tjlp_service.get_tjlp()
     return jsonify(response)
 
 

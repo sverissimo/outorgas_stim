@@ -1,4 +1,4 @@
-from data_access_layer.get_empresas_from_cadti import get_empresas_from_cadti
+from data_access_layer.ExternalDataApi import ExternalDataApi
 from data_access_layer.LinhaDao import LinhaDao
 from data_access_layer.Entity import Entity
 from database.migrations.ContractsBuilder import ContractsBuilder
@@ -8,7 +8,7 @@ from database.migrations.Director import Director
 
 def run_contracts_migration(empresas=None):
     if not empresas:
-        empresas = get_empresas_from_cadti()
+        empresas = ExternalDataApi().get_empresas_from_cadti()
 
     contracts_builder = ContractsBuilder(empresas)
     contracts_director = Director(contracts_builder)
@@ -19,7 +19,7 @@ def run_contracts_migration(empresas=None):
 
 def run_linhas_migration(empresas=None):
     if not empresas:
-        empresas = get_empresas_from_cadti()
+        empresas = ExternalDataApi().get_empresas_from_cadti()
 
     linhas_builder = LinhasBuilder(empresas)
     linhas_director = Director(linhas_builder)
@@ -28,9 +28,9 @@ def run_linhas_migration(empresas=None):
     entity_manager.insert_many(linhas)
 
 
-def run_migrations(empresas_from_cadti=None):
-    if not empresas_from_cadti:
-        empresas_from_cadti = get_empresas_from_cadti()
+def run_migrations(empresas=None):
+    if not empresas:
+        empresas = ExternalDataApi().get_empresas_from_cadti()
 
-    run_linhas_migration(empresas_from_cadti)
-    run_contracts_migration(empresas_from_cadti)
+    run_linhas_migration(empresas)
+    run_contracts_migration(empresas)

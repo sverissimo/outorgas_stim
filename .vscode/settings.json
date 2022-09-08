@@ -1,6 +1,7 @@
 {
     "python.formatting.provider": "autopep8",
     "cSpell.words": [
+        "applymap",
         "cotacao",
         "datatables",
         "dayfirst",

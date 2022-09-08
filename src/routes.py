@@ -2,8 +2,7 @@ from flask import jsonify, make_response
 from __main__ import app
 from data_access_layer.TjlpDao import TjlpDao
 from data_access_layer.ContractDao import ContractDao
-from data_access_layer.MongoDao import MongoDao
-from data_access_layer.get_tjlp_bndes import get_tjlp_bndes
+from data_access_layer.ExternalDataApi import ExternalDataApi
 import admin_routes
 
 
@@ -46,10 +45,11 @@ def get_tjlp(source):
 @app.route('/tjlp/update-<source>')
 def update_tjlp(source):
     updates = None
-    entity_manager = MongoDao()
+    entity_manager = TjlpDao(f'tjlp_{source}')
 
     if source == 'tjlp_bndes':
-        updates = get_tjlp_bndes(update=True)
+        api = ExternalDataApi()
+        updates = api.get_tjlp_bndes(update_only=True)
         if updates:
             entity_manager.insert_tjlp_bndes(updates)
             return jsonify(updates)

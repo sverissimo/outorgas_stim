@@ -1,25 +1,15 @@
-from data_access_layer.MongoDao import MongoDao
-from data_access_layer.TjlpDao import TjlpDao
-from data_access_layer.get_tjlp_bndes import get_tjlp_bndes
+from services.Tjlp_service import Tjlp_service
 import pytest
 
 
 @pytest.mark.asyncio
 async def test_get_tjlp_bndes():
+    tjlp_bndes_service = Tjlp_service(source='bndes')
     print('***************starting*****************')
-    tjlp_bndes = await get_tjlp_bndes(update=False)
+    tjlp_bndes = await tjlp_bndes_service.get_tjlp()
     print('***************TESTING tjlp_bndes*******************')
-    entity_manager = MongoDao()
-    entity_manager.insert_tjlp_bndes(tjlp_bndes)
-    assert True
-
-
-async def test_update_tjlp_bndes():
-    print('***************starting*****************')
-    tjlp_bndes = await get_tjlp_bndes(update=True)
-    print('***************TESTING tjlp_bndes*******************')
-    print('tjlp_bndes_UPDATE: ', tjlp_bndes)
     if tjlp_bndes:
-        entity_manager = MongoDao()
-        entity_manager.insert_tjlp_bndes(tjlp_bndes)
-    assert True
+        print('tjlp_bndes_GET: \n(Showing the last 10 results...)\n',
+              tjlp_bndes[-4:-1])
+    else:
+        print(f'{tjlp_bndes}: DB already up to date.')
