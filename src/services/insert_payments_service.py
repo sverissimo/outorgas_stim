@@ -1,9 +1,10 @@
+from typing import List
 from data_access_layer.get_sicar_payments import get_payments
 from data_access_layer.ContractDao import ContractDao
 from domain.Contrato import Contrato
 
 
-def insert_payments_service(contracts: list[Contrato], insert: bool = True) -> list:
+def insert_payments_service(contracts: List[Contrato], insert: bool = True) -> list:
 
     entity_manager = ContractDao()
     updates = []

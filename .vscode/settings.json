@@ -3,6 +3,7 @@
     "cSpell.words": [
         "cotacao",
         "datatables",
+        "dayfirst",
         "fillna",
         "iloc",
         "inplace",
@@ -11,7 +12,8 @@
         "pgto",
         "sicar",
         "SICAR",
-        "tjlp"
+        "tjlp",
+        "usecols"
     ],
     "files.exclude": {
         "**/__pycache__": true
