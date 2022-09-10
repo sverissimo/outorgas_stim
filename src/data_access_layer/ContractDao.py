@@ -1,11 +1,19 @@
-from data_access_layer.Entity import Entity
+from data_access_layer.EntityDao import EntityDao
 from config.mongo_client import UpdateOne
 
 
-class ContractDao(Entity):
+class ContractDao(EntityDao):
     def __init__(self) -> None:
         super().__init__('contratos')
         self.search_key = 'numero_contrato'
+
+    def find(self, filter: str or int):
+        key = self.search_key
+        filter = filter.replace('-', '/')
+        query = {key: filter}
+
+        response = self.entity_manager.find_one(query, {'_id': 0})
+        return response
 
     def list(self, get_payments: bool = False):
 

@@ -5,9 +5,9 @@ def test_get_payments(get_db_contracts):
 
     contracts = get_db_contracts
 
-    assert len(contracts) == 97
+    assert len(contracts) == 753
 
-    print('There should be 97 contracts stored in the database. ✓')
+    print('There should be 753 contracts stored in the database. ✓')
 
     c1_pg = contracts[0]['pagamentos']
     last_contract_pg = contracts[len(contracts) - 1]['pagamentos']

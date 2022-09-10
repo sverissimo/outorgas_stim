@@ -1,10 +1,11 @@
-from datetime import datetime
 import pandas as pd
+import requests
+from datetime import datetime
 from playwright.async_api import async_playwright
 import asyncio
-from utils.parse_tjlp_bndes import parse_tjlp
-import requests
 from config import env
+from typing import Coroutine, List
+from utils.parse_tjlp_bndes import parse_tjlp
 from data_access_layer.TjlpDao import TjlpDao
 from domain.Empresa import Empresa
 from domain.Tjlp import Tjlp
@@ -12,7 +13,7 @@ from domain.Tjlp import Tjlp
 
 class ExternalDataApi:
 
-    def get_empresas_from_cadti(self) -> list[Empresa]:
+    def get_empresas_from_cadti(self) -> List[Empresa]:
         AUTH_CADTI = env.AUTH_CADTI
         CADTI_HOST = env.CADTI_HOST
         HEADERS = {"authorization": AUTH_CADTI}
@@ -25,7 +26,7 @@ class ExternalDataApi:
             f'{CADTI_HOST}/api/empresas', headers=HEADERS, proxies=proxies)
         return empresas.json()
 
-    async def get_tjlp_bndes(self, update_only: bool = False):
+    async def get_tjlp_bndes(self) -> Coroutine[any, any, List[Tjlp]]:
         async with async_playwright() as p:
             browser = await p.webkit.launch()
             page = await browser.new_page()
@@ -39,32 +40,27 @@ class ExternalDataApi:
             contents = await page.query_selector_all('bndes-tabela-tjlp .cotacao span')
             print('done selecting html elements.')
 
-            #log_file_name = 'bndes_tjlp_scraping_data.txt'
-            if update_only:
-                contents = contents[0:2]
-                #log_file_name = "bndes_tjlp_update.txt"
-
             data = []
             for el in contents:
                 text = await el.inner_html()
                 data.append(text)
 
             tjlp_update = parse_tjlp(data)
-            last_entry = TjlpDao('tjlp_bndes').find_last_record()
+            """ last_entry = TjlpDao('tjlp_bndes').find_last_record()
             last_tjlp_record = last_entry[0]
 
-            print('Last tjlp_update available: ', tjlp_update[-3:-1])
-
+            print('Last tjlp_update available: ', tjlp_update)
+            print('tjlp_update: ', len(tjlp_update))  
             if last_tjlp_record['_id'] == tjlp_update[len(tjlp_update) - 1]['_id']:
                 print('Db already updated, skipping...')
                 await browser.close()
-                return None
+                return None """
 
             print('data parsed, now sending response')
             await browser.close()
             return tjlp_update
 
-    def get_tjlp_sef(self,  update_only: bool = False) -> dict:
+    def get_tjlp_sef(self) -> List[Tjlp]:
         print('Getting tjlp from SEF website...')
         tjlp_uri = pd.read_html(
             "https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/pagamentos-e-parcelamentos/taxa-de-juros-de-longo-prazo-tjlp",
@@ -118,8 +114,5 @@ class ExternalDataApi:
                 }
                 if year > 2008 and rate > 0:
                     tjlp_sef.append(tjlp_rate)
-
-        if update_only:
-            tjlp_sef = tjlp_sef[-3:]
 
         return tjlp_sef

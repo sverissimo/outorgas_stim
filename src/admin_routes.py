@@ -5,7 +5,7 @@ from __main__ import app
 from data_access_layer.MongoDao import MongoDao
 from services.insert_payments_service import insert_payments_service
 from services.get_tjlp import get_tjlp
-from services.Tjlp_service import Tjlp_service
+from services.TjlpService import TjlpService
 
 entity_manager = MongoDao()
 
@@ -29,15 +29,15 @@ async def tjlp_sef():
 @app.route('/create_tjlp_bndes')
 async def tjlp_bndes():
 
-    tjlp_service = Tjlp_service('bndes')
-    response = await tjlp_service.get_tjlp()
+    TjlpService = TjlpService('bndes')
+    response = await TjlpService.get_tjlp()
     return jsonify(response)
 
 
 @app.route('/update_tjlp_bndes')
 async def update_tjlp_bndes():
-    tjlp_service = Tjlp_service('bndes')
-    update = await tjlp_service.update()
+    TjlpService = TjlpService('bndes')
+    update = await TjlpService.update()
     if update:
         return jsonify(update)
     else:

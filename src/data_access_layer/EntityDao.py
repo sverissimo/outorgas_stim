@@ -1,7 +1,7 @@
 from config.mongo_client import get_db
 
 
-class Entity():
+class EntityDao():
 
     search_key: str or None = None
 
@@ -15,11 +15,9 @@ class Entity():
 
     def find(self, filter: str):
         key = self.search_key
-
         query = {key: filter}
-        response = self.entity_manager.find_one(query, {'_id': 0})
-        print('query: ', query)
 
+        response = self.entity_manager.find_one(query)
         return response
 
     def insert_one(self, entity: dict):

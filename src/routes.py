@@ -3,6 +3,7 @@ from __main__ import app
 from data_access_layer.TjlpDao import TjlpDao
 from data_access_layer.ContractDao import ContractDao
 from data_access_layer.ExternalDataApi import ExternalDataApi
+from services.TjlpService import TjlpService
 import admin_routes
 
 
@@ -45,11 +46,9 @@ def get_tjlp(source):
 @app.route('/tjlp/update-<source>')
 def update_tjlp(source):
     updates = None
-    entity_manager = TjlpDao(f'tjlp_{source}')
+    tjlp_service = TjlpService(source)
 
-    if source == 'tjlp_bndes':
-        api = ExternalDataApi()
-        updates = api.get_tjlp_bndes(update_only=True)
-        if updates:
-            entity_manager.insert_tjlp_bndes(updates)
-            return jsonify(updates)
+    updates = tjlp_service.get_tjlp()
+    if updates:
+        result = tjlp_service.insert_tjlp_to_db(updates)
+        return jsonify(result)
