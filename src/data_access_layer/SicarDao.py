@@ -1,8 +1,10 @@
+from dataclasses import asdict
 from typing import List
 import pandas as pd
 from config import env
 from utils.rename_columns import rename_columns
 from domain.Pagamento import Pagamento
+from domain.MissingPayment import MissingPayment
 from domain.Linha import Linha
 
 
@@ -30,22 +32,28 @@ class SicarDao:
         linhas_list = list(map(lambda x: str(x['id']), linhas))
 
         found = []
-        missing = []
+        missing_payments = []
         for idx, row in guias.iterrows():
 
             linha = str(row['linha_id']).strip()
 
             if any(l in linha for l in linhas_list):
-                found.append(linha)
+                # found.append(linha)
+                pass
             else:
-                missing.append(row.to_dict())
+                pg_dict = row.to_dict()
+                pg_dict['linha_id']: str = pg_dict['linha_id'].strip()
+                pg = asdict(MissingPayment(**pg_dict))
+                missing_payments.append(pg)
 
-        linhas = list(map(lambda x: x['linha_id'], missing))
+        return missing_payments
+
+        """ 
+        linhas = list(map(lambda x: x['linha_id'], missing_payments))
+        print('*******************Found: \n\n', found)
         print('*******************Missing: \n\n', linhas)
-
-        #print('*******************Found: \n\n', found)
-        """ print('*******************Found: \n\n', len(found))
-        print('*******************Missing: \n\n', len(missing)) """
+        print('*******************Found: \n\n', len(found))
+        print('*******************Missing: \n\n', len(missing_payments)) """
 
     def get_payments(self, contract: dict) -> List[Pagamento]:
 

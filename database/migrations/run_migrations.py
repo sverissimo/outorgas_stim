@@ -1,11 +1,14 @@
 from data_access_layer.ExternalDataApi import ExternalDataApi
+from data_access_layer.EntityDao import EntityDao
 from data_access_layer.ContractDao import ContractDao
 from data_access_layer.LinhaDao import LinhaDao
+from data_access_layer.SicarDao import SicarDao
 from database.migrations.ContractsBuilder import ContractsBuilder
 from database.migrations.LinhasBuilder import LinhasBuilder
 from database.migrations.Director import Director
 from services.TjlpService import TjlpService
 from services.ContractService import ContractService
+from utils.add_codigo_empresa import add_codigo_empresa
 
 
 def run_contracts_migration(empresas=None):
@@ -58,6 +61,19 @@ def run_payments_migration():
     contracts = contract_service.list()
     contracts_with_payments = contract_service.get_payments(contracts)
     contract_service.insert_payments(contracts_with_payments)
+
+
+def run_missing_payments_migration(empresas=None):
+    if not empresas:
+        empresas = ExternalDataApi().get_empresas_from_cadti()
+
+    linhas = LinhaDao().list()
+    missing_payments = SicarDao().get_missing_payments(linhas)
+    missing_payments = add_codigo_empresa(empresas, missing_payments)
+
+    missing_payments_dao = EntityDao('missing_payments')
+    missing_payments_dao.insert_many(missing_payments)
+    return missing_payments
 
 
 def run_migrations(empresas=None, contratos=None):
