@@ -2,9 +2,8 @@ from flask import jsonify, make_response
 from __main__ import app
 from data_access_layer.TjlpDao import TjlpDao
 from data_access_layer.ContractDao import ContractDao
-from data_access_layer.ExternalDataApi import ExternalDataApi
 from services.TjlpService import TjlpService
-import admin_routes
+#import admin_routes
 
 
 @app.route('/')

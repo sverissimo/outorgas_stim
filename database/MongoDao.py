@@ -37,25 +37,3 @@ class MongoDao():
 
         client.drop_database('outorgas')
         print('Outorgas DB dropped.')
-
-    def create_contracts(self, contracts: list):
-        contratos = get_db().contratos
-        first_contract_n = contracts[0]["numero_contrato"]
-        search = list(contratos.find({"numero_contrato": first_contract_n}))
-        if len(search) > 0:
-            print(
-                "Data already exists ind MongoDB, skipping insert command\n contract found:",
-                search,
-            )
-            return
-        else:
-            contratos.insert_many(contracts)
-
-    def update_razao_social(self, empresas: list):
-        entity_manager = get_db().contratos
-        for e in empresas:
-            filter = {'codigo_empresa': e['codigo_empresa']}
-            update = {'$set': {'razao_social': e['razao_social']}}
-            result = entity_manager.update_many(
-                filter=filter, update=update)
-            print('result: ', result.matched_count, result.modified_count)

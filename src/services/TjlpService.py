@@ -13,7 +13,7 @@ class TjlpService:
 
     def __init__(self, source: SOURCE) -> None:
         self.source = source
-        self.entity_manager = TjlpDao(f'tjlp_{source}')
+        self.tjlp_dao = TjlpDao(f'tjlp_{source}')
 
     async def get_tjlp(self):
         if self.source == 'bndes':
@@ -27,7 +27,7 @@ class TjlpService:
     async def get_updates(self):
 
         tjlp_list = await self.get_tjlp()
-        last_tjlp_record = self.entity_manager.find_last_record()
+        last_tjlp_record = self.tjlp_dao.find_last_record()
         should_update = await self.should_update(tjlp_list, last_tjlp_record)
 
         if not should_update:
@@ -54,6 +54,6 @@ class TjlpService:
             return True
 
     def insert_tjlp_to_db(self, tjlp_list: List[Tjlp]) -> str:
-        result = self.entity_manager.insert_tjlp(tjlp_list)
+        result = self.tjlp_dao.insert_tjlp(tjlp_list)
         print('Inserted ids: ', result.inserted_ids)
         return result.acknowledged

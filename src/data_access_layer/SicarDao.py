@@ -2,6 +2,7 @@ from typing import List
 import pandas as pd
 from config import env
 from utils.rename_columns import rename_columns
+from domain.Pagamento import Pagamento
 from domain.Linha import Linha
 
 
@@ -46,7 +47,7 @@ class SicarDao:
         """ print('*******************Found: \n\n', len(found))
         print('*******************Missing: \n\n', len(missing)) """
 
-    def get_payments(self, contract: dict):
+    def get_payments(self, contract: dict) -> List[Pagamento]:
 
         guias = self.parse_and_read_xlsx()
         linha = str(contract["linhas_id"][0])
@@ -65,7 +66,7 @@ class SicarDao:
             ).date()
 
             # Lista de tuples com ano e mês de cada lançamento na lista pagamentos
-            datas_pg: List(tuple) = list(
+            datas_pg: List[tuple] = list(
                 map(
                     lambda y: (y.year, y.month),
                     list(map(lambda x: x["data_pagamento"], pagamentos)),

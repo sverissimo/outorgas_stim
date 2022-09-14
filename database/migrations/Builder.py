@@ -1,4 +1,5 @@
 import pandas as pd
+from typing import List
 import re
 from domain.Contrato import Contrato
 from domain.Linha import Linha
@@ -8,7 +9,7 @@ class Builder():
 
     path_to_xlsx_file: str = 'data/Contratos DGTI.xlsx'
     empresas: list or None
-    contracts: list[Contrato]
+    contracts: List[Contrato]
     contracts_df: pd.DataFrame
 
     def __init__(self, empresas=None):
@@ -56,7 +57,7 @@ class Builder():
         self.contracts = contracts
         return self
 
-    def get_linhas(self) -> list[Linha]:
+    def get_linhas(self) -> List[Linha]:
         id_pattern = r'\d{4}'
         separator = r'e|,'
         all_linhas = []

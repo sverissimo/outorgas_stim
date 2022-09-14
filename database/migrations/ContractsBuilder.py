@@ -1,9 +1,12 @@
 import pandas as pd
+from typing import List
 from domain.Contrato import Contrato
 from database.migrations.Builder import Builder
 
 
 class ContractsBuilder(Builder):
+
+    contracts: List[Contrato] or None = None
 
     def __init__(self, empresas=None):
         super().__init__(empresas)
@@ -23,7 +26,7 @@ class ContractsBuilder(Builder):
         self.contracts = contracts
         return self
 
-    def build(self) -> list[Contrato] or pd.DataFrame:
+    def build(self) -> List[Contrato] or pd.DataFrame:
         result = self.contracts_df
         if hasattr(self, 'contracts'):
             result = self.contracts

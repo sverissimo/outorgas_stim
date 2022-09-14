@@ -26,5 +26,10 @@ class EntityDao():
 
     def insert_many(self, entity: list):
         result = self.entity_manager.insert_many(entity)
-        print('New objects ids (showing head only):', result.inserted_ids[:5])
+        print('DAO insert acknowledgement:', result.acknowledged)
+        return result
+
+    def update(self, filter: dict, update: dict):
+        result = self.entity_manager.update_many(filter, update)
+        print('DAO insert acknowledgement:', result.acknowledged)
         return result
