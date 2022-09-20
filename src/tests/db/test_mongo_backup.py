@@ -1,4 +1,4 @@
-from data_access_layer.MongoDao import MongoDao
+from database.MongoDao import MongoDao
 
 mongo_client = MongoDao()
 

@@ -1,10 +1,12 @@
+from datetime import datetime
 from utils.year_to_month_rate import year_to_month_rate
 
 
 class Tjlp():
 
-    mes = None
-    taxa = None
+    _id: str or None = None
+    mes: datetime or None = None
+    taxa: float or None = None
 
     def year_to_month_rate(self, year_rate):
 

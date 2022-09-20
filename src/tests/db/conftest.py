@@ -1,7 +1,7 @@
 import json
 from os import path
 import pytest
-#from data_access_layer.get_empresas_from_cadti import get_empresas_from_cadti
+# from data_access_layer.ExternalDataApi import ExternalDataApi
 
 
 @pytest.fixture(scope='session')
@@ -16,4 +16,4 @@ def empresas_from_cadti():
         empresas = json.loads(f)
         return empresas
 
-    # return get_empresas_from_cadti()
+    # return ExternalDataApi().get_empresas_from_cadti()
