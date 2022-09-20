@@ -1,4 +1,3 @@
-from typing import List
 from data_access_layer.EntityDao import EntityDao
 from config.mongo_client import UpdateOne
 
@@ -18,7 +17,7 @@ class ContractDao(EntityDao):
 
     def list(self, get_payments: bool = False):
 
-        fields_to_exclude = ['_id', 'pagamentos'] if get_payments else ['_id']
+        fields_to_exclude = ['_id'] if get_payments else['_id', 'pagamentos']
 
         response = self.entity_manager.aggregate(
             [
