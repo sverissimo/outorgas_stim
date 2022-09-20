@@ -1,5 +1,4 @@
 import { MUIDataTableColumnOptions } from "mui-datatables"
-import { formatDate } from "../utils/dateUtil"
 import { toCurrency } from "../utils/formatNumber"
 
 interface Column {
@@ -22,7 +21,6 @@ export const columns: Column[] = [
                 return value.toUpperCase()
             },
         },
-
     },
     {
         name: "cnpj",
@@ -36,7 +34,7 @@ export const columns: Column[] = [
         name: "codigoEmpresa",
         label: "Código da Empresa",
         options: {
-            filter: true,
+            filter: false,
             sort: false,
         }
     },
@@ -53,13 +51,14 @@ export const columns: Column[] = [
         label: "Data de Assinatura",
         type: 'date',
         options: {
-            filter: true,
+            filter: false,
             sort: true,
             customBodyRender: (value, tableMeta, updateValue) => {
                 return new Date(value).toLocaleDateString('pt-BR')
             },
         }
-    }, {
+    },
+    {
         name: "edital",
         label: "Edital",
         options: {
@@ -90,14 +89,14 @@ export const columns: Column[] = [
         name: "parcelasPagas",
         label: "Pagamentos efetuados",
         options: {
-            filter: false
+            filter: true
         }
     },
     {
         name: "valorOutorga",
         label: "Valor da Outorga",
         options: {
-            filter: true,
+            filter: false,
             sort: true,
             customBodyRender: (value, tableMeta, updateValue) => {
                 return toCurrency(Number(value))

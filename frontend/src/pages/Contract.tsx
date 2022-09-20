@@ -5,12 +5,10 @@ import { Api } from "../api/Api"
 import { ContractInfo } from "../components/ContractInfo"
 import { ThemeProvider } from "@mui/material";
 import { debtColumns } from "../config/debtSummary"
-import { textLabels } from "../config/tableLables"
+import { textLabels } from "../config/tableLabels"
 import { Tjlp } from '../interfaces/Tjlp'
-import { dateToFormattedString } from "../utils/dateUtil"
 import { csvToXlsx } from "../utils/exportToXls"
 import { getDebt } from "../services/getDebt"
-import { toCurrency } from "../utils/formatNumber"
 import { getMuiTheme } from "../config/tableStyles"
 
 interface UseLocationState {
@@ -32,6 +30,8 @@ export const Contract: React.FC = () => {
 
     if (error)
         return <h4>An error has occurred: {JSON.stringify(error)} </h4>
+
+
 
     const
         { pagamentos, ...contractInfo } = data
@@ -55,10 +55,12 @@ export const Contract: React.FC = () => {
             }
         }
 
-    debtSum.forEach(el => el.mes = dateToFormattedString(el.mes))
-    contractInfo.parcelasPagas = parcelasPagas
-    contractInfo.valorOutorga = toCurrency(contractInfo.valorOutorga)
-    contractInfo.dataAssinatura = dateToFormattedString(new Date(contractInfo.dataAssinatura))
+    Object.assign(
+        contractInfo,
+        {
+            parcelasPagas: parcelasPagas,
+            saldoDevedor: debtSum[debtSum.length - 1].saldoDevedor
+        })
 
     return (
         <div className="container">

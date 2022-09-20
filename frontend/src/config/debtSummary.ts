@@ -1,4 +1,5 @@
 import { MUIDataTableColumn } from "mui-datatables"
+import { dateToFormattedString } from "../utils/dateUtil"
 import { toCurrency, toPercentage } from "../utils/formatNumber"
 
 
@@ -9,17 +10,10 @@ export const debtColumns: MUIDataTableColumn[] = [
         options: {
             filter: false,
             sort: true,
-            sortCompare: (order) => (a: { data: any }, b: { data: any }) => {
-                const
-                    aMonth = +a.data.slice(0, 2)
-                    , aYear = +a.data.slice(-4)
-                    , bMonth = +b.data.slice(0, 2)
-                    , bYear = +b.data.slice(-4)
-                    , date1 = new Date(aYear, aMonth)
-                    , date2 = new Date(bYear, bMonth)
-
-                return (date1.getTime() - date2.getTime()) * (order === 'asc' ? 1 : -1)
-            },
+            customBodyRender: (value, tableMeta, updateValue) => {
+                const formatted = dateToFormattedString(value)
+                return formatted
+            }
         }
     },
     {

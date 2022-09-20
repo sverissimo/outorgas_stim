@@ -1,4 +1,4 @@
-import { columns } from '../config/tableColumns';
+import { contractInfoFields } from '../config/ContractInfoLabels';
 import { Contract } from '../interfaces/Contract'
 import contractInfoStyle from './contractInfo.module.scss'
 
@@ -23,9 +23,9 @@ export const ContractInfo = (props: IProps) => {
                     a.map(([k, v], i) =>
                         <div className={cell} key={i}>
                             <span className={cellTitle}>
-                                {columns.find(el => el.name === k)?.label || k}
+                                {contractInfoFields.find(el => el.name === k)?.label || k}
                             </span>
-                            : {v}
+                            : {contractInfoFields.find(el => el.name === k && el.format)?.format(v) || v}
                         </div>)
 
                 }

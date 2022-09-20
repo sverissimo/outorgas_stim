@@ -5,7 +5,7 @@ import { columns } from '../config/tableColumns'
 import { Container, ThemeProvider } from "@mui/material";
 import { getMuiTheme } from "../config/tableStyles";
 import '../styles.scss'
-import { textLabels } from "../config/tableLables";
+import { textLabels } from "../config/tableLabels";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";

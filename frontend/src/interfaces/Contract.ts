@@ -8,4 +8,5 @@ export interface Contract {
     nParcelas: String
     numeroContrato: String
     pagamentos?: any
+    saldoDevedor: number
 }
