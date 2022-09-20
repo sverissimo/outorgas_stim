@@ -1,9 +1,12 @@
+import sys
+from config import env
+sys.path.append(env.APP_FOLDER)  # nopep8
+
 from flask import jsonify, make_response
 from __main__ import app
 from data_access_layer.TjlpDao import TjlpDao
 from data_access_layer.ContractDao import ContractDao
-from services.TjlpService import TjlpService
-#import admin_routes
+from database.migrations.run_migrations import run_tjlp_migrations
 
 
 @app.route('/')
@@ -42,12 +45,12 @@ def get_tjlp(source):
     return jsonify(response)
 
 
-@app.route('/tjlp/update-<source>')
-def update_tjlp(source):
-    updates = None
-    tjlp_service = TjlpService(source)
-
-    updates = tjlp_service.get_tjlp()
-    if updates:
-        result = tjlp_service.insert_tjlp_to_db(updates)
-        return jsonify(result)
+@app.route('/update-tjlp-rates')
+async def update_tjlp():
+    try:
+        await run_tjlp_migrations()
+        print('Updated tjlp alright.')
+        return 'Updated tjlp alright.'
+    except Exception as e:
+        print(e)
+        return f'Error: {e}'

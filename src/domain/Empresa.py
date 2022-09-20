@@ -1,10 +1,9 @@
 from dataclasses import dataclass, field
 from datetime import date
-from typing import List
+from typing import TypedDict
 
 
-@dataclass
-class Empresa:
+class Empresa(TypedDict):
     codigo_empresa: int
     razao_social: str
     cnpj: str
@@ -12,3 +11,4 @@ class Empresa:
     email: str
     cidade: str
     cep: str
+    frota: int

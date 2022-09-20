@@ -1,0 +1,1 @@
+cd venv/Scripts & pytest.exe -s ../../src/tests/db/test_update_tjlp.py::test_insert_updates_tjlp 
