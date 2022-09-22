@@ -1,4 +1,5 @@
 import sys
+from xml.dom.minidom import Entity
 from config import env
 sys.path.append(env.APP_FOLDER)  # nopep8
 
@@ -6,6 +7,8 @@ from flask import jsonify, make_response
 from __main__ import app
 from data_access_layer.TjlpDao import TjlpDao
 from data_access_layer.ContractDao import ContractDao
+from data_access_layer.LinhaDao import LinhaDao
+from data_access_layer.EntityDao import EntityDao
 from database.migrations.run_migrations import run_tjlp_migrations
 
 
@@ -28,6 +31,12 @@ def get_contracts_and_payments():
     entity_manager = ContractDao()
     contracts = entity_manager.list(get_payments=True)
     return jsonify(contracts)
+
+
+@app.route('/missing_payments')
+def get_missing_payments():
+    missing_payments = EntityDao('missing_payments').list()
+    return jsonify(missing_payments)
 
 
 @app.route('/get_contract/<numero_contrato>')

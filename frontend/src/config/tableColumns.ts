@@ -102,5 +102,14 @@ export const columns: Column[] = [
                 return toCurrency(Number(value))
             }
         }
-    }
+    },
+    /* {
+        name: "saldoDevedor",
+        label: "Saldo Devedor",
+        options: {
+            customBodyRender: (value: any) => {
+                return toCurrency(value)
+            }
+        }
+    } */
 ]

@@ -13,10 +13,12 @@ import { Contract } from '../interfaces/Contract'
 import { Tjlp } from "../interfaces/Tjlp";
 import { jsonToXlsx } from "../utils/exportToXls";
 import { tableDataToJson } from "../utils/tableDataToJson";
+import { getGlobalDebt } from "../services/getGlobalDebt";
 
 type State = {
     contracts: Contract[]
     tjlpBndes: Tjlp
+    missingPayments: any[]
 }
 
 
@@ -30,24 +32,40 @@ export const OutorgaTable = () => {
         //const contracts = useQuery('contracts', () => api.get('/api/get_contracts'))
         const contracts = useQuery('contracts', () => api.get('/api/get_contracts_and_payments'))
             , tjlpBndes = useQuery('tjlpBndes', () => api.get('/api/tjlp/bndes'))
-        return [contracts, tjlpBndes]
+            , missingPayments = useQuery('missingPayments', () => api.get('/api/missing_payments'))
+        return [contracts, tjlpBndes, missingPayments]
     }
+
     const [
         { isLoading: loadingContracts, data: contracts, error },
         { isLoading: loadingTjlp, data: tjlpBndes },
+        { isLoading: loadingMissingPayments, data: missingPayments },
     ] = queryMultiple()
 
     let navigate = useNavigate()
 
     useEffect(() => {
-        setState({ ...state, contracts, tjlpBndes })
-    }, [contracts, tjlpBndes])
+        setState({ ...state, contracts, tjlpBndes, missingPayments })
+    }, [contracts, tjlpBndes, missingPayments])
 
-    if (loadingContracts || loadingTjlp)
+
+
+    if (loadingContracts || loadingTjlp || loadingMissingPayments)
         return <h1> "Carregando..."</h1>
 
     if (error)
         return <h4>An error has occurred: {JSON.stringify(error)} </h4>
+
+    //const tst = useMemo(() => getGlobalDebt(tjlpBndes, contracts), [contracts])
+
+    const
+        rioDoce = contracts.filter((el: any) => el.codigoEmpresa === 70008)
+        , rioDoce2 = missingPayments.filter((el: any) => el.codigoEmpresa === 70008)
+
+        , tst = getGlobalDebt(tjlpBndes, rioDoce, rioDoce2)
+    //, tst = getGlobalDebt(tjlpBndes, contracts, missingPayments)
+    //console.log("🚀 ~ file: OutorgaTable.tsx ~ line 49 ~ OutorgaTable ~ tst", tst)
+
 
     const options: MUIDataTableOptions = {
         filterType: 'dropdown' as FilterType,

@@ -1,7 +1,7 @@
 import { Payment } from "../interfaces/Payment"
 import { PaymentView } from "../interfaces/PaymentView"
 import { Tjlp } from "../interfaces/Tjlp"
-import { firstCommonDateIndex, fixTimeZone, isSameMonthAndYear } from "../utils/dateUtil"
+import { firstCommonDateIndex, isSameMonthAndYear, stringToDateObj } from "../utils/dateUtil"
 import { twoDigits } from "../utils/formatNumber"
 
 /**
@@ -12,7 +12,7 @@ import { twoDigits } from "../utils/formatNumber"
  * @param customFirstPg 
  * @returns 
  */
-export const getDebt = (amount: number, dataAssinatura: string, payments: Payment[], tjlp: Tjlp[], customFirstPg?: any) => {
+export const getDebt = (amount: number, dataAssinatura: string, payments: Payment[], tjlp: Tjlp[]) => {
 
   amount = twoDigits(amount)
   let i = 0
@@ -56,7 +56,7 @@ export const getDebt = (amount: number, dataAssinatura: string, payments: Paymen
       , updatedDebt = twoDigits(amount -= monthPaidValue)
 
     const debtCell: PaymentView = {
-      mes: fixTimeZone(t.mes),
+      mes: stringToDateObj(t.mes),
       numeroGuia: pg?.numeroGuia,
       tjlp: tjlpRate,
       tjlpEfetiva: tjlpAmount,

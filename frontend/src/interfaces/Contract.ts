@@ -1,12 +1,13 @@
 export interface Contract {
-    cnpj: String
-    codigoEmpresa: String
-    dataAssinatura: String
-    edital: String
-    linhasId?: String
+    cnpj: string
+    codigoEmpresa: number
+    dataAssinatura: string
+    edital: string
+    linhasId?: number[]
     valorOutorga: number
-    nParcelas: String
-    numeroContrato: String
+    nParcelas?: number
+    numeroContrato: string
     pagamentos?: any
-    saldoDevedor: number
+    saldoDevedor?: number
+    parcelasPagas?: number
 }

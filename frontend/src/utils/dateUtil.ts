@@ -1,57 +1,77 @@
-import format from 'date-fns/format'
-import { ptBR } from 'date-fns/locale'
+//import format from 'date-fns/format'
+//import { ptBR } from 'date-fns/locale'
+import isValid from 'date-fns/isValid'
+import add from 'date-fns/add'
 import { Tjlp } from '../interfaces/Tjlp'
 
-//******************MIGHT BE A GOOD IDEA TO PLACE THIS IN A FRONTEND DATA ASSEMBLER, TO NORMALIZE TZ******************* */
-export function formatDate(stringDate: any) {
-
-    const
-        date: Date = new Date(stringDate)
-        , adjustTimeZoneHours = 3 * 60 * 60 * 1000
-    date.setTime(date.getTime() + adjustTimeZoneHours)
-
-    const formattedDate = format(date, "E, dd LLL y", { locale: ptBR })
-    return formattedDate
-}
 
 export function dateToFormattedString(date: Date) {
-    const formattedDate = format(date, "MM/y", { locale: ptBR })
+    //const formattedDate = format(date, "MM/y", { locale: ptBR })
+    const formattedDate = date.toLocaleDateString().replace(/\d{2}\//, '')
     return formattedDate
 }
 
-export function fixTimeZone(stringDate: string): Date {
-    const
-        date: Date = new Date(stringDate)
-        , adjustTimeZoneHours = 3 * 60 * 60 * 1000
-    date.setTime(date.getTime() + adjustTimeZoneHours)
-    return date
-}
 
 export function firstCommonDateIndex(stringDate: string, tjlpArray: Tjlp[]): number {
 
     const
-        firstPgDate = fixTimeZone(stringDate)
+        firstPgDate = stringToDateObj(stringDate)
         , firstMonth = firstPgDate.getMonth()
         , firstYear = firstPgDate.getFullYear()
 
     const firstCommonDateIndex = tjlpArray
         .findIndex(
-            el => fixTimeZone(el.mes).getMonth() === firstMonth
+            el => stringToDateObj(el.mes).getMonth() === firstMonth
                 &&
-                fixTimeZone(el.mes).getFullYear() === firstYear
+                stringToDateObj(el.mes).getFullYear() === firstYear
         )
 
     return firstCommonDateIndex
 }
 
-export function isSameMonthAndYear(stringDate1: string, stringDate2: string) {
 
-    const
-        date1 = fixTimeZone(stringDate1)
-        , date1Month = date1.getMonth()
+export function isSameMonthAndYear(date1: any, date2: any) {
+    date1 = stringToDateObj(date1)
+    date2 = stringToDateObj(date2)
+
+    const date1Month = date1.getMonth()
+        , date2Month = date2.getMonth()
         , date1Year = date1.getFullYear()
+        , date2Year = date2.getFullYear()
 
-    return fixTimeZone(stringDate2).getMonth() === date1Month
-        &&
-        fixTimeZone(stringDate2).getFullYear() === date1Year
+    return date1Month === date2Month && date1Year === date2Year
 }
+
+
+export function addMonth(date: any) {
+    date = stringToDateObj(date)
+    date = add(date, { months: 1 })
+    return date
+}
+
+
+export function stringToDateObj(date: string) {
+
+    const validDateFormat = typeof date === 'string' && date.match(/^\d{2}\/\d{2}\/\d{4}$/)
+
+    if (validDateFormat && !isValid(date)) {
+        const dateArray = date.split(/\/|-/)
+        date = dateArray[2] + '-' + dateArray[1] + '-' + dateArray[0];
+    }
+
+    const dateObj = new Date(date)
+    const fixedDateObj = fixTimeZone(dateObj)
+
+    return fixedDateObj
+}
+
+
+export function fixTimeZone(date: any): Date {
+    /* const adjustTimeZoneHours = 3 * 60 * 60 * 1000
+    date.setTime(date.getTime() + adjustTimeZoneHours) */
+    date = add(date, { 'hours': 3 })
+    date.setHours(0)
+    return date
+}
+
+

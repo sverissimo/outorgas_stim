@@ -11,30 +11,34 @@ import { PaymentView } from '../interfaces/PaymentView'
 
 test('getDebtTest - Contract 23/2014, TJLP: BNDES', () => {
     const
-        amount = twoDigits(contract232014.valor_outorga)
-        , updatedPayments = getDebt(amount, payments23_2014, tjlpBndes)
+        { valor_outorga, data_assinatura } = contract232014
+        , amount = twoDigits(valor_outorga)
+        , updatedPayments = getDebt(amount, data_assinatura, payments23_2014, tjlpBndes)
     testPayment(amount, updatedPayments)
 })
 
 test('getDebtTest - Contract 23/2014, TJLP: SEF', () => {
     const
-        amount = twoDigits(contract232014.valor_outorga)
-        , updatedPayments = getDebt(amount, payments23_2014, tjlpSef)
+        { valor_outorga, data_assinatura } = contract232014
+        , amount = twoDigits(valor_outorga)
+        , updatedPayments = getDebt(amount, data_assinatura, payments23_2014, tjlpSef)
     testPayment(amount, updatedPayments)
 })
 
 test('getDebtTest - Contract 21/2015, TJLP: BNDES', () => {
     const
-        amount = twoDigits(contract212015.valor_outorga)
-        , updatedPayments = getDebt(amount, payments21_2015, tjlpBndes)
+        { valor_outorga, data_assinatura } = contract212015
+        , amount = twoDigits(valor_outorga)
+        , updatedPayments = getDebt(amount, data_assinatura, payments21_2015, tjlpBndes)
     testPayment(amount, updatedPayments)
 })
 
 
 test('getDebtTest - Contract 21/2015, TJLP: SEF', () => {
     const
-        amount = twoDigits(contract212015.valor_outorga)
-        , updatedPayments = getDebt(amount, payments21_2015, tjlpSef)
+        { valor_outorga, data_assinatura } = contract212015
+        , amount = twoDigits(valor_outorga)
+        , updatedPayments = getDebt(amount, data_assinatura, payments21_2015, tjlpSef)
     testPayment(amount, updatedPayments)
 })
 

@@ -1,5 +1,3 @@
-import { MUIDataTableColumnOptions } from "mui-datatables"
-import { formatDate } from "../utils/dateUtil"
 import { toCurrency } from "../utils/formatNumber"
 
 interface ContractInfoField {
@@ -7,8 +5,6 @@ interface ContractInfoField {
     label: string,
     format?: any
 }
-
-//['razao_social', 'cnpj', 'codigo_empresa', 'data_assinatura', 'edital', 'n_parcelas', 'numero_contrato', 'valor_outorga']
 
 export const contractInfoFields: ContractInfoField[] = [
     {

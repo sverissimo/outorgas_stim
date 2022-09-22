@@ -10,7 +10,7 @@ class EntityDao():
             self.entity_manager = get_db()[collection]
 
     def list(self):
-        response = self.entity_manager.find()
+        response = self.entity_manager.find({}, {'_id': 0})
         return list(response)
 
     def find(self, filter: str):
