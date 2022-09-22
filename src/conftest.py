@@ -13,3 +13,9 @@ def get_mock_data_folder():
 def get_db_contracts():
     contracts = ContractService().list()
     return contracts
+
+
+@fixture
+def get_db_contracts_with_payments():
+    contracts = ContractService().list(get_payments=True)
+    return contracts

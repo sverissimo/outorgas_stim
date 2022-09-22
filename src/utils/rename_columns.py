@@ -12,7 +12,7 @@ fields = [
     ("CNPJ", "cnpj"),
     ("Status", "status"),
     ("Linha(s)", "linhas_id"),
-    ("Linha", "linha_id"),
+    ("Linha", "linhas_id"),
     ("Valor do contrato", "valor_outorga"),
     ("Valor da outorga", "valor_outorga"),
     ("Valor Pago", "valor"),

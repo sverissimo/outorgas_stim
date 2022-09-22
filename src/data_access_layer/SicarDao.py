@@ -35,21 +35,21 @@ class SicarDao:
         missing_payments = []
         for idx, row in guias.iterrows():
 
-            linha = str(row['linha_id']).strip()
+            linha = str(row['linhas_id']).strip()
 
             if any(l in linha for l in linhas_list):
                 # found.append(linha)
                 pass
             else:
                 pg_dict = row.to_dict()
-                pg_dict['linha_id']: str = pg_dict['linha_id'].strip()
+                pg_dict['linhas_id']: str = pg_dict['linhas_id'].strip()
                 pg = asdict(MissingPayment(**pg_dict))
                 missing_payments.append(pg)
 
         return missing_payments
 
         """ 
-        linhas = list(map(lambda x: x['linha_id'], missing_payments))
+        linhas = list(map(lambda x: x['linhas_id'], missing_payments))
         print('*******************Found: \n\n', found)
         print('*******************Missing: \n\n', linhas)
         print('*******************Found: \n\n', len(found))
@@ -60,7 +60,7 @@ class SicarDao:
         guias = self.parse_and_read_xlsx()
         linha = str(contract["linhas_id"][0])
 
-        contrato_payments = guias.loc[guias.Linha.str.contains(linha)]
+        contrato_payments = guias.loc[guias.linhas_id.str.contains(linha)]
         contrato_payments.reset_index(inplace=True)
 
         pagamentos = []
@@ -82,27 +82,33 @@ class SicarDao:
             )
 
             valor = row["valor"]
+            numero_guia = row["numero_guia"]
 
             # Verifica se houve mais de 1 pg em um determinado mês
-            repeated: bool = [
+            repeated_pgs: List[bool] = [
                 el[0] == row["data_pagamento"].year and el[1] == row["data_pagamento"].month
                 for el in datas_pg
                 if type(el) == tuple
             ]
             same_month_index: int = (
-                len(repeated) - 1 -
-                repeated[::-1].index(True) if True in repeated else None
+                len(repeated_pgs) - 1 -
+                repeated_pgs[::-
+                             1].index(True) if True in repeated_pgs else None
             )
 
             # Se mais de um pg for feito no mesmo mês, acumula o valor ao invés de append o pg
             if same_month_index:
                 valor = valor + pagamentos[same_month_index]["valor"]
+                numero_guia = numero_guia+', ' + \
+                    pagamentos[same_month_index]["numero_guia"]
+
                 pagamentos[same_month_index]["valor"] = valor
+                pagamentos[same_month_index]["numero_guia"] = numero_guia
 
             else:
                 pagamentos.append(
                     {
-                        "numero_guia": row["numero_guia"],
+                        "numero_guia": numero_guia,
                         "valor": valor,
                         "data_pagamento": row["data_pagamento"],
                     }
@@ -111,6 +117,7 @@ class SicarDao:
         print(
             f'##### get_sicar_payments.py: Done processing {len(pagamentos)} payments to contract nº {n_contrato}')
         # Depois de usar as datas de pagamento como struct_date, formata p string YYYY-mm-dd
+
         for pg in pagamentos:
             pg["data_pagamento"] = pg["data_pagamento"].strftime("%Y-%m-%d")
 

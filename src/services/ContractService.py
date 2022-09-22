@@ -14,8 +14,11 @@ class ContractService:
 
     contract_dao = ContractDao()
 
-    def list(self):
-        return self.contract_dao.list()
+    def list(self, get_payments: bool = False):
+        return self.contract_dao.list(get_payments)
+
+    def find(self, numero_contrato: str):
+        return self.contract_dao.find(numero_contrato)
 
     def fix_razao_social(self, empresas: list):
         for e in empresas:

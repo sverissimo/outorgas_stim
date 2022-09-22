@@ -1,18 +1,15 @@
+from data_access_layer.SicarDao import SicarDao
+
+
 def test_get_payments(get_db_contracts):
 
-    contracts = get_db_contracts
+    contract = [
+        c for c in get_db_contracts if c['numero_contrato'] == '19/2014'][0]
 
-    assert len(contracts) == 753
+    sicar_dao = SicarDao()
+    payments = sicar_dao.get_payments(contract)
 
-    print('There should be 753 contracts stored in the database. ✓')
+    print('payments length should be 55, 5 with multiple invoices: ', len(payments))
 
-    c1_pg = contracts[0]['pagamentos']
-    contract_1_2010_pg = contracts[10]['pagamentos']
-
-    print(f'payments for first contract: ', len(c1_pg))
-    print(f'payments for 11th contract: ', len(contract_1_2010_pg))
-    assert c1_pg[0]['valor'] == 2512.71
-    assert c1_pg[-1:][0]['valor'] == 5083.58
-
-    assert contract_1_2010_pg[11]['valor'] == 12563.13
-    print('12th pg (30/12/2013) for 10th contract should be R$ 12563.67 ✓')
+    assert(payments[7]['numero_guia'] == '001798-2015-0805, 001072-2015-0805')
+    assert(payments[7]['valor'] == 816.4300000000001)
