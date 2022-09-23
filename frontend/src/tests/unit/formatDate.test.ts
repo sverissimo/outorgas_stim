@@ -1,4 +1,4 @@
-import { addMonth, isSameMonthAndYear } from "../utils/dateUtil"
+import { addMonth, isSameMonthAndYear } from "../../utils/dateUtil"
 
 describe("Test util/dateUtil.ts functions", () => {
 

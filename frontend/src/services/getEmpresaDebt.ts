@@ -11,76 +11,24 @@ interface empresaDebtInput {
 
 interface empresaCreditInput {
     contracts: Contract[]
-    missingPayments: any[]
+    missingPayments: Payment[]
 }
 
 
-export const getEmpresaCreditStatement = (empresaCreditInput: empresaCreditInput) => {
+export const getEmpresaPayments = (empresaCreditInput: empresaCreditInput) => {
 
     const
         { contracts, missingPayments } = empresaCreditInput
-        , identifiedPayments: Payment[] = contracts.map(c => ({ ...c.pagamentos, linhasId: c.linhasId, codigoEmpresa: c.codigoEmpresa }))
-        , allPayments = identifiedPayments.concat(missingPayments)
-}
-
-export const mergePayments = (payments: Payment[]) => {
 
     const
-        mergedPayments = [] as Payment[]
-        , firstPaymentDate = getFirstPaymentDate(payments)
-        , today = new Date().toLocaleDateString()
-        , emptyPayment: Payment = {
-            numeroGuia: '',
-            dataPagamento: '',
-            valor: 0
-        }
-
-    let i = 0
-    let pgDate = firstPaymentDate
-    while (!isSameMonthAndYear(pgDate, today) && i < 1222) {
-
-        const sameMonthPayments = payments.filter(p => isSameMonthAndYear(p.dataPagamento, pgDate))
-
-        let guias = ''
-            , valorTotal = 0
-
-        if (sameMonthPayments.length) {
-            sameMonthPayments.forEach(p => {
-                guias += p.numeroGuia + ', '.slice(-2)
-                valorTotal += p.valor
-            })
-            mergedPayments.push({
-                numeroGuia: guias,
-                dataPagamento: pgDate.toLocaleDateString(),
-                valor: valorTotal
-            })
-            /* if (sameMonthPayments.length > 1) {
-                console.log("🚀 ~ file: getEmpresaDebt.ts ~ line 58 ~ mergePayments ~ sameMonthPayments", sameMonthPayments)
-
-            } */
-        }
-        else
-            mergedPayments.push({
-                ...emptyPayment,
-                dataPagamento: pgDate.toLocaleDateString()
-            })
-        i++
-        pgDate = addMonth(pgDate)
-    }
-    return mergedPayments
+        mp = missingPayments.slice(0, 5)
+        , foundPayments = [] as Payment[]
+    contracts
+        .slice(0, 10)
+        .map(c => c.pagamentos)
+        .forEach(p => foundPayments.push(...p))
 }
 
-/* const getPaymentsStatement = () => {
-
-}
- */
-const getFirstPaymentDate = (payments: Payment[]) => {
-    const firstPayment = payments
-        .reduce((acc, cur) => new Date(acc.dataPagamento).getTime() > new Date(cur.dataPagamento).getTime() ? cur : acc)
-        .dataPagamento
-    const firstPaymentDate = stringToDateObj(firstPayment)
-    return firstPaymentDate
-}
 
 
 

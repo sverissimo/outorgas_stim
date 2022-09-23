@@ -1,6 +1,7 @@
 export interface Contract {
     cnpj: string
     codigoEmpresa: number
+    razaoSocial?: string
     dataAssinatura: string
     edital: string
     linhasId?: number[]
