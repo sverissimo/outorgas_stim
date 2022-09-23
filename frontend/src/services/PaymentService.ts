@@ -7,7 +7,7 @@ export class PaymentService {
 
     getFirstPaymentDate = (payments: Payment[]) => {
         if (payments.length === 0) {
-            throw new Error('************************ EMPTY ARRAY!!!!')
+            throw new Error('*** Cannot get firstDate of payments of an empty array!!!')
         }
         const firstPayment = payments
             .reduce((acc, cur) => {
@@ -30,8 +30,6 @@ export class PaymentService {
     }
 
     mergePayments = (payments: Payment[]) => {
-        /*  if (!payments.length)
-             throw new Error('No payments...') */
         const
             mergedPayments = [] as Payment[]
             , firstPaymentDate = this.getFirstPaymentDate(payments)

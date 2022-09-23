@@ -12,7 +12,7 @@ import { twoDigits } from "../utils/formatNumber"
  * @param customFirstPg 
  * @returns 
  */
-export const getDebt = (amount: number, dataAssinatura: string, payments: Payment[], tjlp: Tjlp[]) => {
+export const getDebt = (amount: number, dataAssinatura: string, payments: Payment[], tjlp: Tjlp[]): PaymentView[] => {
 
   amount = twoDigits(amount)
   let i = 0

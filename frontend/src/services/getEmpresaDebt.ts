@@ -1,54 +1,33 @@
 import { Contract } from "../interfaces/Contract";
-import { Payment } from "../interfaces/Payment";
-import { Tjlp } from "../interfaces/Tjlp";
-import { isSameMonthAndYear, stringToDateObj, addMonth } from "../utils/dateUtil";
+import { isSameMonthAndYear } from "../utils/dateUtil";
 
-interface empresaDebtInput {
-    tjlp: Tjlp[]
-    contracts: Contract[]
-    missingPayments: any[]
+interface Debt {
+    contratos: string[]
+    data: Date
+    valorOutorga: number
 }
 
-interface empresaCreditInput {
-    contracts: Contract[]
-    missingPayments: Payment[]
-}
+export const getEmpresaDebt = (contracts: Contract[]): Debt[] => {
 
+    const isSameEmpresa = new Set(contracts.map(c => c.codigoEmpresa)).size === 1
 
-export const getEmpresaPayments = (empresaCreditInput: empresaCreditInput) => {
+    if (!isSameEmpresa)
+        throw new Error('Dude, don\'t mix up different companies...')
 
-    const
-        { contracts, missingPayments } = empresaCreditInput
+    const debtStatement: any[] = []
+        , debtDates = new Set(contracts
+            .map(c => c?.vigencia || c.dataAssinatura))
 
-    const
-        mp = missingPayments.slice(0, 5)
-        , foundPayments = [] as Payment[]
-    contracts
-        .slice(0, 10)
-        .map(c => c.pagamentos)
-        .forEach(p => foundPayments.push(...p))
-}
+    for (const date of debtDates) {
+        const sameDateContracts = contracts.filter(c => isSameMonthAndYear(c.dataAssinatura, date))
+            , totalValuePerDate = sameDateContracts
+                .reduce((acc, cur) => acc + cur.valorOutorga, 0)
 
-
-
-
-
-
-//sortedPgs = payments.sort((a: Payment, b: Payment) => new Date(a.dataPagamento).getTime() - new Date(b.dataPagamento).getTime())
-//return sortedPgs.slice(-2)
-
-/* export function getEmpresaBalance(tjlp: Tjlp[], contracts: Contract[], missingPayments: any[]) {
-
-    const
-        totalOutorga = []
-        , empresas = new Set(contracts.map(e => e.codigoEmpresa))
-
-
-    for (const empresa of empresas) {
-        const empresaCreditStatement = getEmpresaCreditStatement({ tjlp, contracts, missingPayments })
-        totalOutorga.push(empresaDebtSummary)
+        debtStatement.push({
+            contratos: sameDateContracts.map(c => c.numeroContrato),
+            data: date,
+            valorOutorga: totalValuePerDate
+        })
     }
-
-    return totalOutorga
+    return debtStatement
 }
- */

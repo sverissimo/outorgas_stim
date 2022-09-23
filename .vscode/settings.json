@@ -14,7 +14,8 @@
         "sicar",
         "SICAR",
         "tjlp",
-        "usecols"
+        "usecols",
+        "vigencia"
     ],
     "files.exclude": {
         "**/__pycache__": true

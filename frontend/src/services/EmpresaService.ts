@@ -10,10 +10,17 @@ export class EmpresaService {
 
     getEmpresasFromContracts = (contracts: Contract[]): Array<Partial<Contract>> => {
 
-        const empresas = contracts.map(c => ({
-            razaoSocial: c.razaoSocial,
-            codigoEmpresa: c.codigoEmpresa
-        }))
+        const
+            empresas = []
+            , empresaCodes = new Set(contracts.map(c => c.codigoEmpresa))
+
+        for (const e of empresaCodes) {
+            const c = contracts.find(c => c.codigoEmpresa == e)!
+            empresas.push({
+                razaoSocial: c.razaoSocial,
+                codigoEmpresa: c.codigoEmpresa
+            })
+        }
         return empresas
     }
 
@@ -27,9 +34,9 @@ export class EmpresaService {
             , allEmpresaPayments = contractPayments.concat(filteredMissingPayments)
 
         if (!allEmpresaPayments.length)
-            throw new Error(`------------------------ ${codigoEmpresa}`)
-        const consolidatedPayments = paymentService.mergePayments(allEmpresaPayments)
+            return []
 
+        const consolidatedPayments = paymentService.mergePayments(allEmpresaPayments)
         return consolidatedPayments
     }
 
@@ -42,22 +49,25 @@ export class EmpresaService {
         let i = 0
         console.log("🚀 ~ file: EmpresaService.ts ~ line 44 ~ EmpresaService ~ empresaCodes", empresaCodes)
         for (let codigoEmpresa of empresaCodes) {
-            codigoEmpresa = codigoEmpresa || 0
+            //codigoEmpresa = codigoEmpresa || 0
             if (!codigoEmpresa)
                 continue
 
             const empresaPayments = this.getPaymentsPerEmpresa(contracts, missingPayments, codigoEmpresa)
-            allEmpresaPayments.push({
-                codigoEmpresa: codigoEmpresa,
-                pagamentos: empresaPayments
-            })
+            if (empresaPayments.length)
+                allEmpresaPayments.push({
+                    codigoEmpresa: codigoEmpresa,
+                    pagamentos: empresaPayments
+                })
             i++
-            if (i % 500 === 0)
+            if (i % 1500 === 0)
                 console.log('allEmpresaPayments: ', i, JSON.stringify(allEmpresaPayments.slice(-3)))
         }
+        console.log("##### line 59 ~ EmpresaService ~ Number of payments processed: ", i)
 
         return allEmpresaPayments
     }
+
 
 
 }
