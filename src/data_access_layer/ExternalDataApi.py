@@ -2,11 +2,9 @@ import pandas as pd
 import requests
 from datetime import datetime
 from playwright.async_api import async_playwright
-import asyncio
 from config import env
 from typing import Coroutine, List
 from utils.parse_tjlp_bndes import parse_tjlp
-from data_access_layer.TjlpDao import TjlpDao
 from domain.Empresa import Empresa
 from domain.Tjlp import Tjlp
 
