@@ -2,7 +2,6 @@ import missingPayments from './mockData/missing_payments.json'
 import contracts from './mockData/allContractsAndPayments.json'
 import { EmpresaService } from '../services/EmpresaService'
 
-
 const empresaService = new EmpresaService()
 
 describe('Test EmpresaService', () => {
@@ -20,6 +19,7 @@ describe('Test EmpresaService', () => {
     it('Test getAllEmpresaPayments method', () => {
 
         const allEmpresaPayments = empresaService.getAllEmpresaPayments(contracts, missingPayments)
+
         console.log("🚀 ~ file: empresaService.test.ts ~ line 22 ~ it ~ allEmpresaPayments", allEmpresaPayments.length)
         console.log("🚀 ~ file: empresaService.test.ts ~ line 22 ~ it ~ allEmpresaPayments", allEmpresaPayments.slice(0, 3))
         //const allEmpresaPayments = empresaService.getAllEmpresaPayments(contracts.slice(-752, -600), missingPayments)

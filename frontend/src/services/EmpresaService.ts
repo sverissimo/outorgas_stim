@@ -1,6 +1,15 @@
 import { Contract } from "../interfaces/Contract"
+import { Empresa } from "../interfaces/Empresa"
 import { Payment } from "../interfaces/Payment"
 import { PaymentService } from "./PaymentService"
+import { isSameMonthAndYear } from "../utils/dateUtil";
+
+export interface Debt {
+    contratos: string[]
+    data: string
+    valorOutorga: number
+}
+
 
 export class EmpresaService {
 
@@ -8,7 +17,8 @@ export class EmpresaService {
         return array.filter(pg => pg?.codigoEmpresa == codigoEmpresa || pg?.linhaId == codigoEmpresa || pg?.linhasId == codigoEmpresa)
     }
 
-    getEmpresasFromContracts = (contracts: Contract[]): Array<Partial<Contract>> => {
+
+    getEmpresasFromContracts = (contracts: Contract[]): Array<Partial<Empresa>> => {
 
         const
             empresas = []
@@ -23,6 +33,50 @@ export class EmpresaService {
         }
         return empresas
     }
+
+
+    getEmpresaDebt = (contracts: Contract[]): Debt[] => {
+
+        const isSameEmpresa = new Set(contracts.map(c => c.codigoEmpresa)).size === 1
+
+        if (!isSameEmpresa)
+            throw new Error('Dude, don\'t mix up different companies...')
+
+        const debtStatement: Debt[] = []
+            , debtDates = new Set(contracts
+                .map(c => c?.vigencia || c.dataAssinatura))
+
+        for (const date of debtDates) {
+            const sameDateContracts = contracts.filter(c => isSameMonthAndYear(c.dataAssinatura, date))
+                , totalValuePerDate = sameDateContracts
+                    .reduce((acc, cur) => acc + cur.valorOutorga, 0)
+
+            debtStatement.push({
+                contratos: sameDateContracts.map(c => c.numeroContrato),
+                data: date,
+                valorOutorga: totalValuePerDate
+            })
+        }
+        return debtStatement
+    }
+
+    getAllDebts = (contracts: Contract[]) => {
+        const globalDebt: any[] = []
+            , empresaCodes: any[] = this.getEmpresasFromContracts(contracts)
+                .map(e => e.codigoEmpresa)
+
+        for (const codigoEmpresa of empresaCodes) {
+            const empresaContracts = this.empresaFilter(contracts, codigoEmpresa)
+                , empresaDebt = this.getEmpresaDebt(empresaContracts)
+            empresaDebt.forEach(d => globalDebt.push({
+                codigoEmpresa,
+                ...d
+            }))
+        }
+
+        return globalDebt
+    }
+
 
     getPaymentsPerEmpresa = (contracts: Contract[], missingPayments: Payment[], codigoEmpresa: number) => {
 
@@ -39,6 +93,7 @@ export class EmpresaService {
         const consolidatedPayments = paymentService.mergePayments(allEmpresaPayments)
         return consolidatedPayments
     }
+
 
     getAllEmpresaPayments = (contracts: Contract[], missingPayments: Payment[]): any[] => {
         const
@@ -60,7 +115,7 @@ export class EmpresaService {
                     pagamentos: empresaPayments
                 })
             i++
-            if (i % 1500 === 0)
+            if (i % 1000 === 0)
                 console.log('allEmpresaPayments: ', i, JSON.stringify(allEmpresaPayments.slice(-3)))
         }
         console.log("##### line 59 ~ EmpresaService ~ Number of payments processed: ", i)
