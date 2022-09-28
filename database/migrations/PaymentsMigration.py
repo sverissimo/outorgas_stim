@@ -1,11 +1,10 @@
-from datetime import date, datetime
+from datetime import datetime
 from data_access_layer.EntityDao import EntityDao
 from importlib.resources import path
 from os import path
 from config import env
 import json
-import sys  # nopep8
-sys.path.append(env.APP_FOLDER)
+import humps
 
 
 class PaymentsMigration:
@@ -32,6 +31,7 @@ class PaymentsMigration:
     def insert_debitos(self):
         debitos = self.json_to_dict('debitos.json')
         debitos = self.parse_dates(debitos)
+        debitos = humps.decamelize(debitos)
 
         debitos_dao = EntityDao('debitos')
         result = debitos_dao.insert_many(debitos)
@@ -39,6 +39,8 @@ class PaymentsMigration:
 
     def insert_payments(self):
         payments = self.json_to_dict('allPayments.json')
-        payments_dao = EntityDao('pagamentos_empresas')
+        payments = humps.decamelize(payments)
+
+        payments_dao = EntityDao('pagamentos')
         result = payments_dao.insert_many(payments)
         return result

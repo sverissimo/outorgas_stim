@@ -37,6 +37,32 @@ def get_missing_payments():
     return jsonify(missing_payments)
 
 
+@app.route('/pagamentos')
+@app.route('/pagamentos/<codigo_empresa>')
+def get_pagamentos_empresas(codigo_empresa=''):
+    if codigo_empresa != '':
+        pagamentos_dao = EntityDao('pagamentos')
+        pagamentos_dao.search_key = 'codigo_empresa'
+        pagamentos_empresas = pagamentos_dao.find(int(codigo_empresa))
+        return jsonify(pagamentos_empresas)
+    else:
+        pagamentos_empresas = EntityDao('pagamentos').list()
+        return jsonify(pagamentos_empresas)
+
+
+@app.route('/debitos')
+@app.route('/debitos/<codigo_empresa>')
+def get_debitos_empresas(codigo_empresa=''):
+    if codigo_empresa != '':
+        debitos_empresas = EntityDao('debitos')
+        debitos_empresas.search_key = 'codigo_empresa'
+        res = debitos_empresas.find(int(codigo_empresa))
+        return jsonify(res)
+    else:
+        debitos_empresas = EntityDao('debitos').list()
+        return jsonify(debitos_empresas)
+
+
 @app.route('/get_contract/<numero_contrato>')
 def get_contract(numero_contrato):
     numero_contrato = numero_contrato.replace('-', '/')

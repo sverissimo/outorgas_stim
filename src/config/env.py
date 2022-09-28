@@ -10,6 +10,7 @@ MONGO_RESTORE_FOLDER = getenv('MONGO_RESTORE_FOLDER')
 
 AUTH_CADTI = getenv("AUTH_CADTI")
 CADTI_HOST = getenv('CADTI_HOST')
+FLASK_ENV = getenv("FLASK_ENV")
 
 """ 
 ENV = getenv("ENV")

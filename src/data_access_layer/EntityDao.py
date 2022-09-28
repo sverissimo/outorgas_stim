@@ -13,11 +13,11 @@ class EntityDao():
         response = self.entity_manager.find({}, {'_id': 0})
         return list(response)
 
-    def find(self, filter: str):
+    def find(self, filter: str or int):
         key = self.search_key
         query = {key: filter}
 
-        response = self.entity_manager.find_one(query)
+        response = self.entity_manager.find_one(query, {'_id': 0})
         return response
 
     def insert_one(self, entity: dict):
