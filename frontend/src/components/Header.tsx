@@ -1,5 +1,5 @@
 import './header.scss'
-import GarageOutlined from '@mui/icons-material/GarageOutlined';
+
 export const Header = () => {
 
     return (
