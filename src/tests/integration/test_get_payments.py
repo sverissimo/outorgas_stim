@@ -2,12 +2,21 @@ from data_access_layer.SicarDao import SicarDao
 
 
 def test_get_payments(get_db_contracts):
+    contracts = [
+        c for c in get_db_contracts if c['numero_contrato'] == '19/2014']
+    """ contracts = [
+        c for c in get_db_contracts if c['codigo_empresa'] == 9030] """
 
-    contract = [
-        c for c in get_db_contracts if c['numero_contrato'] == '19/2014'][0]
+    result = []
 
     sicar_dao = SicarDao()
-    payments = sicar_dao.get_payments(contract)
+    for contract in contracts:
+        print('contract: ', contract)
+        payments = sicar_dao.get_payments(contract)
+        result.append({'c': contract['numero_contrato'], 'p': payments})
+        #print({'c': contract['numero_contrato'], 'p': payments})
+
+    print('result: ', len(contracts))
 
     print('payments length should be 55, 5 with multiple invoices: ', len(payments))
 

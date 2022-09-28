@@ -56,9 +56,9 @@ async def run_tjlp_migrations():
 
 
 def run_payments_migration():
-
+    contracts = EntityDao('contratos').list()
     contract_service = ContractService()
-    contracts = contract_service.list()
+
     contracts_with_payments = contract_service.get_payments(contracts)
     contract_service.insert_payments(contracts_with_payments)
 

@@ -33,8 +33,8 @@ class ContractService:
         log_count = 0
 
         for contract in contracts:
-            payments = SicarDao.get_payments(contract)
-            contract['pagamentos']: payments
+            payments = SicarDao().get_payments(contract)
+            contract['pagamentos'] = payments
 
             log_count += 1
             print(f'@@@@@ ContractService: {log_count} of {len(contracts)}.\n')
