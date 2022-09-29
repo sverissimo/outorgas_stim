@@ -1,19 +1,18 @@
+import { useState, useEffect } from "react";
 import { useQuery } from "react-query"
-import { Api } from "../api/Api"
-import MUIDataTable, { FilterType, MUIDataTableOptions } from 'mui-datatables';
-import { columns } from '../config/tableColumns'
-import { Container, ThemeProvider } from "@mui/material";
-import { getMuiTheme } from "../config/tableStyles";
-import '../styles.scss'
-import { textLabels } from "../config/tableLabels";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useEffect } from "react";
+import MUIDataTable, { FilterType, MUIDataTableOptions } from 'mui-datatables';
+import { Container, ThemeProvider } from "@mui/material";
+import { Api } from "../api/Api"
+import { columns } from '../config/tableColumns'
+import { getMuiTheme } from "../config/tableStyles";
+import { textLabels } from "../config/tableLabels";
 import { Contract } from '../interfaces/Contract'
 import { Tjlp } from "../interfaces/Tjlp";
 import { jsonToXlsx } from "../utils/exportToXls";
 import { tableDataToJson } from "../utils/tableDataToJson";
 import { getGlobalDebt } from "../services/getGlobalDebt";
+import '../styles.scss'
 
 type State = {
     contracts: Contract[]
@@ -62,7 +61,7 @@ export const OutorgaTable = () => {
         rioDoce = contracts.filter((el: any) => el.codigoEmpresa === 70008)
         , rioDoce2 = missingPayments.filter((el: any) => el.codigoEmpresa === 70008)
 
-        , tst = getGlobalDebt(tjlpBndes, rioDoce, rioDoce2)
+    //, tst = getGlobalDebt(tjlpBndes, rioDoce, rioDoce2)
     //, tst = getGlobalDebt(tjlpBndes, contracts, missingPayments)
     //console.log("🚀 ~ file: OutorgaTable.tsx ~ line 49 ~ OutorgaTable ~ tst", tst)
 

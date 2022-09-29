@@ -1,12 +1,25 @@
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+
 import './header.scss'
+import { HeaderMenuButton } from './HeaderMenuButton';
 
-export const Header = () => {
-
+export function Header() {
     return (
         <div className="headerContainer">
-            <h3 className='headerText'>
-                Sistema de gestão de outorgas do Transporte Intermunicipal de MG
-            </h3>
+            <Toolbar>
+                <HeaderMenuButton />
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    Sistema de gestão de outorgas do Transporte Intermunicipal de MG
+                </Typography>
+                {/*     <Button color="inherit">Login</Button> */}
+            </Toolbar>
         </div>
-    )
+
+
+
+
+
+
+    );
 }

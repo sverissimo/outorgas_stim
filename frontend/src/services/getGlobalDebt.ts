@@ -31,8 +31,8 @@ export function getGlobalDebt(tjlp: Tjlp[], contracts: Contract[], missingPaymen
 
     }
     const pg2 = missingPayments.map(a => a.valor).reduce((acc, b) => acc + b, 0)
-    console.log("🚀 ~ file: getGlobalDebt.ts ~ line 21 ~ getGlobalDebt ~ count2",
-        globalDebt.sort().reverse().slice(0, 10))
+    /* console.log("🚀 ~ file: getGlobalDebt.ts ~ line 21 ~ getGlobalDebt ~ count2",
+        globalDebt.sort().reverse().slice(0, 10)) */
     /*     console.log("🚀 ~ file: getGlobalDebt.ts ~ line 34 ~ getGlobalDebt ~ pg", pg + pg2)
         console.log("🚀 ~ file: getGlobalDebt.ts ~ line 55 ~ getGlobalDebt ~ count", count)
      */
