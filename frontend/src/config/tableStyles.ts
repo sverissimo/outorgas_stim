@@ -7,7 +7,9 @@ export const getMuiTheme = () => createTheme({
             styleOverrides: {
                 body: {
                     cursor: "pointer !important",
-                    fontSize: '0.6rem !important'
+                    fontSize: '0.6rem !important',
+                    maxWidth: '200px !important'
+
                 },
                 root: { fontFamily: 'inherit' }, //Aplica a todas as células da tabela
                 head: {

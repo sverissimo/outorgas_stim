@@ -31,13 +31,13 @@ export function firstCommonDateIndex(stringDate: string, tjlpArray: Tjlp[]): num
 
 
 export function isSameMonthAndYear(date1: any, date2: any) {
-    date1 = stringToDateObj(date1)
-    date2 = stringToDateObj(date2)
+    const date1Obj = stringToDateObj(date1)
+        , date2Obj = stringToDateObj(date2)
 
-    const date1Month = date1.getMonth()
-        , date2Month = date2.getMonth()
-        , date1Year = date1.getFullYear()
-        , date2Year = date2.getFullYear()
+    const date1Month = date1Obj.getMonth()
+        , date2Month = date2Obj.getMonth()
+        , date1Year = date1Obj.getFullYear()
+        , date2Year = date2Obj.getFullYear()
 
     return date1Month === date2Month && date1Year === date2Year
 }
@@ -50,11 +50,11 @@ export function addMonth(date: any) {
 }
 
 
-export function stringToDateObj(date: string) {
+export function stringToDateObj(date: string | Date) {
 
     const validDateFormat = typeof date === 'string' && date.match(/^\d{2}\/\d{2}\/\d{4}$/)
 
-    if (validDateFormat && !isValid(date)) {
+    if (validDateFormat && !isValid(date) && typeof date === 'string') {
         const dateArray = date.split(/\/|-/)
         date = dateArray[2] + '-' + dateArray[1] + '-' + dateArray[0];
     }

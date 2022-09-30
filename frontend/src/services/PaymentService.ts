@@ -5,15 +5,47 @@ import { isSameMonthAndYear, addMonth, stringToDateObj } from "../utils/dateUtil
 
 export class PaymentService {
 
+    countGuiasPerPayment = (payments: any[]) => {
+        const
+            temp = []
+
+        for (const p of payments) {
+            if (Array.isArray(p))
+                temp.push(...p)
+            else
+                temp.push(p)
+        }
+
+        const guias = temp
+            .map(p => p.numeroGuia.split(', '))
+            .reduce((acc, curr) => acc.concat(curr))
+
+        /* guias.forEach(g => {
+            if (g.length > 16)
+                console.log("🚀 ~ file: PaymentService.ts ~ line 26 ~ PaymentService ~ g", g)
+        }) */
+
+        //console.log("🚀 ~ file: PaymentService.ts ~ line 24 ~ PaymentService ~ temp", guias.slice(0, 12))
+        return { guias, count: guias.length, objCount: temp.length }
+
+    }
+
     getFirstPaymentDate = (payments: Payment[]) => {
         if (payments.length === 0) {
             throw new Error('*** Cannot get firstDate of payments of an empty array!!!')
         }
-        const firstPayment = payments
-            .reduce((acc, cur) => {
-                return new Date(acc.dataPagamento).getTime() > new Date(cur.dataPagamento).getTime() ? cur : acc
+        const fixedDatesPgs = payments
+            .map(p => {
+                if (typeof p.dataPagamento === 'string')
+                    return { ...p, dataPagamento: stringToDateObj(p.dataPagamento) }
+                else
+                    return p
             })
+
+        const firstPayment = fixedDatesPgs
+            .sort((a, b) => new Date(a.dataPagamento).getTime() - new Date(b.dataPagamento).getTime())[0]
             .dataPagamento
+
         const firstPaymentDate = stringToDateObj(firstPayment)
         return firstPaymentDate
     }

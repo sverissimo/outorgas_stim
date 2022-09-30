@@ -41,3 +41,18 @@ export const exportToXlsx = (fileName: string, ws: XLSX.WorkSheet) => {
     FileSaver.saveAs(data2, fileName + fileExtension)
 }
 
+export const getXlsFileName = (razaoSocial: string = '') => {
+    const empName = razaoSocial
+        .replace('EMPRESA ', '')
+        .replace('VIACAO ', '')
+        .replace('VIAÇÃO ', '')
+        .replace('.', '')
+        .replace('.', '')
+        .replace('LTDA', '')
+        .replace('SA', '')
+        .replace('S/A', '')
+        .trim()
+        .slice(0, 14)
+        .trim()
+    return empName
+}

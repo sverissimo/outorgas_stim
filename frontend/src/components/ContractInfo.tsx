@@ -11,7 +11,7 @@ const { container, titleContainer, cell, cellContainer, cellTitle } = contractIn
 
 export const ContractInfo = (props: IProps) => {
     const { contract } = props
-        , a = Object.entries(contract)
+        , entries = Object.entries(contract)
 
     return (
         <div className={container}>
@@ -20,7 +20,7 @@ export const ContractInfo = (props: IProps) => {
             </div>
             <div className={cellContainer}>
                 {
-                    a.map(([k, v], i) =>
+                    entries.map(([k, v], i) =>
                         <div className={cell} key={i}>
                             <span className={cellTitle}>
                                 {contractInfoFields.find(el => el.name === k)?.label || k}

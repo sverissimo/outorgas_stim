@@ -1,37 +1,60 @@
 import { Debt } from "../interfaces/Debt"
 import { EmpresaPayments } from "../interfaces/EmpresaPayments"
+import { Payment } from "../interfaces/Payment"
+import { PaymentView } from "../interfaces/PaymentView"
 import { Tjlp } from "../interfaces/Tjlp"
-import { firstCommonDateIndex, isSameMonthAndYear, stringToDateObj } from "../utils/dateUtil"
+import { isSameMonthAndYear, stringToDateObj } from "../utils/dateUtil"
 import { adjustTjlp } from "./adjustTjlp"
+import { applyTjlp } from "./applyTjlp"
+import { DebtService } from "./DebtService"
 
-export const getEmpresaDebt = (empresaDebts: Debt[], empresaPayments: EmpresaPayments[], tjlp: Tjlp[]) => {
+export const getEmpresaDebt = (debts: Debt[], payments: Payment[], tjlp: Tjlp[]) => {
 
     const
-        debts = empresaDebts.filter(e => e.codigoEmpresa === 9060)
-        , payments = empresaPayments.find(e => e.codigoEmpresa === 9060)!.pagamentos
-        , adjustedTjlp = adjustTjlp(debts, tjlp)
+        /* debts = empresaDebts.filter(e => e.codigoEmpresa === 9060)
+        , payments = empresaPayments.find(e => e.codigoEmpresa === 9060)!.pagamentos */
+        adjustedTjlp = adjustTjlp(debts, tjlp)
+        , empresaStatements = []
 
-        , empresaStatement = []
+    let saldoDevedor = DebtService.getFirstMonthDebt(debts)
 
-    let amount = debts[0].valorOutorga
-
-    /* const tst = stringToDateObj(adjustedTjlp[110].mes)
-    console.log("🚀 ~ file: getEmpresaDebt.ts ~ line 19 ~ getEmpresaDebt ~ tst", tst)
- */
+    let index = 0
     for (const tjlp of adjustedTjlp) {
         const
-            newDebtThisMonth = debts.find(d => isSameMonthAndYear(d.data, tjlp.mes))
+            newOutorga = debts.find(d => index > 0 && isSameMonthAndYear(d.data, tjlp.mes))
             , monthPayment = payments.find(pg => isSameMonthAndYear(pg.dataPagamento, tjlp.mes))
+            , newOutorgaValue = newOutorga?.valorOutorga || 0
+            , valorPago = monthPayment?.valor || 0
 
-        if (newDebtThisMonth)
-            amount += newDebtThisMonth.valorOutorga
+        let { tjlpRate, tjlpEfetiva } = applyTjlp(index, adjustedTjlp, saldoDevedor)
 
-        if (monthPayment)
-            amount -= monthPayment.valor
-        console.log("🚀 ~ file: getEmpresaDebt.ts ~ line 28 ~ getEmpresaDebt ~ amount", amount, monthPayment)
+        if (saldoDevedor < 0) // Não corrige se o saldo for negativo
+            tjlpEfetiva = 0
+
+        const saldoAntesPg = tjlpEfetiva + saldoDevedor
+
+        saldoDevedor += newOutorgaValue //Se for o caso de contratos assinados em datas diferentes
+        saldoDevedor = saldoDevedor + tjlpEfetiva - valorPago
+
+        const statement: PaymentView = {
+            mes: stringToDateObj(tjlp.mes),
+            numeroGuia: monthPayment?.numeroGuia,
+            tjlp: tjlpRate,
+            tjlpEfetiva,
+            saldoAntesPg,
+            valorPago,
+            saldoDevedor
+        }
+        if (statement.mes <= new Date()) //Limita a listagem do débito à presente data (tjlp pode estar 2meses a frente)
+            empresaStatements.push(statement)
+        index++
     }
-
-    return amount
-
-
+    return empresaStatements
 }
+
+/*
+---------------------DEPOIS DE RODAR OS STATEMENTS< ADICIONAR NOVOS CONTRATOS COM RESPECTIVA CARÊNCIA            
+
+Ao criar o debtArray, criar regra para considerar carência de contratos
+ 
+*/

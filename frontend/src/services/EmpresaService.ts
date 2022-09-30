@@ -50,6 +50,7 @@ export class EmpresaService {
             const sameDateContracts = contracts.filter(c => isSameMonthAndYear(c.dataAssinatura, date))
                 , totalValuePerDate = sameDateContracts
                     .reduce((acc, cur) => acc + cur.valorOutorga, 0)
+            console.log("🚀 ~ file: EmpresaService.ts ~ line 53 ~ EmpresaService ~ sameDateContracts", sameDateContracts)
 
             debtStatement.push({
                 contratos: sameDateContracts.map(c => c.numeroContrato),
