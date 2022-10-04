@@ -11,7 +11,6 @@ import { Contract } from '../interfaces/Contract'
 import { Tjlp } from "../interfaces/Tjlp";
 import { jsonToXlsx } from "../utils/exportToXls";
 import { tableDataToJson } from "../utils/tableDataToJson";
-import { getGlobalDebt } from "../services/getGlobalDebt";
 import '../styles.scss'
 
 type State = {
@@ -55,15 +54,6 @@ export const OutorgaTable = () => {
     if (error)
         return <h4>An error has occurred: {JSON.stringify(error)} </h4>
 
-    //const tst = useMemo(() => getGlobalDebt(tjlpBndes, contracts), [contracts])
-
-    const
-        rioDoce = contracts.filter((el: any) => el.codigoEmpresa === 70008)
-        , rioDoce2 = missingPayments.filter((el: any) => el.codigoEmpresa === 70008)
-
-    //, tst = getGlobalDebt(tjlpBndes, rioDoce, rioDoce2)
-    //, tst = getGlobalDebt(tjlpBndes, contracts, missingPayments)
-    //console.log("🚀 ~ file: OutorgaTable.tsx ~ line 49 ~ OutorgaTable ~ tst", tst)
 
 
     const options: MUIDataTableOptions = {
