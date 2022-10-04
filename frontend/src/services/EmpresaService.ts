@@ -50,7 +50,7 @@ export class EmpresaService {
             const sameDateContracts = contracts.filter(c => isSameMonthAndYear(c.dataAssinatura, date))
                 , totalValuePerDate = sameDateContracts
                     .reduce((acc, cur) => acc + cur.valorOutorga, 0)
-            console.log("🚀 ~ file: EmpresaService.ts ~ line 53 ~ EmpresaService ~ sameDateContracts", sameDateContracts)
+            //console.log("🚀 ~ file: EmpresaService.ts ~ line 53 ~ EmpresaService ~ sameDateContracts", sameDateContracts)
 
             debtStatement.push({
                 contratos: sameDateContracts.map(c => c.numeroContrato),
@@ -87,11 +87,12 @@ export class EmpresaService {
         const paymentService = new PaymentService()
             , contractPayments = paymentService.getPaymentsFromContracts(filteredContracts)
             , allEmpresaPayments = contractPayments.concat(filteredMissingPayments)
+            , sanitizedPayments = paymentService.sanitizePayments(allEmpresaPayments, codigoEmpresa)
 
         if (!allEmpresaPayments.length)
             return []
 
-        const consolidatedPayments = paymentService.mergePayments(allEmpresaPayments)
+        const consolidatedPayments = paymentService.mergePayments(sanitizedPayments)
         return consolidatedPayments
     }
 
@@ -103,9 +104,8 @@ export class EmpresaService {
             , allEmpresaPayments = []
 
         let i = 0
-        console.log("🚀 ~ file: EmpresaService.ts ~ line 44 ~ EmpresaService ~ empresaCodes", empresaCodes)
+
         for (let codigoEmpresa of empresaCodes) {
-            //codigoEmpresa = codigoEmpresa || 0
             if (!codigoEmpresa)
                 continue
 
@@ -119,11 +119,7 @@ export class EmpresaService {
             if (i % 1000 === 0)
                 console.log('allEmpresaPayments: ', i, JSON.stringify(allEmpresaPayments.slice(-3)))
         }
-        console.log("##### line 59 ~ EmpresaService ~ Number of payments processed: ", i)
 
         return allEmpresaPayments
     }
-
-
-
 }

@@ -1,5 +1,4 @@
 import { Contract } from "../interfaces/Contract";
-import { Payment } from "../interfaces/Payment";
 import { Tjlp } from "../interfaces/Tjlp";
 import { getDebt } from "../services/getDebt";
 

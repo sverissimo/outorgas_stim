@@ -1,5 +1,6 @@
 import { Contract } from "../interfaces/Contract";
 import { Payment } from "../interfaces/Payment";
+import { Tuple } from "../interfaces/Tuple";
 import { isSameMonthAndYear, addMonth, stringToDateObj } from "../utils/dateUtil";
 
 
@@ -61,6 +62,11 @@ export class PaymentService {
         return foundPayments
     }
 
+    /**
+     * Funde pagamentos com linhas identificadas com não identificadas na planilha do SICAR, tendo como base a empresa
+     * @param payments 
+     * @returns 
+     */
     mergePayments = (payments: Payment[]) => {
         const
             mergedPayments = [] as Payment[]
@@ -93,5 +99,22 @@ export class PaymentService {
             pgDate = addMonth(pgDate)
         }
         return mergedPayments
+    }
+
+    sanitizePayments = (payments: Payment[], codigoEmpresa: number) => {
+        const wrongPayments: Tuple[] = [
+            ['001620-2013-0805', 9096],
+            ['002653-2013-0805', 9112],
+            ['000119-2013-0805', 9338],
+            ['000727-2016-0805', 9038],
+            ['000726-2016-0805', 9364],
+            ['000871-2013-0805', 9369],
+        ]
+        const sanitizedPayments = payments.filter(p => {
+            if (!wrongPayments.some(wrong => wrong[0] === p.numeroGuia && wrong[1] === codigoEmpresa))
+                return p
+        })
+
+        return sanitizedPayments
     }
 }

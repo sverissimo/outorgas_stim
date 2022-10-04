@@ -4,7 +4,7 @@ import allPayments from '../../../data/allPayments.json'
 import allPayments_old from '../../../data/allPayments_old.json'
 import { PaymentService } from '../services/PaymentService'
 import { stringToDateObj } from '../utils/dateUtil'
-import { EmpresaService } from '../services/EmpresaService'
+
 
 const
     paymentService = new PaymentService()
@@ -15,19 +15,26 @@ describe('Test PaymentService', () => {
     it('Test mergePayments method', () => {
         //Teste por amostragem utilizando contratos da Viação RioDoce (código 9030)
         const
-            saoCristovaoMissing = empresaFilter(missingPayments, 9370)
-            , sampleContracts = empresaFilter(contracts, 9370)
+            saoCristovaoMissing = empresaFilter(missingPayments, 70009)
+            , sampleContracts = empresaFilter(contracts, 70009)
             , saoCristovaoFound = paymentService.getPaymentsFromContracts(sampleContracts)
 
 
         const allPayments = saoCristovaoFound.concat(saoCristovaoMissing)
         const tst = paymentService.mergePayments(allPayments)
+        console.log("🚀 ~ file: paymentService.test.ts ~ line 25 ~ it ~ tst", tst.length)
+        //console.log("🚀 ~ file: paymentService.test.ts ~ line 25 ~ it ~ tst", tst[0])
 
-        console.log("🚀 ~ file: paymentServiceTest.test.ts ~ line 24 ~ Text index 25...", tst.slice(0, 15))
-        console.log("🚀 ~ file: paymentServiceTest.test.ts ~ line 24 ~ Text index 25...", tst[25])
-        console.log("🚀 ~ file: paymentServiceTest.test.ts ~ line 25 ~ Merged payments length: ", tst.length)
+        for (const element of tst) {
+            if (element.numeroGuia.length > 16)
+                console.log(element.numeroGuia)
+        };
 
-        expect(tst[25].numeroGuia).toBe('002263-2013-0805, 002249-2013-0805')
+        /*  console.log("🚀 ~ file: paymentServiceTest.test.ts ~ line 24 ~ Text index 25...", tst.slice(0, 15))
+         console.log("🚀 ~ file: paymentServiceTest.test.ts ~ line 24 ~ Text index 25...", tst[25])
+         console.log("🚀 ~ file: paymentServiceTest.test.ts ~ line 25 ~ Merged payments length: ", tst.length)
+ 
+         expect(tst[25].numeroGuia).toBe('002263-2013-0805, 002249-2013-0805') */
     })
 
     it('Test count all payments in DB', () => {
@@ -57,12 +64,17 @@ describe('Test PaymentService', () => {
         const
             missingOnes = []
             , allPaymentsArray = allPayments.map(p => p.pagamentos)
-            , { guias } = paymentService.countGuiasPerPayment(allPaymentsArray)
+            , { guias, count } = paymentService.countGuiasPerPayment(allPaymentsArray)
+        console.log("🚀 ~ file: paymentService.test.ts ~ line 68 ~ it ~ count", count)
 
         for (const p of missingPayments) {
-            if (!guias.includes(p.numeroGuia))
+            if (!guias.includes(p.numeroGuia)) {
+
                 missingOnes.push(p.codigoEmpresa)
+                console.log("🚀 ~ file: paymentService.test.ts ~ line 72 ~ it ~ p", p)
+            }
         }
+        console.log("🚀 ~ file: paymentService.test.ts ~ line 67 ~ it ~ missingOnes", missingOnes)
         console.log("🚀 ~ file: paymentService.test.ts ~ line 67 ~ it ~ missingOnes", missingOnes.length)
     })
 
@@ -80,15 +92,15 @@ describe('Test PaymentService', () => {
         console.log("🚀 ~ file: paymentService.test.ts ~ line 93 ~ it ~ objCount", fpCount)
         console.log("🚀 ~ file: paymentService.test.ts ~ line 88 ~ it ~  count", count)
 
-        const fkdp = []
+        const notFound = []
         for (const p of guiasFP) {
             if (!guias.includes(p))
-                fkdp.push(p)
+                notFound.push(p)
         }
-        //console.log("🚀 ~ file: paymentService.test.ts ~ line 67 ~ it ~ fkdp", mp.length)
-        //console.log("🚀 ~ file: paymentService.test.ts ~ line 67 ~ it ~ fkdp", fkdp)
-        console.log("🚀 ~ file: paymentService.test.ts ~ line 67 ~ it ~ fkdp", fkdp.length)
-        //console.log("🚀 ~ file: paymentService.test.ts ~ line 67 ~ it ~ fkdp", foundPayments.length)
+        console.log("🚀 ~ file: paymentService.test.ts ~ line 67 ~ it ~ notFound", notFound.length)
+        //console.log("🚀 ~ file: paymentService.test.ts ~ line 67 ~ it ~ notFound", mp.length)
+        //console.log("🚀 ~ file: paymentService.test.ts ~ line 67 ~ it ~ notFound", notFound)
+        //console.log("🚀 ~ file: paymentService.test.ts ~ line 67 ~ it ~ notFound", foundPayments.length)
     })
 
 
@@ -132,10 +144,24 @@ describe('Test PaymentService', () => {
 
             //console.log("🚀 ~ file: paymentService.test.ts ~ line 88 ~ it ~ contract1stDates[i]", contract1stDates[i], firstPg)
             if (!ok)
-                console.log(pgs[0], contract1stDates[i])
+                console.log('*******************', pgs[0], contract1stDates[i])
             i++
         }
     })
+
+    it('Find duplicate payments', () => {
+        const { guias } = paymentService.countGuiasPerPayment(allPayments.map(p => p.pagamentos))
+        //@ts-ignore
+        const duplicates = guias.reduce((acc, el, i, arr) => {
+            //@ts-ignore
+            if (arr.indexOf(el) !== i && acc.indexOf(el) < 0)
+                //@ts-ignore
+                acc.push(el)
+            return acc
+        }, [])
+        console.log("🚀 ~ file: paymentService.test.ts ~ line 157 ~ duplicates ~ a", duplicates)
+    })
+
 })
 
 export { }

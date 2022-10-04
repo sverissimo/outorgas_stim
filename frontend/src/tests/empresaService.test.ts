@@ -1,6 +1,7 @@
 import missingPayments from './mockData/missing_payments.json'
 import contracts from './mockData/allContractsAndPayments.json'
 import { EmpresaService } from '../services/EmpresaService'
+import { PaymentService } from '../services/PaymentService'
 
 const empresaService = new EmpresaService()
 
@@ -17,13 +18,12 @@ describe('Test EmpresaService', () => {
     })
 
     it('Test getAllEmpresaPayments method', () => {
+        const
+            allEmpresaPayments = empresaService.getAllEmpresaPayments(contracts, missingPayments)
+            , { count } = new PaymentService().countGuiasPerPayment(allEmpresaPayments.map(p => p.pagamentos))
 
-        const allEmpresaPayments = empresaService.getAllEmpresaPayments(contracts, missingPayments)
-
-        console.log("🚀 ~ file: empresaService.test.ts ~ line 22 ~ it ~ allEmpresaPayments", allEmpresaPayments.length)
-        console.log("🚀 ~ file: empresaService.test.ts ~ line 22 ~ it ~ allEmpresaPayments", allEmpresaPayments.slice(0, 3))
-        //const allEmpresaPayments = empresaService.getAllEmpresaPayments(contracts.slice(-752, -600), missingPayments)
-        //console.log("🚀 ~ file: empresaService.test.ts ~ line 22 ~ it ~ allEmpresaPayments", allEmpresaPayments.slice(0, 20))
+        console.log("🚀 ~ file: empresaService.test.ts ~ line 27 - Guias count: ", count)
+        expect(count).toBe(12337)
     })
 
 })
