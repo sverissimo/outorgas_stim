@@ -14,8 +14,8 @@ class PaymentsMigration:
         file_path = path.join(app_folder, 'data', file_name)
 
         with open(file_path, 'r') as f:
-            debitos = json.load(f)
-            return debitos
+            data = json.load(f)
+            return data
 
     def parse_dates(self, debitos):
         for debito in debitos:

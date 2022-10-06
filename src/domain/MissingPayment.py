@@ -10,7 +10,7 @@ class MissingPayment(object):
     razao_social: str = None
     valor: str = None
     data_pagamento: date = None
-    linha_id: str = None
+    linhas_id: str = None
 
     """  def __getitem__(self, item):
         return getattr(self, item)

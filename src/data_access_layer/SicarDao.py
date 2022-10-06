@@ -1,4 +1,5 @@
 from dataclasses import asdict
+from utils.add_codigo_empresa import parse
 from typing import List
 import pandas as pd
 from config import env
@@ -25,6 +26,33 @@ class SicarDao:
         rename_columns(guias)
         return guias
 
+    def sanitize_and_filter_payments(self, guias: pd.DataFrame, contract: dict):
+        linha = str(contract["linhas_id"][0])
+
+        contracts_to_fix = ['17/2015', '30/2015']
+        wrong_lines = ['4425', '4563 4602']
+
+        try:
+            index = contracts_to_fix.index(contract['numero_contrato'])
+            print('index: ', index)
+
+            lines = rf'{linha}|\b{wrong_lines[index]}\b'
+
+            cp = guias.loc[guias.linhas_id.str.contains(lines)]
+
+            cp = cp.assign(
+                razao_social=lambda d: d['razao_social'].apply(lambda x: parse(x)))
+
+            cp.drop(cp[cp['razao_social'] != parse(contract['razao_social'])
+                       ].index,                    inplace=True)
+            cp.reset_index(inplace=True)
+            return cp
+
+        except ValueError:
+            contrato_payments = guias.loc[guias.linhas_id.str.contains(linha)]
+            contrato_payments.reset_index(inplace=True)
+            return contrato_payments
+
     def get_missing_payments(self, linhas: List[Linha]):
 
         guias = self.parse_and_read_xlsx(usecols='A:C,G,L,M')
@@ -48,7 +76,7 @@ class SicarDao:
 
         return missing_payments
 
-        """ 
+        """
         linhas = list(map(lambda x: x['linhas_id'], missing_payments))
         print('*******************Found: \n\n', found)
         print('*******************Missing: \n\n', linhas)
@@ -58,10 +86,8 @@ class SicarDao:
     def get_payments(self, contract: dict) -> List[Pagamento]:
 
         guias = self.parse_and_read_xlsx()
-        linha = str(contract["linhas_id"][0])
-
-        contrato_payments = guias.loc[guias.linhas_id.str.contains(linha)]
-        contrato_payments.reset_index(inplace=True)
+        contrato_payments = self.sanitize_and_filter_payments(guias, contract)
+        print(contrato_payments.head(2))
 
         pagamentos = []
         n_contrato = contract['numero_contrato']
