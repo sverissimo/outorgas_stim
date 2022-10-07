@@ -14,7 +14,7 @@ def test_tjlp_migration():
     run_tjlp_migrations()
 
 
-def test_payments_migration():  # Require linhas/contracts migrations first
+def test_add_payments_to_contracts_migration():  # Require linhas/contracts migrations first
     run_payments_migration()
 
 

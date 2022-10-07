@@ -1,7 +1,6 @@
 import missingPayments from './mockData/missing_payments.json'
 import contracts from './mockData/allContractsAndPayments.json'
 import allPayments from '../../../data/allPayments.json'
-import allPayments_old from '../../../data/allPayments_old.json'
 import { PaymentService } from '../services/PaymentService'
 import { stringToDateObj } from '../utils/dateUtil'
 
@@ -46,18 +45,7 @@ describe('Test PaymentService', () => {
             return acc + numeroGuias
         }, 0)
 
-        const count2 = allPayments_old.reduce((acc, curr) => {
-            const numeroGuias = curr.pagamentos
-                .map(p => p.numeroGuia.split(',').length)
-                .reduce((acc, curr) => acc + curr)
-            return acc + numeroGuias
-        }, 0)
-        const count3 = allPayments[0].pagamentos[1].numeroGuia.split(',').length
-        const count4 = allPayments[0].pagamentos[2].numeroGuia.split(',').length
         console.log("🚀 ~ file: paymentService.test.ts ~ line 34 ~ it ~ count", count)
-        console.log("🚀 ~ file: paymentService.test.ts ~ line 34 ~ it ~ count", count2)
-        console.log("🚀 ~ file: paymentService.test.ts ~ line 34 ~ it ~ count", count3)
-        console.log("🚀 ~ file: paymentService.test.ts ~ line 34 ~ it ~ count", count4)
     })
 
     it('Test missingPayments inside allPayments', () => {

@@ -23,7 +23,15 @@ describe('Test EmpresaService', () => {
             , { count } = new PaymentService().countGuiasPerPayment(allEmpresaPayments.map(p => p.pagamentos))
 
         console.log("🚀 ~ file: empresaService.test.ts ~ line 27 - Guias count: ", count)
-        expect(count).toBe(12337)
+        expect(count).toBe(12339)
     })
+
+    test('Test Outorgas global balance', async () => {
+
+
+
+        //return globalDebt
+    })
+
 
 })
