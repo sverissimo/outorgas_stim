@@ -3,6 +3,7 @@ import { Contract } from "./pages/Contract"
 import { EmpresasDebt } from "./pages/EmpresasDebt"
 import { OutorgaTable } from "./pages/OutorgaTable"
 import { Migrations } from "./api/Migrations"
+import { Relatorios } from "./pages/Relatorios"
 
 export const AppRouter = () => {
     return (
@@ -12,6 +13,7 @@ export const AppRouter = () => {
             <Route path='/contrato/:numeroContrato' element={<Contract />} />
             <Route path='/empresas' element={<EmpresasDebt />} />
             <Route path='/migrations' element={<Migrations />} />
+            <Route path='/relatorios' element={<Relatorios />} />
             {/* <Route path=':numeroContrato' />
 
             </Route> */}

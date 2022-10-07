@@ -2,7 +2,8 @@ import { Contract } from "../interfaces/Contract"
 import { Empresa } from "../interfaces/Empresa"
 import { Payment } from "../interfaces/Payment"
 import { PaymentService } from "./PaymentService"
-import { isSameMonthAndYear } from "../utils/dateUtil";
+import { isSameMonthAndYear, stringToDateObj } from "../utils/dateUtil";
+import { EmpresaPayments } from "../interfaces/EmpresaPayments";
 
 export interface Debt {
     contratos: string[]
@@ -44,7 +45,12 @@ export class EmpresaService {
 
         const debtStatement: Debt[] = []
             , debtDates = new Set(contracts
-                .map(c => c?.vigencia || c.dataAssinatura))
+                .map(c => {
+                    const
+                        contractDate = stringToDateObj(c?.vigencia || c.dataAssinatura)
+                        , normalizedDate = contractDate.setDate(1)
+                    return new Date(normalizedDate).toLocaleDateString()
+                }))
 
         for (const date of debtDates) {
             const sameDateContracts = contracts.filter(c => isSameMonthAndYear(c.dataAssinatura, date))
@@ -54,7 +60,7 @@ export class EmpresaService {
 
             debtStatement.push({
                 contratos: sameDateContracts.map(c => c.numeroContrato),
-                data: date,
+                data: sameDateContracts[0]?.dataAssinatura || date,
                 valorOutorga: totalValuePerDate
             })
         }
@@ -63,8 +69,14 @@ export class EmpresaService {
 
     getAllDebts = (contracts: Contract[]) => {
         const globalDebt: any[] = []
-            , empresaCodes: any[] = this.getEmpresasFromContracts(contracts)
+            , empresaCodes: Set<number> = new Set(
+                this.getEmpresasFromContracts(contracts)
+                    .map(e => e.codigoEmpresa!))
+
+            , empresaCodes2: any[] = this.getEmpresasFromContracts(contracts)
                 .map(e => e.codigoEmpresa)
+        console.log("🚀 ~ file: EmpresaService.ts ~ line 72 ~ EmpresaService ~ empresaCodes", empresaCodes.size)
+        console.log("🚀 ~ file: EmpresaService.ts ~ line 72 ~ EmpresaService ~ empresaCodes2", empresaCodes2.length)
 
         for (const codigoEmpresa of empresaCodes) {
             const empresaContracts = this.empresaFilter(contracts, codigoEmpresa)
@@ -97,7 +109,7 @@ export class EmpresaService {
     }
 
 
-    getAllEmpresaPayments = (contracts: Contract[], missingPayments: Payment[]): any[] => {
+    getAllEmpresaPayments = (contracts: Contract[], missingPayments: Payment[]): EmpresaPayments[] => {
         const
             empresas = this.getEmpresasFromContracts(contracts)
             , empresaCodes = empresas.map(e => e.codigoEmpresa)

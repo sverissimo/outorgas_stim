@@ -38,12 +38,14 @@ describe('Test PaymentService', () => {
 
     it('Test count all payments in DB', () => {
 
-        const count = allPayments.reduce((acc, curr) => {
-            const numeroGuias = curr.pagamentos
-                .map(p => p.numeroGuia.split(',').length)
-                .reduce((acc, curr) => acc + curr)
-            return acc + numeroGuias
-        }, 0)
+        const count = allPayments
+            .filter(p => p.codigoEmpresa === 70008)
+            .reduce((acc, curr) => {
+                const numeroGuias = curr.pagamentos
+                    .map(p => p.numeroGuia.split(',').length)
+                    .reduce((acc, curr) => acc + curr)
+                return acc + numeroGuias
+            }, 0)
 
         console.log("🚀 ~ file: paymentService.test.ts ~ line 34 ~ it ~ count", count)
     })

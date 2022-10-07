@@ -1,5 +1,8 @@
+import { Contract } from "../interfaces/Contract";
 import { Debt } from "../interfaces/Debt";
 import { isSameMonthAndYear } from "../utils/dateUtil";
+import { EmpresaService } from "./EmpresaService";
+
 
 export class DebtService {
 
@@ -14,13 +17,13 @@ export class DebtService {
                 .map(d => d.valorOutorga)
                 .reduce((prev, curr) => prev + curr)
 
-
-        /* , TotalDebt = debts
-            .map(d => d.valorOutorga)
-            .reduce((prev, curr) => prev + curr)
-    console.log("🚀 ~ file: DebtService.ts ~ line 20 ~ DebtService ~ TotalDebt", TotalDebt) */
-
-
         return firstMonthTotalDebt
+    }
+
+    static getAllDebtsPerMonth = (contracts: Contract[]) => {
+        const allDebts = new EmpresaService().getAllDebts(contracts)
+        console.log("🚀 ~ file: DebtService.ts ~ line 25 ~ DebtService ~ allDebts", allDebts.slice(0, 1))
+        console.log("🚀 ~ file: DebtService.ts ~ line 25 ~ DebtService ~ allDebts", allDebts.length)
+
     }
 }

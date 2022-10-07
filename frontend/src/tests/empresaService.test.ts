@@ -2,6 +2,7 @@ import missingPayments from './mockData/missing_payments.json'
 import contracts from './mockData/allContractsAndPayments.json'
 import { EmpresaService } from '../services/EmpresaService'
 import { PaymentService } from '../services/PaymentService'
+import { toCurrency } from '../utils/formatNumber'
 
 const empresaService = new EmpresaService()
 
@@ -26,12 +27,30 @@ describe('Test EmpresaService', () => {
         expect(count).toBe(12339)
     })
 
-    test('Test Outorgas global balance', async () => {
+    it('Test payments sum', async () => {
+        const
+            allEmpresaPayments = empresaService.getAllEmpresaPayments(contracts, missingPayments)
+            , globalPaymentsValue = allEmpresaPayments
+                .map(e => e.pagamentos)
+                .reduce((acc, curr) => acc.concat(curr))
+                .reduce((acc, curr) => acc + curr.valor, 0)
 
+        console.log("🚀 ~ file: empresaService.test.ts ~ line 33 ~ test ~ globalPaymentsValue", globalPaymentsValue)
+        //return globalDebt
+    })
+
+    it('Test debts sum', async () => {
+        const
+            allEmpresaDebts = empresaService.getAllDebts(contracts)
+            , globalDebtValue = allEmpresaDebts
+                .reduce((acc, curr) => acc + curr.valorOutorga, 0)
+
+        console.log("🚀 ~ file: empresaService.test.ts ~ line 44 ~ it ~ allEmpresaDebts", toCurrency(globalDebtValue))
 
 
         //return globalDebt
     })
+
 
 
 })

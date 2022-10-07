@@ -1,12 +1,12 @@
-import { getDebt } from '../services/getDebt'
-import payments23_2014 from './mockData/payments_23_2014.json'
-import payments21_2015 from './mockData/payments_21_2015.json'
-import tjlpBndes from './mockData/tjlp_bndes.json'
-import tjlpSef from './mockData/tjlpSef.json'
-import contract232014 from './mockData/contract23_2014.json'
-import contract212015 from './mockData/contract21_2015.json'
-import { twoDigits } from '../utils/formatNumber'
-import { PaymentView } from '../interfaces/PaymentView'
+import { getDebt } from '../../services/getDebt'
+import payments23_2014 from '../mockData/payments_23_2014.json'
+import payments21_2015 from '../mockData/payments_21_2015.json'
+import tjlpBndes from '../mockData/tjlp_bndes.json'
+import tjlpSef from '../mockData/tjlpSef.json'
+import contract232014 from '../mockData/contract23_2014.json'
+import contract212015 from '../mockData/contract21_2015.json'
+import { twoDigits } from '../../utils/formatNumber'
+import { PaymentView } from '../../interfaces/PaymentView'
 
 
 test('getDebtTest - Contract 23/2014, TJLP: BNDES', () => {

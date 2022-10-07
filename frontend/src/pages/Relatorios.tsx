@@ -27,7 +27,7 @@ type State = {
 }
 
 let i = 0;
-export const EmpresasDebt = () => {
+export const Relatorios = () => {
 
     const
         api = new Api()
@@ -52,8 +52,13 @@ export const EmpresasDebt = () => {
     let navigate = useNavigate()
 
     useEffect(() => {
-        if (contractsOk && paymentsOk && tjlpOk && debtsOk)
+        if (contractsOk && paymentsOk && tjlpOk && debtsOk) {
             setState({ ...state, contracts, tjlpBndes, payments, debts })
+            setTimeout(() => {
+
+                getGlobalReport()
+            }, 2600);
+        }
     }, [contractsOk, paymentsOk, tjlpOk, debtsOk])
 
 
@@ -63,52 +68,49 @@ export const EmpresasDebt = () => {
     if (error)
         return <h4>An error has occurred: {JSON.stringify(error)} </h4>
 
-    /* const a = contracts.filter(c => c.codigoEmpresa === 9370)
-        .reduce((a, c) => {a + c.pagamentos.length}, 0)
 
-    console.log("🚀 ~ file: EmpresasDebt.tsx ~ line 67 ~ EmpresasDebt ~ a", a) */
-    const showEmpresaStatement = (selectedEmpresa: Partial<Empresa>) => {
+    const getGlobalReport = () => {
+        const empresas = new EmpresaService()
+            .getEmpresasFromContracts(contracts)
+            //@ts-ignore
+            .sort((a, b) => a.razaoSocial > b.razaoSocial ? 1 : -1)
+            , r = []
 
-        const
-            empresaDebts = state.debts.filter(d => d.codigoEmpresa === selectedEmpresa.codigoEmpresa)
-            , empresaPayments = state.payments.find(p => p.codigoEmpresa === selectedEmpresa.codigoEmpresa)?.pagamentos!
-            , empresaStatements = getEmpresaDebt(empresaDebts, empresaPayments, tjlpBndes)
 
-        console.log("🚀 ~ file: EmpresasDebt.tsx ~ line 72 ~ showEmpresaStatement ~ empresaPayments", empresaDebts)
-        setState({ ...state, selectedEmpresa, empresaStatements, showStatements: true })
+        for (const empresa of empresas) {
+            const
+                empresaDebts = state.debts.filter(d => d.codigoEmpresa === empresa.codigoEmpresa)
+                , empresaPayments = state.payments.find(p => p.codigoEmpresa === empresa.codigoEmpresa)?.pagamentos!
+
+            if (empresaDebts && empresaPayments) {
+                const empresaStatements = getEmpresaDebt(empresaDebts, empresaPayments, tjlpBndes)
+                    //, debt = empresaStatements[empresaPayments.length - 1].saldoDevedor
+                    , debt = empresaStatements[empresaStatements.length - 1].saldoDevedor
+
+                r.push({
+                    empresa: empresa.razaoSocial,
+                    debt
+                });
+            }
+        }
+        const totalDebt = r.map(r => r.debt)
+            .reduce((acc, curr) => acc + curr)
+        console.log("🚀 ~ file: Relatorios.tsx ~ line 94 ~ getGlobalReport ~ r", totalDebt)
+        console.log("🚀 ~ file: Relatorios.tsx ~ line 94 ~ getGlobalReport ~ r", r.sort((a, b) => a.debt - b.debt))
+        console.log("🚀 ~ file: Relatorios.tsx ~ line 94 ~ getGlobalReport ~ r", r.length)
+
+        //setState({ ...state, selectedEmpresa, empresaStatements, showStatements: true })
     }
 
-    const empresas = new EmpresaService()
-        .getEmpresasFromContracts(contracts)
-        //@ts-ignore
-        .sort((a, b) => a.razaoSocial > b.razaoSocial ? 1 : -1)
 
-    const handleChange = (empresaInput: string) => {
-        const selectedEmpresa = empresas.find(e => e.razaoSocial === empresaInput)
-        if (selectedEmpresa)
-            showEmpresaStatement(selectedEmpresa)
-        else
-            setState({ ...state, selectedEmpresa, showStatements: false })
-    }
+    /*     if (i === 0 && state.debts)
+            console.log("🚀 ~ file: Relatorios.tsx ~ line 93 ~ Relatorios ~ state.debts", state.debts)
+        getGlobalReport()
+        i++ */
 
     return (
         <div className="container-center">
-            <h3 style={{ textAlign: 'center' }}>Extrato de débitos de outorga por empresa</h3>
-            <SearchBox
-                data={empresas}
-                handleChange={handleChange}
-            />
-            {
-                state.showStatements && state.empresaStatements &&
-                <div className="container">
-                    <DataTable
-                        title={`Extrato - ${state.selectedEmpresa!.razaoSocial}`}
-                        data={state.empresaStatements}
-                        columns={debtColumns}
-                        fileName={`Outorgas-Extrato ${getXlsFileName(state.selectedEmpresa!.razaoSocial)}`}
-                    />
-                </div>
-            }
+            Hi!!
         </div>
     )
 }
