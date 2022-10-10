@@ -8,8 +8,8 @@ import { debtColumns } from "../config/debtSummary"
 import { textLabels } from "../config/tableLabels"
 import { Tjlp } from '../interfaces/Tjlp'
 import { csvToXlsx } from "../utils/exportToXls"
-import { getDebt } from "../services/getDebt"
 import { getMuiTheme } from "../config/tableStyles"
+import { DebtService } from "../services/DebtService"
 
 interface UseLocationState {
     parcelasPagas: number,
@@ -23,7 +23,7 @@ export const Contract: React.FC = () => {
         , location = useLocation()
         , state: UseLocationState = location.state as UseLocationState
         , { numeroContrato } = useParams()
-        , { isLoading, data, error } = useQuery(`contract${numeroContrato}`, () => api.get(`/api/get_contract/${numeroContrato}`))
+        , { isLoading, data: contract, error } = useQuery(`contract${numeroContrato}`, () => api.get(`/api/get_contract/${numeroContrato}`))
 
     if (isLoading)
         return <h1> "Carregando..."</h1>
@@ -34,9 +34,9 @@ export const Contract: React.FC = () => {
 
 
     const
-        { pagamentos, ...contractInfo } = data
+        { pagamentos, ...contractInfo } = contract
         , { tjlpBndes, parcelasPagas } = state
-        , debtSum = getDebt(contractInfo.valorOutorga, contractInfo.dataAssinatura, pagamentos, tjlpBndes)
+        , debtSum = DebtService.getContractDebt(contract, tjlpBndes)
 
 
         , options: MUIDataTableOptions = {

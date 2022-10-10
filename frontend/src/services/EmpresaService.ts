@@ -1,23 +1,20 @@
+import { PaymentService } from "./PaymentService"
+import { DebtService } from "./DebtService";
+import { TjlpService } from "./TjlpService";
 import { Contract } from "../interfaces/Contract"
 import { Empresa } from "../interfaces/Empresa"
 import { Payment } from "../interfaces/Payment"
-import { PaymentService } from "./PaymentService"
-import { isSameMonthAndYear, stringToDateObj } from "../utils/dateUtil";
 import { EmpresaPayments } from "../interfaces/EmpresaPayments";
-
-export interface Debt {
-    contratos: string[]
-    data: string
-    valorOutorga: number
-}
-
+import { Tjlp } from "../interfaces/Tjlp";
+import { PaymentView } from "../interfaces/PaymentView";
+import { Debt } from "../interfaces/Debt";
+import { isSameMonthAndYear, stringToDateObj } from "../utils/dateUtil";
 
 export class EmpresaService {
 
     empresaFilter = (array: any[], codigoEmpresa: number) => {
         return array.filter(pg => pg?.codigoEmpresa == codigoEmpresa || pg?.linhaId == codigoEmpresa || pg?.linhasId == codigoEmpresa)
     }
-
 
     getEmpresasFromContracts = (contracts: Contract[]): Array<Partial<Empresa>> => {
 
@@ -34,7 +31,6 @@ export class EmpresaService {
         }
         return empresas
     }
-
 
     getEmpresaDebt = (contracts: Contract[]): Debt[] => {
 
@@ -67,16 +63,53 @@ export class EmpresaService {
         return debtStatement
     }
 
-    getAllDebts = (contracts: Contract[]) => {
+    getEmpresaStatements = (debts: Debt[], payments: Payment[], tjlp: Tjlp[]) => {
+        const
+            tjlpService = new TjlpService()
+            , adjustedTjlp = tjlpService.adjustTjlp(debts, tjlp)
+            , empresaStatements = []
+
+        let saldoDevedor = DebtService.getFirstMonthDebt(debts)
+
+        let index = 0
+        for (const tjlp of adjustedTjlp) {
+            const
+                newOutorga = debts.find(d => index > 0 && isSameMonthAndYear(d.data, tjlp.mes))
+                , monthPayment = payments.find(pg => isSameMonthAndYear(pg.dataPagamento, tjlp.mes))
+                , newOutorgaValue = newOutorga?.valorOutorga || 0
+                , valorPago = monthPayment?.valor || 0
+
+            let { tjlpRate, tjlpEfetiva } = tjlpService.applyTjlp(index, adjustedTjlp, saldoDevedor)
+
+            if (saldoDevedor < 0) // Não corrige se o saldo for negativo
+                tjlpEfetiva = 0
+
+            const saldoAntesPg = tjlpEfetiva + saldoDevedor
+
+            saldoDevedor += newOutorgaValue //Se for o caso de contratos assinados em datas diferentes
+            saldoDevedor = saldoDevedor + tjlpEfetiva - valorPago
+
+            const statement: PaymentView = {
+                mes: stringToDateObj(tjlp.mes),
+                numeroGuia: monthPayment?.numeroGuia,
+                tjlp: tjlpRate,
+                tjlpEfetiva,
+                saldoAntesPg,
+                valorPago,
+                saldoDevedor
+            }
+            if (statement.mes <= new Date()) //Limita a listagem do débito à presente data (tjlp pode estar 2meses a frente)
+                empresaStatements.push(statement)
+            index++
+        }
+        return empresaStatements
+    }
+
+    getAllEmpresasDebts = (contracts: Contract[]) => {
         const globalDebt: any[] = []
             , empresaCodes: Set<number> = new Set(
                 this.getEmpresasFromContracts(contracts)
                     .map(e => e.codigoEmpresa!))
-
-            , empresaCodes2: any[] = this.getEmpresasFromContracts(contracts)
-                .map(e => e.codigoEmpresa)
-        console.log("🚀 ~ file: EmpresaService.ts ~ line 72 ~ EmpresaService ~ empresaCodes", empresaCodes.size)
-        console.log("🚀 ~ file: EmpresaService.ts ~ line 72 ~ EmpresaService ~ empresaCodes2", empresaCodes2.length)
 
         for (const codigoEmpresa of empresaCodes) {
             const empresaContracts = this.empresaFilter(contracts, codigoEmpresa)
@@ -86,7 +119,6 @@ export class EmpresaService {
                 ...d
             }))
         }
-
         return globalDebt
     }
 
@@ -131,7 +163,6 @@ export class EmpresaService {
             if (i % 1000 === 0)
                 console.log('allEmpresaPayments: ', i, JSON.stringify(allEmpresaPayments.slice(-3)))
         }
-
         return allEmpresaPayments
     }
 }

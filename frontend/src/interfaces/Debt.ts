@@ -1,6 +1,5 @@
-
 export interface Debt {
-    codigoEmpresa: number;
+    codigoEmpresa?: number;
     contratos: string[];
     data: string
     valorOutorga: number;

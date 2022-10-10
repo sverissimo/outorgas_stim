@@ -2,18 +2,14 @@ import { useState, useEffect } from "react";
 import { useQuery } from "react-query"
 import { useNavigate } from "react-router-dom";
 import { Api } from "../api/Api"
-import { debtColumns } from "../config/debtSummary"
+import { EmpresaService } from "../services/EmpresaService";
+
 import { Contract } from '../interfaces/Contract'
 import { Tjlp } from "../interfaces/Tjlp";
-import { getXlsFileName } from "../utils/exportToXls";
 import { EmpresaPayments } from "../interfaces/EmpresaPayments";
 import { Debt } from "../interfaces/Debt";
-import { getEmpresaDebt } from "../services/getEmpresaDebt";
-import { EmpresaService } from "../services/EmpresaService";
-import SearchBox from "../components/SearchBox";
 import { Empresa } from "../interfaces/Empresa";
 import { PaymentView } from "../interfaces/PaymentView";
-import { DataTable } from "../components/DataTable";
 import '../styles.scss'
 
 type State = {
@@ -26,7 +22,7 @@ type State = {
     showStatements: boolean
 }
 
-let i = 0;
+let i = 0
 export const Relatorios = () => {
 
     const
@@ -34,7 +30,6 @@ export const Relatorios = () => {
         , [state, setState] = useState({} as State)
 
     const queryMultiple = () => {
-        //const contracts = useQuery('contracts', () => api.get('/api/get_contracts'))
         const contracts = useQuery('contracts', () => api.get('/api/get_contracts_and_payments'))
             , tjlpBndes = useQuery('tjlpBndes', () => api.get('/api/tjlp/bndes'))
             , payments = useQuery('payments', () => api.get('/api/pagamentos'))
@@ -83,14 +78,14 @@ export const Relatorios = () => {
                 , empresaPayments = state.payments.find(p => p.codigoEmpresa === empresa.codigoEmpresa)?.pagamentos!
 
             if (empresaDebts && empresaPayments) {
-                const empresaStatements = getEmpresaDebt(empresaDebts, empresaPayments, tjlpBndes)
-                    //, debt = empresaStatements[empresaPayments.length - 1].saldoDevedor
+                const
+                    empresaStatements = new EmpresaService().getEmpresaStatements(empresaDebts, empresaPayments, tjlpBndes)
                     , debt = empresaStatements[empresaStatements.length - 1].saldoDevedor
 
                 r.push({
                     empresa: empresa.razaoSocial,
                     debt
-                });
+                })
             }
         }
         const totalDebt = r.map(r => r.debt)
@@ -98,19 +93,12 @@ export const Relatorios = () => {
         console.log("🚀 ~ file: Relatorios.tsx ~ line 94 ~ getGlobalReport ~ r", totalDebt)
         console.log("🚀 ~ file: Relatorios.tsx ~ line 94 ~ getGlobalReport ~ r", r.sort((a, b) => a.debt - b.debt))
         console.log("🚀 ~ file: Relatorios.tsx ~ line 94 ~ getGlobalReport ~ r", r.length)
-
         //setState({ ...state, selectedEmpresa, empresaStatements, showStatements: true })
     }
 
-
-    /*     if (i === 0 && state.debts)
-            console.log("🚀 ~ file: Relatorios.tsx ~ line 93 ~ Relatorios ~ state.debts", state.debts)
-        getGlobalReport()
-        i++ */
-
     return (
         <div className="container-center">
-            Hi!!
+            Work in progress...
         </div>
     )
 }

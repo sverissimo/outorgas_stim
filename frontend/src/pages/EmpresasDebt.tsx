@@ -8,7 +8,6 @@ import { Tjlp } from "../interfaces/Tjlp";
 import { getXlsFileName } from "../utils/exportToXls";
 import { EmpresaPayments } from "../interfaces/EmpresaPayments";
 import { Debt } from "../interfaces/Debt";
-import { getEmpresaDebt } from "../services/getEmpresaDebt";
 import { EmpresaService } from "../services/EmpresaService";
 import SearchBox from "../components/SearchBox";
 import { Empresa } from "../interfaces/Empresa";
@@ -34,7 +33,6 @@ export const EmpresasDebt = () => {
         , [state, setState] = useState({} as State)
 
     const queryMultiple = () => {
-        //const contracts = useQuery('contracts', () => api.get('/api/get_contracts'))
         const contracts = useQuery('contracts', () => api.get('/api/get_contracts_and_payments'))
             , tjlpBndes = useQuery('tjlpBndes', () => api.get('/api/tjlp/bndes'))
             , payments = useQuery('payments', () => api.get('/api/pagamentos'))
@@ -72,7 +70,7 @@ export const EmpresasDebt = () => {
         const
             empresaDebts = state.debts.filter(d => d.codigoEmpresa === selectedEmpresa.codigoEmpresa)
             , empresaPayments = state.payments.find(p => p.codigoEmpresa === selectedEmpresa.codigoEmpresa)?.pagamentos!
-            , empresaStatements = getEmpresaDebt(empresaDebts, empresaPayments, tjlpBndes)
+            , empresaStatements = new EmpresaService().getEmpresaStatements(empresaDebts, empresaPayments, tjlpBndes)
 
         console.log("🚀 ~ file: EmpresasDebt.tsx ~ line 72 ~ showEmpresaStatement ~ empresaPayments", empresaDebts)
         setState({ ...state, selectedEmpresa, empresaStatements, showStatements: true })

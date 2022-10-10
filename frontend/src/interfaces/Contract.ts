@@ -1,3 +1,5 @@
+import { Payment } from "./Payment"
+
 export interface Contract {
     cnpj: string
     codigoEmpresa: number
@@ -9,7 +11,7 @@ export interface Contract {
     valorOutorga: number
     nParcelas?: number
     numeroContrato: string
-    pagamentos?: any
+    pagamentos?: Payment[] | []
     saldoDevedor?: number
     parcelasPagas?: number
 }
