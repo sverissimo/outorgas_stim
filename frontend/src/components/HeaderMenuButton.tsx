@@ -63,7 +63,7 @@ export function HeaderMenuButton(props: React.PropsWithChildren) {
             >
                 <MenuItem onClick={e => handleClick('empresas', e)}>Ordenar por Empresas</MenuItem>
                 <MenuItem onClick={e => handleClick('', e)}>Ordenar por Contratos</MenuItem>
-                <MenuItem onClick={handleClose}>Relatórios</MenuItem>
+                <MenuItem onClick={e => handleClick('relatorios', e)}>Relatórios</MenuItem>
             </Menu>
         </div>
     )

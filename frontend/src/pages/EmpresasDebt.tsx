@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { useQuery } from "react-query"
 import { useNavigate } from "react-router-dom";
 import { Api } from "../api/Api"
@@ -14,6 +14,7 @@ import { Empresa } from "../interfaces/Empresa";
 import { PaymentView } from "../interfaces/PaymentView";
 import { DataTable } from "../components/DataTable";
 import '../styles.scss'
+import { Loading } from "../components/Loading";
 
 type State = {
     contracts: Contract[]
@@ -26,8 +27,10 @@ type State = {
 }
 
 let i = 0;
+
 export const EmpresasDebt = () => {
 
+    const [isPending, startTransition] = useTransition();
     const
         api = new Api()
         , [state, setState] = useState({} as State)
@@ -54,17 +57,12 @@ export const EmpresasDebt = () => {
             setState({ ...state, contracts, tjlpBndes, payments, debts })
     }, [contractsOk, paymentsOk, tjlpOk, debtsOk])
 
-
     if (loadingContracts || loadingTjlp || loadingPayments || loadingDebts)
-        return <h1> "Carregando..."</h1>
+        return <><Loading /></>
 
     if (error)
         return <h4>An error has occurred: {JSON.stringify(error)} </h4>
 
-    /* const a = contracts.filter(c => c.codigoEmpresa === 9370)
-        .reduce((a, c) => {a + c.pagamentos.length}, 0)
-
-    console.log("🚀 ~ file: EmpresasDebt.tsx ~ line 67 ~ EmpresasDebt ~ a", a) */
     const showEmpresaStatement = (selectedEmpresa: Partial<Empresa>) => {
 
         const
@@ -83,22 +81,34 @@ export const EmpresasDebt = () => {
 
     const handleChange = (empresaInput: string) => {
         const selectedEmpresa = empresas.find(e => e.razaoSocial === empresaInput)
-        if (selectedEmpresa)
-            showEmpresaStatement(selectedEmpresa)
-        else
+        if (selectedEmpresa) {
+            startTransition(() => {
+                showEmpresaStatement(selectedEmpresa)
+            })
+        }
+        else {
+
+            console.log("🚀 ~ file: EmpresasDebt.tsx ~ line 83 ~ handleChange ~ string ########",)
             setState({ ...state, selectedEmpresa, showStatements: false })
+        }
     }
+
 
     return (
         <div className="container-center">
-            <h3 style={{ textAlign: 'center' }}>Extrato de débitos de outorga por empresa</h3>
+            <h3 style={{ textAlign: 'center', marginRight: state.showStatements || isPending ? 0 : '17px' }}>Extrato de débitos de outorga por empresa</h3>
             <SearchBox
                 data={empresas}
                 handleChange={handleChange}
             />
             {
+                isPending && <>
+                    <Loading />
+                </>
+            }
+            {
                 state.showStatements && state.empresaStatements &&
-                <div className="container">
+                <div className="container fk">
                     <DataTable
                         title={`Extrato - ${state.selectedEmpresa!.razaoSocial}`}
                         data={state.empresaStatements}

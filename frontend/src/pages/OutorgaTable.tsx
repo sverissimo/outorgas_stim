@@ -12,6 +12,7 @@ import { Tjlp } from "../interfaces/Tjlp";
 import { jsonToXlsx } from "../utils/exportToXls";
 import { tableDataToJson } from "../utils/tableDataToJson";
 import '../styles.scss'
+import { Loading } from "../components/Loading";
 
 type State = {
     contracts: Contract[]
@@ -47,13 +48,11 @@ export const OutorgaTable = () => {
     }, [contracts, tjlpBndes, missingPayments])
 
 
-
     if (loadingContracts || loadingTjlp || loadingMissingPayments)
-        return <h1> "Carregando..."</h1>
+        return <><Loading /></>
 
     if (error)
         return <h4>An error has occurred: {JSON.stringify(error)} </h4>
-
 
 
     const options: MUIDataTableOptions = {

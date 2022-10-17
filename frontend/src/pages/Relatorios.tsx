@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { useQuery } from "react-query"
 import { useNavigate } from "react-router-dom";
 import { Api } from "../api/Api"
@@ -10,6 +10,10 @@ import { EmpresaPayments } from "../interfaces/EmpresaPayments";
 import { Debt } from "../interfaces/Debt";
 import { Empresa } from "../interfaces/Empresa";
 import { PaymentView } from "../interfaces/PaymentView";
+import { toCurrency } from "../utils/formatNumber";
+import { Loading } from "../components/Loading";
+import { BarChart } from "../components/BarChart";
+import { PieChart } from "../components/PieChart";
 import '../styles.scss'
 
 type State = {
@@ -19,15 +23,15 @@ type State = {
     debts: Debt[]
     selectedEmpresa: Partial<Empresa> | undefined
     empresaStatements: PaymentView[] | undefined
-    showStatements: boolean
+    globalBalance: any
 }
 
-let i = 0
 export const Relatorios = () => {
 
     const
         api = new Api()
         , [state, setState] = useState({} as State)
+        , [isPending, startTransition] = useTransition();
 
     const queryMultiple = () => {
         const contracts = useQuery('contracts', () => api.get('/api/get_contracts_and_payments'))
@@ -47,18 +51,21 @@ export const Relatorios = () => {
     let navigate = useNavigate()
 
     useEffect(() => {
-        if (contractsOk && paymentsOk && tjlpOk && debtsOk) {
+        if (contractsOk && paymentsOk && tjlpOk && debtsOk)
             setState({ ...state, contracts, tjlpBndes, payments, debts })
-            setTimeout(() => {
-
-                getGlobalReport()
-            }, 2600);
-        }
     }, [contractsOk, paymentsOk, tjlpOk, debtsOk])
+
+    useEffect(() => {
+        const { contracts, tjlpBndes, payments, debts } = state
+
+        if (contracts && tjlpBndes && payments && debts)
+            startTransition(() => getGlobalReport())
+
+    }, [state.contracts, state.tjlpBndes, state.payments, state.debts])
 
 
     if (loadingContracts || loadingTjlp || loadingPayments || loadingDebts)
-        return <h1> "Carregando..."</h1>
+        return <><Loading /></>
 
     if (error)
         return <h4>An error has occurred: {JSON.stringify(error)} </h4>
@@ -69,7 +76,7 @@ export const Relatorios = () => {
             .getEmpresasFromContracts(contracts)
             //@ts-ignore
             .sort((a, b) => a.razaoSocial > b.razaoSocial ? 1 : -1)
-            , r = []
+            , allBalances = []
 
 
         for (const empresa of empresas) {
@@ -82,23 +89,43 @@ export const Relatorios = () => {
                     empresaStatements = new EmpresaService().getEmpresaStatements(empresaDebts, empresaPayments, tjlpBndes)
                     , debt = empresaStatements[empresaStatements.length - 1].saldoDevedor
 
-                r.push({
+                allBalances.push({
                     empresa: empresa.razaoSocial,
                     debt
                 })
             }
         }
-        const totalDebt = r.map(r => r.debt)
-            .reduce((acc, curr) => acc + curr)
-        console.log("🚀 ~ file: Relatorios.tsx ~ line 94 ~ getGlobalReport ~ r", totalDebt)
-        console.log("🚀 ~ file: Relatorios.tsx ~ line 94 ~ getGlobalReport ~ r", r.sort((a, b) => a.debt - b.debt))
-        console.log("🚀 ~ file: Relatorios.tsx ~ line 94 ~ getGlobalReport ~ r", r.length)
-        //setState({ ...state, selectedEmpresa, empresaStatements, showStatements: true })
-    }
+        allBalances.sort((a, b) => b.debt - a.debt)
+        const saldoGlobal = toCurrency(allBalances.map(el => el.debt).reduce((acc, curr) => acc + curr))
+            , devedores = allBalances.filter(e => e.debt >= 0)
+            , credores = allBalances.reverse().filter((e => e.debt < 0))
+            , totalDebt = toCurrency(devedores.map(dev => dev.debt).reduce((acc, curr) => acc + curr))
+            , totalCredit = toCurrency(credores.map(dev => dev.debt).reduce((acc, curr) => acc + curr))
+            , topDebtors = devedores.slice(0, 6)
+            , lowDebtorsAmount = devedores.slice(6).reduce((acc, curr) => acc + curr.debt, 0)
+            , lowDebtorsCount = devedores.length - topDebtors.length
 
-    return (
-        <div className="container-center">
-            Work in progress...
-        </div>
-    )
+        topDebtors.push({ empresa: `OUTROS (${lowDebtorsCount})`, debt: lowDebtorsAmount })
+
+        setState({
+            ...state, globalBalance: { saldoGlobal, devedores, credores, totalDebt, totalCredit, topDebtors }
+        })
+    }
+    if (state.globalBalance)
+        return (
+            <div className="container-center">
+                {
+                    isPending && <><Loading /></>
+                }
+                <ul>
+                    <li>Débito Global: {state.globalBalance.totalDebt}</li>
+                    <li>Crédito Global: {state.globalBalance.totalCredit}</li>
+                    <li>Saldo Global: {state.globalBalance.saldoGlobal}</li>
+                    <li>Total de empresas: {state.globalBalance.devedores?.length + state.globalBalance.credores?.length}</li>
+                </ul>
+                <PieChart devedores={state.globalBalance.topDebtors} />
+                <BarChart devedores={state.globalBalance.devedores} />
+            </div>
+        )
+    else return null
 }
