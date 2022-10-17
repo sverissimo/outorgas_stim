@@ -1,26 +1,28 @@
-import { useState, useEffect, useTransition } from "react";
+import { useState, useEffect, useTransition, useContext } from "react";
 import { useQuery } from "react-query"
 import { useNavigate } from "react-router-dom";
 import { Api } from "../api/Api"
+import { EmpresaContext } from "../context/EmpresaContext";
+import { EmpresaService } from "../services/EmpresaService";
 import { debtColumns } from "../config/debtSummary"
+import { getXlsFileName } from "../utils/exportToXls";
 import { Contract } from '../interfaces/Contract'
 import { Tjlp } from "../interfaces/Tjlp";
-import { getXlsFileName } from "../utils/exportToXls";
 import { EmpresaPayments } from "../interfaces/EmpresaPayments";
 import { Debt } from "../interfaces/Debt";
-import { EmpresaService } from "../services/EmpresaService";
-import SearchBox from "../components/SearchBox";
 import { Empresa } from "../interfaces/Empresa";
 import { PaymentView } from "../interfaces/PaymentView";
 import { DataTable } from "../components/DataTable";
-import '../styles.scss'
 import { Loading } from "../components/Loading";
+import SearchBox from "../components/SearchBox";
+import '../styles.scss'
 
 type State = {
     contracts: Contract[]
     tjlpBndes: Tjlp
     payments: EmpresaPayments[]
     debts: Debt[]
+    empresas: Partial<Empresa>[]
     selectedEmpresa: Partial<Empresa> | undefined
     empresaStatements: PaymentView[] | undefined
     showStatements: boolean
@@ -34,6 +36,8 @@ export const EmpresasDebt = () => {
     const
         api = new Api()
         , [state, setState] = useState({} as State)
+        , { empresaFilter } = useContext(EmpresaContext)
+        , empresas = [] as Empresa[]
 
     const queryMultiple = () => {
         const contracts = useQuery('contracts', () => api.get('/api/get_contracts_and_payments'))
@@ -53,15 +57,29 @@ export const EmpresasDebt = () => {
     let navigate = useNavigate()
 
     useEffect(() => {
-        if (contractsOk && paymentsOk && tjlpOk && debtsOk)
+        if (contractsOk && paymentsOk && tjlpOk && debtsOk) {
+            console.log(empresaFilter)
             setState({ ...state, contracts, tjlpBndes, payments, debts })
+        }
     }, [contractsOk, paymentsOk, tjlpOk, debtsOk])
+
+    useEffect(() => {
+        if (state.contracts) {
+            const empresas = new EmpresaService()
+                .getEmpresasFromContracts(contracts)
+                .sort((a, b) => a.razaoSocial! > b.razaoSocial! ? 1 : -1)
+                .filter(e => empresaFilter.includes(e.codigoEmpresa!))
+            setState({ ...state, empresas })
+            console.log("🚀 ~ file: EmpresasDebt.tsx ~ line 82 ~ EmpresasDebt ~ empresas", state.empresas)
+        }
+    }, [state.contracts])
+
 
     if (loadingContracts || loadingTjlp || loadingPayments || loadingDebts)
         return <><Loading /></>
-
     if (error)
         return <h4>An error has occurred: {JSON.stringify(error)} </h4>
+
 
     const showEmpresaStatement = (selectedEmpresa: Partial<Empresa>) => {
 
@@ -70,25 +88,17 @@ export const EmpresasDebt = () => {
             , empresaPayments = state.payments.find(p => p.codigoEmpresa === selectedEmpresa.codigoEmpresa)?.pagamentos!
             , empresaStatements = new EmpresaService().getEmpresaStatements(empresaDebts, empresaPayments, tjlpBndes)
 
-        console.log("🚀 ~ file: EmpresasDebt.tsx ~ line 72 ~ showEmpresaStatement ~ empresaPayments", empresaDebts)
         setState({ ...state, selectedEmpresa, empresaStatements, showStatements: true })
     }
 
-    const empresas = new EmpresaService()
-        .getEmpresasFromContracts(contracts)
-        //@ts-ignore
-        .sort((a, b) => a.razaoSocial > b.razaoSocial ? 1 : -1)
-
     const handleChange = (empresaInput: string) => {
-        const selectedEmpresa = empresas.find(e => e.razaoSocial === empresaInput)
+        const selectedEmpresa = state.empresas.find(e => e.razaoSocial === empresaInput)
         if (selectedEmpresa) {
             startTransition(() => {
                 showEmpresaStatement(selectedEmpresa)
             })
         }
         else {
-
-            console.log("🚀 ~ file: EmpresasDebt.tsx ~ line 83 ~ handleChange ~ string ########",)
             setState({ ...state, selectedEmpresa, showStatements: false })
         }
     }
@@ -97,10 +107,10 @@ export const EmpresasDebt = () => {
     return (
         <div className="container-center">
             <h3 style={{ textAlign: 'center', marginRight: state.showStatements || isPending ? 0 : '17px' }}>Extrato de débitos de outorga por empresa</h3>
-            <SearchBox
-                data={empresas}
+            {state.empresas && <SearchBox
+                data={state.empresas}
                 handleChange={handleChange}
-            />
+            />}
             {
                 isPending && <>
                     <Loading />

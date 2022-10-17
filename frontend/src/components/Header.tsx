@@ -10,7 +10,7 @@ export function Header() {
             <Toolbar>
                 <HeaderMenuButton />
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                    Sistema de gestão de outorgas do Transporte Intermunicipal de MG
+                    Sistema de gestão de débitos de outorgas do Transporte Intermunicipal de MG
                 </Typography>
                 {/*     <Button color="inherit">Login</Button> */}
             </Toolbar>

@@ -10,7 +10,7 @@ interface HeaderMenuState {
     anchorEl: null | HTMLElement;
 }
 
-export function HeaderMenuButton(props: React.PropsWithChildren) {
+export function HeaderMenuButton() {
     const
         [state, setState] = useState<HeaderMenuState>({
             menuIsOpen: false,
@@ -61,9 +61,9 @@ export function HeaderMenuButton(props: React.PropsWithChildren) {
                     'aria-labelledby': 'basic-button',
                 }}
             >
-                <MenuItem onClick={e => handleClick('empresas', e)}>Ordenar por Empresas</MenuItem>
-                <MenuItem onClick={e => handleClick('', e)}>Ordenar por Contratos</MenuItem>
-                <MenuItem onClick={e => handleClick('relatorios', e)}>Relatórios</MenuItem>
+                <MenuItem onClick={e => handleClick('', e)}>Resumo do Saldo Devedor</MenuItem>
+                <MenuItem onClick={e => handleClick('empresas', e)}>Extrato por Empresas</MenuItem>
+                <MenuItem onClick={e => handleClick('contratos', e)}>Visualizar Contratos</MenuItem>
             </Menu>
         </div>
     )

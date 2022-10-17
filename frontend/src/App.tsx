@@ -1,11 +1,17 @@
+import { useContext, useState } from 'react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { BrowserRouter } from 'react-router-dom'
 import { Header } from './components/Header'
+import { EmpresaContext } from './context/EmpresaContext'
 import { AppRouter } from './Routes'
 
 
 
 function App() {
+
+  const
+    [empresaFilter, setEmpresaFilter] = useState<number[]>([])
+
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -21,10 +27,12 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Header />
-        <AppRouter />
-      </BrowserRouter>
+      <EmpresaContext.Provider value={{ empresaFilter, setEmpresaFilter }}>
+        <BrowserRouter>
+          <Header />
+          <AppRouter />
+        </BrowserRouter>
+      </EmpresaContext.Provider >
     </QueryClientProvider>
   )
 }

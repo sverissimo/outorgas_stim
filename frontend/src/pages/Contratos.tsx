@@ -21,7 +21,7 @@ type State = {
 }
 
 
-export const OutorgaTable = () => {
+export const Contratos = () => {
 
     const
         api = new Api()
