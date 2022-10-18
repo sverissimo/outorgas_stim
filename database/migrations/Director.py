@@ -1,3 +1,5 @@
+from typing import List
+
 from database.migrations.Builder import Builder
 from domain.Contrato import Contrato
 from domain.Linha import Linha
@@ -25,7 +27,7 @@ class Director():
             .set_empresas() \
             .build()
 
-    def get_full_contracts(self) -> list[Contrato]:
+    def get_full_contracts(self) -> List[Contrato]:
         return self.builder \
             .excel_to_dataframe() \
             .rename_and_filter_columns() \
@@ -34,7 +36,7 @@ class Director():
             .set_linhas() \
             .build()
 
-    def get_all_linhas(self) -> list[Linha]:
+    def get_all_linhas(self) -> List[Linha]:
         return self.builder\
             .excel_to_dataframe() \
             .rename_and_filter_columns() \

@@ -1,6 +1,5 @@
 import { useState, useEffect, useTransition, useContext } from "react";
 import { useQuery } from "react-query"
-import { useNavigate } from "react-router-dom";
 import { Api } from "../api/Api"
 import { EmpresaContext } from "../context/EmpresaContext";
 import { EmpresaService } from "../services/EmpresaService";
@@ -16,6 +15,7 @@ import { DataTable } from "../components/DataTable";
 import { Loading } from "../components/Loading";
 import SearchBox from "../components/SearchBox";
 import '../styles.scss'
+import { toCurrency } from "../utils/formatNumber";
 
 type State = {
     contracts: Contract[]
@@ -25,6 +25,7 @@ type State = {
     empresas: Partial<Empresa>[]
     selectedEmpresa: Partial<Empresa> | undefined
     empresaStatements: PaymentView[] | undefined
+    saldoDevedor: string
     showStatements: boolean
 }
 
@@ -64,7 +65,6 @@ export const EmpresasDebt = () => {
                 .sort((a, b) => a.razaoSocial! > b.razaoSocial! ? 1 : -1)
                 .filter(e => empresaFilter.includes(e.codigoEmpresa!))
             setState({ ...state, empresas })
-            console.log("🚀 ~ file: EmpresasDebt.tsx ~ line 82 ~ EmpresasDebt ~ empresas", state.empresas)
         }
     }, [state.contracts])
 
@@ -81,8 +81,9 @@ export const EmpresasDebt = () => {
             empresaDebts = state.debts.filter(d => d.codigoEmpresa === selectedEmpresa.codigoEmpresa)
             , empresaPayments = state.payments.find(p => p.codigoEmpresa === selectedEmpresa.codigoEmpresa)?.pagamentos!
             , empresaStatements = new EmpresaService().getEmpresaStatements(empresaDebts, empresaPayments, tjlpBndes)
+            , saldoDevedor = toCurrency(empresaStatements[empresaStatements.length - 1]?.saldoDevedor)
 
-        setState({ ...state, selectedEmpresa, empresaStatements, showStatements: true })
+        setState({ ...state, selectedEmpresa, empresaStatements, showStatements: true, saldoDevedor });
     }
 
     const handleChange = (empresaInput: string) => {
@@ -113,7 +114,7 @@ export const EmpresasDebt = () => {
                 state.showStatements && state.empresaStatements &&
                 <div className="container fk">
                     <DataTable
-                        title={`Extrato - ${state.selectedEmpresa!.razaoSocial}`}
+                        title={`Extrato - ${state.selectedEmpresa!.razaoSocial} - Saldo devedor: ${state.saldoDevedor}`}
                         data={state.empresaStatements}
                         columns={debtColumns}
                         fileName={`Outorgas-Extrato ${getXlsFileName(state.selectedEmpresa!.razaoSocial)}`}

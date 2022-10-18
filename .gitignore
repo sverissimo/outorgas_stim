@@ -22,3 +22,4 @@ src/tests/mock_data/empresas_cadti.json
 frontend/src/api/Migrations.tsx
 /**/queries/
 
+startDev.sh

@@ -5,7 +5,6 @@ import { PaymentView } from "../interfaces/PaymentView";
 import { Tjlp } from "../interfaces/Tjlp";
 import { firstCommonDateIndex, isSameMonthAndYear, stringToDateObj } from "../utils/dateUtil";
 import { twoDigits } from "../utils/formatNumber";
-import { EmpresaService } from "./EmpresaService";
 
 
 export class DebtService {

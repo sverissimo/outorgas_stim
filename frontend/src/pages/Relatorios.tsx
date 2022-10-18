@@ -13,8 +13,7 @@ import { toCurrency } from "../utils/formatNumber";
 import { Loading } from "../components/Loading";
 import { PieChart } from "../components/PieChart";
 import '../styles.scss'
-import { DataTable } from "../components/DataTable";
-import { debtorListColumns } from "../config/debtorsListTable";
+
 
 type State = {
     contracts: Contract[]

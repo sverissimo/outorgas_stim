@@ -8,7 +8,7 @@ export const DebtorsList = () => {
     const { devedores } = useContext(EmpresaContext)
 
     return (
-        <div>
+        <div className='container'>
             <DataTable
                 title='Listagem das empresas com débitos de outorga'
                 data={devedores}
