@@ -1,6 +1,6 @@
-from domain.Contrato import Contrato
-from database.migrations.Director import Director
 from database.migrations.ContractsBuilder import ContractsBuilder
+from database.migrations.Director import Director
+from domain.Contrato import Contrato
 
 
 def test_rename_contracts_df_columns():

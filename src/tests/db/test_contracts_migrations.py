@@ -1,4 +1,3 @@
-import re
 from database.migrations.run_migrations import *
 
 

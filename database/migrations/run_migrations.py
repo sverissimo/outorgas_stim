@@ -1,13 +1,13 @@
-from data_access_layer.ExternalDataApi import ExternalDataApi
-from data_access_layer.EntityDao import EntityDao
 from data_access_layer.ContractDao import ContractDao
+from data_access_layer.EntityDao import EntityDao
+from data_access_layer.ExternalDataApi import ExternalDataApi
 from data_access_layer.LinhaDao import LinhaDao
 from data_access_layer.SicarDao import SicarDao
 from database.migrations.ContractsBuilder import ContractsBuilder
-from database.migrations.LinhasBuilder import LinhasBuilder
 from database.migrations.Director import Director
-from services.TjlpService import TjlpService
+from database.migrations.LinhasBuilder import LinhasBuilder
 from services.ContractService import ContractService
+from services.TjlpService import TjlpService
 from utils.add_codigo_empresa import add_codigo_empresa
 
 

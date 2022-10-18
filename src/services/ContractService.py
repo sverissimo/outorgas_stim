@@ -1,6 +1,7 @@
-from typing import TypedDict, List
-from data_access_layer.SicarDao import SicarDao
+from typing import List, TypedDict
+
 from data_access_layer.ContractDao import ContractDao
+from data_access_layer.SicarDao import SicarDao
 from domain.Contrato import Contrato
 from domain.Pagamento import Pagamento
 

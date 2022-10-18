@@ -1,12 +1,14 @@
 from dataclasses import asdict
-from utils.add_codigo_empresa import parse
 from typing import List
+
 import pandas as pd
+
 from config import env
-from utils.rename_columns import rename_columns
-from domain.Pagamento import Pagamento
-from domain.MissingPayment import MissingPayment
 from domain.Linha import Linha
+from domain.MissingPayment import MissingPayment
+from domain.Pagamento import Pagamento
+from utils.add_codigo_empresa import parse
+from utils.rename_columns import rename_columns
 
 
 class SicarDao:
@@ -55,7 +57,7 @@ class SicarDao:
 
     def get_missing_payments(self, linhas: List[Linha]):
 
-        guias = self.parse_and_read_xlsx(usecols='A:C,G,L,M')
+        guias = self.parse_and_read_xlsx(usecols='A:D,H,I')
 
         linhas_list = list(map(lambda x: str(x['id']), linhas))
 
@@ -149,30 +151,33 @@ class SicarDao:
 
         return pagamentos
 
-    def merge_sicar_spreadsheets(self):
-        guias_part1 = pd.read_excel(
-            "../../data/guias_2011-2015_20_04_22.xls",
-            sheet_name="Guias de Arrecadação",
-            index_col=False,
-        )
-        guias_part2 = pd.read_excel(
-            "../../data/guias_2015-2022_20_04_22.xls",
-            sheet_name="Guias de Arrecadação",
-            index_col=False,
-        )
+    def merge_sicar_spreadsheets(self, file_names: List[str]):
 
-        guias = pd.concat([guias_part1, guias_part2])
+        guias_df_list = []
+        for file_name in file_names:
+            guias_partial = pd.read_excel(
+                f"{env.APP_FOLDER}/data/{file_name}",
+                sheet_name="Guias de Arrecadação",
+                index_col=False,
+            )
+            guias_df_list.append(guias_partial)
+
+        guias = pd.concat(guias_df_list)
 
         guias.dropna(how="all", axis=1, inplace=True)
         columns_to_drop = [
             "Tipo Receita",
             "Mês/Ano TGO/CGO",
+            "Data Emissão",
+            "Data Vencimento",
+            "Data Validade",
             "Delegatário",
             "Unidade Executora",
+            "Número do Auto Infração"
         ]
         guias.drop(columns=columns_to_drop, inplace=True)
 
         guias["Linha"].fillna("0", inplace=True)
-        guias["Linha"].astype(str)
+        guias["Linha"] = guias["Linha"].astype(str)
 
-        guias.to_excel("../../data/all_guias.xlsx", index=False)
+        guias.to_excel("./data/all_guias.xlsx", index=False)

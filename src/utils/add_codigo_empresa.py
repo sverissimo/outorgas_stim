@@ -1,4 +1,5 @@
 from typing import List
+
 from domain.Empresa import Empresa
 
 
@@ -21,8 +22,10 @@ def parse(razao_social: str):
     result = razao_social \
         .upper() \
         .replace('  ', ' ') \
+        .replace('SANTA IZABEL TRANSP.E TURISMO LTDA', 'SANTA IZABEL TRANSPORTE E TURISMO LTDA') \
         .replace('TRANSUR-TRANSP.ROD.MANSUR', 'TRANSUR-TRANSPORTE RODOVIARIO MANSUR') \
         .replace('EMPRESA DE TRANSPORTE COUTINHO', 'PAULO EDILBERTO COUTINHO PARTICIPACOES LTDA.') \
+        .replace('ALFETUR-ALFENAS TRANSP.TUR.LTDA', 'ALFETUR-ALFENAS TRANSPORTE E TURISMO LTDA') \
         .replace(' - ', ' ') \
         .replace('-', ' ') \
         .replace('. ', '.') \

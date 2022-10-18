@@ -1,6 +1,7 @@
 {
     "python.formatting.provider": "autopep8",
     "cSpell.words": [
+        "apexcharts",
         "applymap",
         "cotacao",
         "Cristovao",
@@ -14,12 +15,14 @@
         "LTDA",
         "nopep",
         "pgto",
+        "relatorio",
         "sicar",
         "SICAR",
         "tjlp",
         "usecols",
         "VIACAO",
-        "vigencia"
+        "vigencia",
+        "xaxis"
     ],
     "files.exclude": {
         "**/__pycache__": true
@@ -51,5 +54,8 @@
                 "CPU_COUNT": 3
             }
         }
-    }
+    },
+    "cSpell.ignoreWords": [
+        "Arrecadacao"
+    ]
 }

@@ -1,9 +1,12 @@
 import json
-from waitress import serve
 import logging
-from flask import Flask, Response
+
 import humps
+from flask import Flask, Response
+from waitress import serve
+
 from config import env
+
 app = Flask(__name__)
 
 import routes  # nopep8 --- All routes go here
