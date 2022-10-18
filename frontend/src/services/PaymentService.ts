@@ -71,12 +71,12 @@ export class PaymentService {
         const
             mergedPayments = [] as Payment[]
             , firstPaymentDate = this.getFirstPaymentDate(payments)
-            , today = new Date().toLocaleDateString()
+            , nextMonth = addMonth(new Date()).toLocaleDateString()
 
         let i = 0
         let pgDate = firstPaymentDate
 
-        while (!isSameMonthAndYear(pgDate, today) && i < 2000) {
+        while (!isSameMonthAndYear(pgDate, nextMonth) && i < 2000) {
 
             const sameMonthPayments = payments.filter(p => isSameMonthAndYear(p.dataPagamento, pgDate))
 

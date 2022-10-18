@@ -39,7 +39,7 @@ describe('Test PaymentService', () => {
     it('Test count all payments in DB', () => {
 
         const count = allPayments
-            .filter(p => p.codigoEmpresa === 70008)
+            //.filter(p => p.codigoEmpresa === 70008)
             .reduce((acc, curr) => {
                 const numeroGuias = curr.pagamentos
                     .map(p => p.numeroGuia.split(',').length)
@@ -79,8 +79,8 @@ describe('Test PaymentService', () => {
             , { guias, count, objCount } = paymentService.countGuiasPerPayment(allPaymentsArray)
             , { guias: guiasFP, count: fpCount } = paymentService.countGuiasPerPayment(foundPayments)
 
-        console.log("🚀 ~ file: paymentService.test.ts ~ line 93 ~ it ~ objCount", fpCount)
-        console.log("🚀 ~ file: paymentService.test.ts ~ line 88 ~ it ~  count", count)
+        /* console.log("🚀 ~ file: paymentService.test.ts ~ line 93 ~ it ~ objCount", fpCount)
+        console.log("🚀 ~ file: paymentService.test.ts ~ line 88 ~ it ~  count", count) */
 
         const notFound = []
         for (const p of guiasFP) {
@@ -89,7 +89,7 @@ describe('Test PaymentService', () => {
         }
         console.log("🚀 ~ file: paymentService.test.ts ~ line 67 ~ it ~ notFound", notFound.length)
         //console.log("🚀 ~ file: paymentService.test.ts ~ line 67 ~ it ~ notFound", mp.length)
-        //console.log("🚀 ~ file: paymentService.test.ts ~ line 67 ~ it ~ notFound", notFound)
+        console.log("🚀 ~ file: paymentService.test.ts ~ line 67 ~ it ~ notFound", notFound)
         //console.log("🚀 ~ file: paymentService.test.ts ~ line 67 ~ it ~ notFound", foundPayments.length)
     })
 

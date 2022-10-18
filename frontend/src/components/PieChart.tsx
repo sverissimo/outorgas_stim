@@ -1,6 +1,6 @@
 import { ApexOptions } from "apexcharts";
 import Chart from "react-apexcharts";
-import { toCurrency } from "../utils/formatNumber";
+import { toCurrency, twoDigits } from "../utils/formatNumber";
 import './charts.scss'
 
 type Props = {
@@ -55,7 +55,7 @@ export const PieChart = (props: Props) => {
         }
     };
 
-    const series = devedores.map(({ debt }) => parseInt(debt))
+    const series = devedores.map(({ debt }) => twoDigits(debt))
 
     return (
         <div className="chartContainer">
