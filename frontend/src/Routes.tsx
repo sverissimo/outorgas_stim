@@ -4,6 +4,7 @@ import { EmpresasDebt } from "./pages/EmpresasDebt"
 import { Contratos } from "./pages/Contratos"
 import { Migrations } from "./api/Migrations"
 import { Relatorios } from "./pages/Relatorios"
+import { DebtorsList } from "./pages/DebtorsList"
 
 export const AppRouter = () => {
     return (
@@ -12,6 +13,7 @@ export const AppRouter = () => {
             <Route path='/contratos' element={<Contratos />} />
             <Route path='/contrato/:numeroContrato' element={<Contract />} />
             <Route path='/empresas' element={<EmpresasDebt />} />
+            <Route path='/devedores' element={<DebtorsList />} />
             <Route path='/migrations' element={<Migrations />} />
         </Routes>
     )

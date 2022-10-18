@@ -78,21 +78,6 @@ export const columns: Column[] = [
         }
     },
     {
-        name: "nParcelas",
-        label: "Número de Parcelas",
-        options: {
-            filter: false,
-            sort: false,
-        }
-    },
-    {
-        name: "parcelasPagas",
-        label: "Pagamentos efetuados",
-        options: {
-            filter: true
-        }
-    },
-    {
         name: "valorOutorga",
         label: "Valor da Outorga",
         options: {
@@ -102,14 +87,5 @@ export const columns: Column[] = [
                 return toCurrency(Number(value))
             }
         }
-    },
-    /* {
-        name: "saldoDevedor",
-        label: "Saldo Devedor",
-        options: {
-            customBodyRender: (value: any) => {
-                return toCurrency(value)
-            }
-        }
-    } */
+    }
 ]

@@ -6,7 +6,6 @@ export const getMuiTheme = () => createTheme({
         MuiTableCell: {
             styleOverrides: {
                 body: {
-                    cursor: "pointer !important",
                     fontSize: '0.6rem !important',
                     maxWidth: '200px !important'
 

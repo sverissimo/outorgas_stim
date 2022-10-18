@@ -1,9 +1,8 @@
 import { useState, useEffect, useTransition, useContext } from "react";
 import { useQuery } from "react-query"
-import { useNavigate } from "react-router-dom";
 import { Api } from "../api/Api"
+import { EmpresaContext } from "../context/EmpresaContext";
 import { EmpresaService } from "../services/EmpresaService";
-
 import { Contract } from '../interfaces/Contract'
 import { Tjlp } from "../interfaces/Tjlp";
 import { EmpresaPayments } from "../interfaces/EmpresaPayments";
@@ -14,7 +13,8 @@ import { toCurrency } from "../utils/formatNumber";
 import { Loading } from "../components/Loading";
 import { PieChart } from "../components/PieChart";
 import '../styles.scss'
-import { EmpresaContext } from "../context/EmpresaContext";
+import { DataTable } from "../components/DataTable";
+import { debtorListColumns } from "../config/debtorsListTable";
 
 type State = {
     contracts: Contract[]
@@ -33,7 +33,7 @@ export const Relatorios = () => {
         api = new Api()
         , [state, setState] = useState({} as State)
         , [isPending, startTransition] = useTransition()
-        , { setEmpresaFilter } = useContext(EmpresaContext)
+        , { setEmpresaFilter, setDevedores } = useContext(EmpresaContext)
 
 
     const queryMultiple = () => {
@@ -64,10 +64,11 @@ export const Relatorios = () => {
     }, [state.contracts, state.tjlpBndes, state.payments, state.debts])
 
     useEffect(() => {
-        if (state?.globalBalance?.empresaFilter) {
+        if (state?.globalBalance?.empresaFilter && state?.globalBalance?.devedores) {
             setEmpresaFilter(state.globalBalance.empresaFilter)
+            setDevedores(state.globalBalance.devedores)
         }
-    }, [state?.globalBalance?.empresaFilter])
+    }, [state?.globalBalance?.empresaFilter, state?.globalBalance?.devedores])
 
     if (loadingContracts || loadingTjlp || loadingPayments || loadingDebts)
         return <><Loading /></>
@@ -115,7 +116,6 @@ export const Relatorios = () => {
         setState({
             ...state, globalBalance: { saldoGlobal, devedores, totalDebt, topDebtors, empresaFilter }
         })
-
     }
 
     if (state.globalBalance)
@@ -125,10 +125,6 @@ export const Relatorios = () => {
                     isPending && <><Loading /></>
                 }
                 <h2>Resumo do saldo devedor - Outorgas do Transporte Intermunicipal</h2>
-                <ul>
-                    <li>Débito Global: {state.globalBalance.totalDebt}</li>
-                    <li>Total de empresas devedoras: {state.globalBalance.devedores.length}</li>
-                </ul>
                 <PieChart devedores={state.globalBalance.topDebtors} />
             </div>
         )

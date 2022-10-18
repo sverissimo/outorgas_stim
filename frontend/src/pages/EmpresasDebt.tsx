@@ -28,8 +28,6 @@ type State = {
     showStatements: boolean
 }
 
-let i = 0;
-
 export const EmpresasDebt = () => {
 
     const [isPending, startTransition] = useTransition();
@@ -37,7 +35,6 @@ export const EmpresasDebt = () => {
         api = new Api()
         , [state, setState] = useState({} as State)
         , { empresaFilter } = useContext(EmpresaContext)
-        , empresas = [] as Empresa[]
 
     const queryMultiple = () => {
         const contracts = useQuery('contracts', () => api.get('/api/get_contracts_and_payments'))
@@ -54,11 +51,8 @@ export const EmpresasDebt = () => {
         { isLoading: loadingDebts, isSuccess: debtsOk, data: debts },
     ] = queryMultiple()
 
-    let navigate = useNavigate()
-
     useEffect(() => {
         if (contractsOk && paymentsOk && tjlpOk && debtsOk) {
-            console.log(empresaFilter)
             setState({ ...state, contracts, tjlpBndes, payments, debts })
         }
     }, [contractsOk, paymentsOk, tjlpOk, debtsOk])
@@ -102,7 +96,6 @@ export const EmpresasDebt = () => {
             setState({ ...state, selectedEmpresa, showStatements: false })
         }
     }
-
 
     return (
         <div className="container-center">

@@ -12,7 +12,7 @@ export const PieChart = (props: Props) => {
 
     const options: ApexOptions = {
         title: {
-            text: 'Maiores débitos de outorga'
+            text: 'Top 6 maiores débitos'
         },
         labels: devedores.map(d => d.empresa),
         //DEFAULT COLORS: 
