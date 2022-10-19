@@ -1,11 +1,11 @@
 import { useContext } from 'react'
 import { DataTable } from '../components/DataTable'
 import { debtorListColumns } from '../config/debtorsListTable'
-import { EmpresaContext } from '../context/EmpresaContext'
+import { GlobalDataContext } from '../context/GlobalDataContext'
 
 
 export const DebtorsList = () => {
-    const { devedores } = useContext(EmpresaContext)
+    const { devedores } = useContext(GlobalDataContext)
 
     return (
         <div className='container'>

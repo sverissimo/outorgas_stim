@@ -1,11 +1,20 @@
 import { Contract } from "../interfaces/Contract";
 import { Debt } from "../interfaces/Debt";
+import { DevedorView } from "../interfaces/DevedorView";
+import { EmpresaPayments } from "../interfaces/EmpresaPayments";
 import { Payment } from "../interfaces/Payment";
 import { PaymentView } from "../interfaces/PaymentView";
 import { Tjlp } from "../interfaces/Tjlp";
 import { firstCommonDateIndex, isSameMonthAndYear, stringToDateObj } from "../utils/dateUtil";
-import { twoDigits } from "../utils/formatNumber";
+import { toCurrency, twoDigits } from "../utils/formatNumber";
+import { EmpresaService } from "./EmpresaService";
 
+export interface getGlobalDebtInput {
+    contratos: Contract[];
+    debitos: Debt[];
+    pagamentos: EmpresaPayments[];
+    tjlp: Tjlp[];
+}
 
 export class DebtService {
 
@@ -86,5 +95,37 @@ export class DebtService {
             i++
         }
         return debtSum
+    }
+
+    static getGlobalDebt = ({ contratos, debitos, pagamentos, tjlp }: getGlobalDebtInput) => {
+        const empresas = new EmpresaService()
+            .getEmpresasFromContracts(contratos)
+            .sort((a, b) => a.razaoSocial! > b.razaoSocial! ? 1 : -1)
+            , allBalances = [] as DevedorView[]
+
+        for (const empresa of empresas) {
+            const
+                empresaDebts = debitos.filter(d => d.codigoEmpresa === empresa.codigoEmpresa)
+                , empresaPayments = pagamentos.find(p => p.codigoEmpresa === empresa.codigoEmpresa)?.pagamentos!
+
+            if (empresaDebts && empresaPayments) {
+                const
+                    empresaStatements = new EmpresaService().getEmpresaStatements(empresaDebts, empresaPayments, tjlp)
+                    , debt = empresaStatements[empresaStatements.length - 1].saldoDevedor
+
+                if (debt > 0)
+                    allBalances.push({
+                        codigoEmpresa: empresa.codigoEmpresa!,
+                        empresa: empresa.razaoSocial!,
+                        debt
+                    })
+            }
+        }
+        allBalances.sort((a, b) => b.debt - a.debt)
+        const
+            devedores = allBalances.filter(e => e.debt >= 0)
+            , totalDebt = toCurrency(devedores.map(dev => dev.debt).reduce((acc, curr) => acc + curr))
+
+        return { devedores, totalDebt }
     }
 }
