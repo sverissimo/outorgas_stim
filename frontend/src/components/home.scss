@@ -1,0 +1,64 @@
+.homeContainer {
+    height: 100vh;
+    margin: 0;
+}
+
+.homeJumbotron {
+    display: flex; 
+    flex-direction: column;
+    margin: -1.4rem;
+    padding-left: 5%;    
+    height: auto;
+    //background-color: rgb(39, 64, 70);
+    background-color: rgb(35, 34, 40);
+    background-image: url('background.png') ;
+    &__title {
+        font-size: 2rem !important;
+        color: #ddd;        
+        
+    }
+    &__subtitle {
+        font-size: 1.3rem !important;
+        color: #ddd;            
+    }
+}
+
+.homeCardContainer {
+    display: flex;
+    flex-wrap: wrap;       
+    width: 80%;    
+    z-index: 2;
+    justify-content: space-around;    
+}
+
+.homeCard {    
+    background-color: #bbc;
+    border-radius: 5%;
+    padding: 1rem 1rem 0.7rem 1rem;    
+    width: 15%;
+    min-width: 100px;
+    max-width: 200px;    
+}
+
+.homeCardTitle{
+    margin-bottom: 1rem;
+    font-weight: 700;    
+}
+
+.cardText {
+    padding: 0.3rem 0;     
+    font-size: 0.83rem;    
+}
+
+.homeInfo {
+    color: #ddd;            
+    margin: 3rem 0 1rem 0;
+    font-weight: 500;    
+}
+
+.homeFooter {        
+    margin: 5% 0 1% 1% !important;
+    line-height: 1.5rem;    
+    font-size: 0.7rem;
+    font-style: italic;
+}

@@ -61,7 +61,8 @@ export function HeaderMenuButton() {
                     'aria-labelledby': 'basic-button',
                 }}
             >
-                <MenuItem onClick={e => handleClick('', e)}>Resumo do Saldo Devedor</MenuItem>
+                <MenuItem onClick={e => handleClick('', e)}>Página Inicial</MenuItem>
+                <MenuItem onClick={e => handleClick('relatorios', e)}>Resumo do Saldo Devedor</MenuItem>
                 <MenuItem onClick={e => handleClick('devedores', e)}>Listar empresas devedoras</MenuItem>
                 <MenuItem onClick={e => handleClick('empresas', e)}>Extrato por Empresas</MenuItem>
                 <MenuItem onClick={e => handleClick('contratos', e)}>Visualizar Contratos</MenuItem>

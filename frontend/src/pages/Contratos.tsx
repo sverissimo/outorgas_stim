@@ -26,7 +26,7 @@ export const Contratos = () => {
             const
                 formattedData = tableDataToJson(columns, data)
                 , today = new Date().toLocaleDateString()
-            jsonToXlsx(`Outorgas em ${today}`, formattedData)
+            jsonToXlsx(`Contratos_outorga - ${today}`, formattedData)
             return false
         }
     }
