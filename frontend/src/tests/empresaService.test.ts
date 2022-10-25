@@ -32,7 +32,7 @@ describe('Test EmpresaService', () => {
             contractsSample = empresaService.empresaFilter(contracts, 9096)
             , result = empresaService.getEmpresaDebt(contractsSample)
         //console.log("🚀 ~ file: getEmpresaDebt.test.ts ~ line 14 ~ test ~ contractsSample", result)
-        expect(result[0].valorOutorga).toEqual(20762273.089999996)
+        expect(result[0].valorDevido).toEqual(20762273.089999996)
     })
 
     it('Test getAllEmpresasDebts', async () => {

@@ -51,13 +51,13 @@ export class EmpresaService {
         for (const date of debtDates) {
             const sameDateContracts = contracts.filter(c => isSameMonthAndYear(c.dataAssinatura, date))
                 , totalValuePerDate = sameDateContracts
-                    .reduce((acc, cur) => acc + cur.valorOutorga, 0)
+                    .reduce((acc, cur) => cur.valorDevido ? acc + cur.valorDevido : acc + cur.valorOutorga, 0)
             //console.log("🚀 ~ file: EmpresaService.ts ~ line 53 ~ EmpresaService ~ sameDateContracts", sameDateContracts)
 
             debtStatement.push({
                 contratos: sameDateContracts.map(c => c.numeroContrato),
                 data: sameDateContracts[0]?.dataAssinatura || date,
-                valorOutorga: totalValuePerDate
+                valorDevido: totalValuePerDate
             })
         }
         return debtStatement
@@ -76,7 +76,7 @@ export class EmpresaService {
             const
                 newOutorga = debts.find(d => index > 0 && isSameMonthAndYear(d.data, tjlp.mes))
                 , monthPayment = payments.find(pg => isSameMonthAndYear(pg.dataPagamento, tjlp.mes))
-                , newOutorgaValue = newOutorga?.valorOutorga || 0
+                , newOutorgaValue = newOutorga?.valorDevido || 0
                 , valorPago = monthPayment?.valor || 0
 
             let { tjlpRate, tjlpEfetiva } = tjlpService.applyTjlp(index, adjustedTjlp, saldoDevedor)
@@ -106,6 +106,7 @@ export class EmpresaService {
     }
 
     getAllEmpresasDebts = (contracts: Contract[]) => {
+
         const globalDebt: any[] = []
             , empresaCodes: Set<number> = new Set(
                 this.getEmpresasFromContracts(contracts)

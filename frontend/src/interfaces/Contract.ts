@@ -14,4 +14,7 @@ export interface Contract {
     pagamentos?: Payment[] | []
     saldoDevedor?: number
     parcelasPagas?: number
+    carencia?: number
+    convalidacao?: number
+    valorDevido?: number
 }

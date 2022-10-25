@@ -26,7 +26,7 @@ export class DebtService {
             , firstDebts = debts
                 .filter(d => isSameMonthAndYear(d.data, sortedDebts[0].data))
             , firstMonthTotalDebt = firstDebts
-                .map(d => d.valorOutorga)
+                .map(d => d.valorDevido)
                 .reduce((prev, curr) => prev + curr)
 
         return firstMonthTotalDebt
