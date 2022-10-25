@@ -67,7 +67,7 @@ pipeline {
         stage('#### Test ####') {
             when{
                expression {
-                    true | env.BRANCH_NAME == 'main'
+                    env.BRANCH_NAME == 'main'
                 }
             }
             steps {                
@@ -81,7 +81,7 @@ pipeline {
         stage('#### Deploy ####') {
             when{
                expression {
-                    true | env.BRANCH_NAME == 'main'
+                    env.BRANCH_NAME == 'main'
                 }
             }
             steps {                                             
