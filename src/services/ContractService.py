@@ -2,6 +2,7 @@ from typing import List, TypedDict
 
 from data_access_layer.ContractDao import ContractDao
 from data_access_layer.SicarDao import SicarDao
+from database.migrations.fix_contracts_data import fix_contracts_data
 from domain.Contrato import Contrato
 from domain.Pagamento import Pagamento
 
@@ -44,3 +45,11 @@ class ContractService:
 
     def insert_payments(self, contract_updates: List[ContractPaymentsUpdate]):
         self.contract_dao.insert_payments(contract_updates)
+
+    def fix_contract_values(self):
+        contracts = self.list()
+        updates = fix_contracts_data(contracts)
+        print('updates: ', updates[:3])
+
+        update_result = self.contract_dao.insert_contract_fixed_values(updates)
+        return update_result

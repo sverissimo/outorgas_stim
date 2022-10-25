@@ -1,12 +1,13 @@
 import re
-import pandas as pd
 
+import pandas as pd
 
 fields = [
     ("Nº contrato", "numero_contrato"),
     ("Nº Contrato", "numero_contrato"),
     ("Edital", "edital"),
     ("Cód. Empresa", "codigo_empresa"),
+    ("Cód.Empresa", "codigo_empresa"),
     ("Nome Empresa", "razao_social"),
     ("Contribuinte", "razao_social"),
     ("CNPJ", "cnpj"),
@@ -21,6 +22,8 @@ fields = [
     ("Data da assinatura", "data_assinatura"),
     ("Data Vencimento", "vencimento_parcela"),
     ("Data Pagamento", "data_pagamento"),
+    ("Prazo 1ª parcela", "carencia"),
+    ("R$ CONVALIDAÇÃO", "convalidacao")
 ]
 
 

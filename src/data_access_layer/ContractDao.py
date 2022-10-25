@@ -1,5 +1,5 @@
-from data_access_layer.EntityDao import EntityDao
 from config.mongo_client import UpdateOne
+from data_access_layer.EntityDao import EntityDao
 
 
 class ContractDao(EntityDao):
@@ -58,3 +58,21 @@ class ContractDao(EntityDao):
         )
 
         self.entity_manager.bulk_write(updates)
+
+    def insert_contract_fixed_values(self, contract_updates):
+
+        updates = list(
+            map(lambda contract: UpdateOne(
+                {'numero_contrato': contract['numero_contrato']},
+                {'$set': {
+                    'carencia': contract['carencia'],
+                    'convalidacao': contract['convalidacao'],
+                    'valor_devido': contract['valor_devido']
+                }
+                }
+            ), contract_updates))
+
+        result = self.entity_manager.bulk_write(updates)
+        print('ContractDAO -- matched: ', result.matched_count)
+        print('ContractDAO -- modified: ', result.modified_count)
+        return result
