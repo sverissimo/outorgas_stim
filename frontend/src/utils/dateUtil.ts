@@ -43,9 +43,9 @@ export function isSameMonthAndYear(date1: any, date2: any) {
 }
 
 
-export function addMonth(date: any) {
+export function addMonth(date: string | Date, months = 1) {
     date = stringToDateObj(date)
-    date = add(date, { months: 1 })
+    date = add(date, { months })
     return date
 }
 

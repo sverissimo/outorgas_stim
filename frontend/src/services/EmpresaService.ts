@@ -9,7 +9,11 @@ import { Tjlp } from "../interfaces/Tjlp";
 import { PaymentView } from "../interfaces/PaymentView";
 import { Debt } from "../interfaces/Debt";
 import { isSameMonthAndYear, stringToDateObj } from "../utils/dateUtil";
+import { ContractService } from "./ContractService";
 
+let
+    carenciaTracker = 0
+    , outorgaValueTracker = 0
 export class EmpresaService {
 
     empresaFilter = (array: any[], codigoEmpresa: number) => {
@@ -41,23 +45,30 @@ export class EmpresaService {
 
         const debtStatement: Debt[] = []
             , debtDates = new Set(contracts
-                .map(c => {
+                .map(contract => {
                     const
-                        contractDate = stringToDateObj(c?.vigencia || c.dataAssinatura)
+                        contractDate = stringToDateObj(contract.dataAssinatura)
                         , normalizedDate = contractDate.setDate(1)
+
                     return new Date(normalizedDate).toLocaleDateString()
                 }))
 
         for (const date of debtDates) {
-            const sameDateContracts = contracts.filter(c => isSameMonthAndYear(c.dataAssinatura, date))
-                , totalValuePerDate = sameDateContracts
-                    .reduce((acc, cur) => cur.valorDevido ? acc + cur.valorDevido : acc + cur.valorOutorga, 0)
-            //console.log("🚀 ~ file: EmpresaService.ts ~ line 53 ~ EmpresaService ~ sameDateContracts", sameDateContracts)
+            const sameDateContracts = contracts.filter(c => {
+                return isSameMonthAndYear(c.dataAssinatura, date)
+            })
+            if (!sameDateContracts.length)
+                continue
+
+            const { dataVigencia, carencia } = ContractService.getContractStartDate(sameDateContracts[0])
+                , { contratos, data, valorDevido } = ContractService.aggregateContractsByDate(sameDateContracts)
 
             debtStatement.push({
-                contratos: sameDateContracts.map(c => c.numeroContrato),
-                data: sameDateContracts[0]?.dataAssinatura || date,
-                valorDevido: totalValuePerDate
+                contratos,
+                data,
+                carencia,
+                dataVigencia,
+                valorDevido
             })
         }
         return debtStatement
@@ -73,10 +84,11 @@ export class EmpresaService {
 
         let index = 0
         for (const tjlp of adjustedTjlp) {
+
             const
                 newOutorga = debts.find(d => index > 0 && isSameMonthAndYear(d.data, tjlp.mes))
-                , monthPayment = payments.find(pg => isSameMonthAndYear(pg.dataPagamento, tjlp.mes))
                 , newOutorgaValue = newOutorga?.valorDevido || 0
+                , monthPayment = payments.find(pg => isSameMonthAndYear(pg.dataPagamento, tjlp.mes))
                 , valorPago = monthPayment?.valor || 0
 
             let { tjlpRate, tjlpEfetiva } = tjlpService.applyTjlp(index, adjustedTjlp, saldoDevedor)
@@ -84,10 +96,25 @@ export class EmpresaService {
             if (saldoDevedor < 0) // Não corrige se o saldo for negativo
                 tjlpEfetiva = 0
 
-            const saldoAntesPg = tjlpEfetiva + saldoDevedor
+            saldoDevedor += newOutorgaValue //Se for o caso de contratos assinados em datas diferentes                        
+            saldoDevedor = saldoDevedor - valorPago
 
-            saldoDevedor += newOutorgaValue //Se for o caso de contratos assinados em datas diferentes
-            saldoDevedor = saldoDevedor + tjlpEfetiva - valorPago
+            const carencia = debts[0].carencia / 30
+
+            if (index === 0 || index < carencia) {
+                tjlpEfetiva = 0
+            }
+            /*  if (newOutorga?.carencia) {
+                 carenciaTracker = index + newOutorga.carencia / 30
+                 console.log("🚀 ~ file: EmpresaService.ts ~ line 108 ~ EmpresaService ~ index + newOutorga.carencia / 30", index, newOutorga.carencia / 30)
+                 if (index < carenciaTracker) {
+                     console.log("🚀 ~ file: EmpresaService.ts ~ line 109 ~ EmpresaService ~ carenciaTracker", carenciaTracker)
+                     tjlpEfetiva = tjlpEfetiva - (tjlpRate * newOutorgaValue)
+                 }
+             } */
+            //console.log("🚀 ~ file: EmpresaService.ts ~ line 108 ~ EmpresaService ~ carenciaTracker", index, carenciaTracker)
+            const saldoAntesPg = saldoDevedor + valorPago
+            saldoDevedor = saldoDevedor + tjlpEfetiva
 
             const statement: PaymentView = {
                 mes: stringToDateObj(tjlp.mes),
@@ -167,3 +194,21 @@ export class EmpresaService {
         return allEmpresaPayments
     }
 }
+
+/*
+            TODO: 
+            Implementar a carencia apenas no primeiro debt/contrato
+            Criar método no ContractService ou debtService que checa se há mais pgs 2012/2013/2009 misturados (só tem Exdil)
+            Se check OK: criar adjust TJLP contract overlapping e submeter empresaStatements a essa função
+            
+            if (newOutorga) //Exclui ajuste de tjlp para contratos em período de carência 
+             {
+                 carenciaTracker = newOutorga.carencia
+                 outorgaValueTracker = newOutorgaValue * 0.7 //30% era pago à vista na assinatura
+             }
+             if (carenciaTracker > 15) {
+                 console.log("🚀 ~ file: EmpresaService.ts ~ line 106 ~ EmpresaService ~ outorgaValueTracker", outorgaValueTracker)
+                 tjlpEfetiva = tjlpRate * (saldoDevedor - outorgaValueTracker)
+                 carenciaTracker -= 30
+             }
+  */

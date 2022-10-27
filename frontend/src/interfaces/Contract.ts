@@ -5,7 +5,6 @@ export interface Contract {
     codigoEmpresa: number
     razaoSocial?: string
     dataAssinatura: string
-    vigencia?: string
     edital: string
     linhasId?: number[]
     valorOutorga: number

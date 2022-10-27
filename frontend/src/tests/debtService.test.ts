@@ -11,7 +11,9 @@ describe('Test DebtService methods', () => {
 
             const tst = empresaDebts.some(d => new Date(d.data).getFullYear() === 2012 || new Date(d.data).getFullYear() === 2013)
                 , tst2 = empresaDebts.some(d => new Date(d.data).getFullYear() < 2012)
-            if (tst && tst2)
+                , tst3 = empresaDebts.some(d => new Date(d.data).getFullYear() === 2012)
+                , tst4 = empresaDebts.some(d => new Date(d.data).getFullYear() === 2013)
+            if (tst && tst2 || (tst3 && tst4))
                 a.push(codigoEmpresa)
         }
         console.log("🚀 ~ file: debtService.test.ts ~ line 12 ~ describe ~ a", a)
