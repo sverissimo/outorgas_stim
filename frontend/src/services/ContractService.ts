@@ -3,8 +3,8 @@ import { Debt } from "../interfaces/Debt";
 import { addMonth, stringToDateObj } from "../utils/dateUtil";
 
 
+let i = 0
 export class ContractService {
-
 
     static getContractStartDate = (contract: Contract) => {
 
@@ -36,6 +36,27 @@ export class ContractService {
             , data = contracts[0]?.dataAssinatura
 
         return { contratos, data, valorDevido }
+    }
+
+    static getReajuste(dateTracker: (string | Date), contractDate: string | Date, saldoDevedor: number) {
+
+        const parsedContractDate = stringToDateObj(contractDate)
+        const contractIsEligible = parsedContractDate.getFullYear() === 2013
+            &&
+            parsedContractDate.getTime() > new Date(2013, 3, 21).getTime()
+            , readjustmentDate = stringToDateObj(dateTracker).getFullYear() === 2014 && stringToDateObj(dateTracker).getMonth() === 0
+            , shouldReadjust = contractIsEligible && readjustmentDate
+
+        /* if (parsedContractDate.getFullYear() === 2013) {
+            i++
+            console.log("🚀 ~ file: ContractService.ts ~ line 53 ~ ContractService ~ getReajuste ~ i", i)
+        } */
+
+        if (!shouldReadjust)
+            return 0
+
+        const readjustmentAmount = saldoDevedor * 0.034
+        return readjustmentAmount
     }
 
 }
