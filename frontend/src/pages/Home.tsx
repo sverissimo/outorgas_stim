@@ -1,8 +1,15 @@
 import { homeCards } from "../config/homeCards"
 import '../components/home.scss'
+import { FC, useContext } from "react"
+import { GlobalDataContext } from "../context/GlobalDataContext"
 
 
-export const Home = () => {
+export const Home: FC = () => {
+    const { contratos, devedores, totalDebt } = useContext(GlobalDataContext)
+        , debtContractsCount = contratos.length
+        , debtorsCount = devedores.length
+        , cardData = [debtContractsCount, debtorsCount, null, totalDebt]
+
     return (
         <div className="homeContainer">
             <main className="homeJumbotron">
@@ -14,13 +21,13 @@ export const Home = () => {
                 </h4>
                 <section className="homeCardContainer">
                     {
-                        homeCards.map(({ cardTitle, cardContent }) =>
+                        homeCards.map(({ cardTitle, cardContent }, i) =>
                             <div className="homeCard" key={cardTitle}>
                                 <div className="homeCardTitle">
                                     {cardTitle}
                                 </div>
                                 <div>
-                                    {cardContent.map((text, i) =>
+                                    {cardContent(cardData[i] || '').map((text, i) =>
                                         <div className="cardText" key={i}>
                                             • {text}
                                         </div>

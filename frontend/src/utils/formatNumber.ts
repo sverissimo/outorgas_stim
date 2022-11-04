@@ -9,7 +9,7 @@ export const toPercentage = (value: number): string => {
 }
 
 export const toCurrency = (value: number): string => {
-    const formatted: string = 'R$ ' + value.toLocaleString(undefined, { minimumFractionDigits: 2 })
+    const formatted: string = 'R$ ' + value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
     /* 
     ----------------> Caso de incompatibilidade do browser, reverter para a função abaixo:
     formatted = formatted.replace('.', ',') 

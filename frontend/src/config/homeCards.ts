@@ -1,35 +1,35 @@
 type HomeCard = {
     cardTitle: string;
-    cardContent: string[];
+    cardContent: (cardData: string | number) => string[];
 }
 
 export const homeCards: HomeCard[] = [
     {
         cardTitle: 'Contratos',
-        cardContent: [
+        cardContent: cardData => [
             '752 contratos vigentes',
-            '110 contratos com débitos'
+            `${cardData} contratos com débitos`
         ]
     },
     {
         cardTitle: 'Empresas',
-        cardContent: [
+        cardContent: cardData => [
             '162 empresas com contratos vigentes',
-            '36 empresas com débitos de outorgas'
+            `${cardData} empresas com débitos de outorgas`
         ]
     },
     {
         cardTitle: 'Pagamentos',
-        cardContent: [
+        cardContent: () => [
             '15.786 guias registradas no SICAR',
             '12.581 registros de pagamento até 17/10/2022*',
         ]
     },
     {
         cardTitle: 'Saldo',
-        cardContent: [
-            'R$ 9.530.048,87 de saldo devedor**',
-            '6 empresas representam 68,7% do saldo devedor'
+        cardContent: cardData => [
+            `${cardData} de saldo devedor**`,
+            '6 empresas representam 77,6% do saldo devedor'
         ]
     },
 ]
