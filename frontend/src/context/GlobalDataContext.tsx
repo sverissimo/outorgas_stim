@@ -7,6 +7,7 @@ import { DevedorView } from "../interfaces/DevedorView";
 import { Empresa } from "../interfaces/Empresa";
 import { EmpresaPayments } from "../interfaces/EmpresaPayments";
 import { Tjlp } from "../interfaces/Tjlp";
+import { ContractService } from "../services/ContractService";
 import { DebtService } from "../services/DebtService";
 import { EmpresaService } from "../services/EmpresaService";
 
@@ -49,12 +50,12 @@ export const GlobalDataContextProvider: React.FC<Props> = ({ children }: Props) 
                     .getEmpresasFromContracts(contratos)
                     .sort((a, b) => a.razaoSocial! > b.razaoSocial! ? 1 : -1)
                     .filter(e => debtorsEmpresaCodes.includes(e.codigoEmpresa!))
-
                 , filteredContracts = contratos
                     .filter((c: Contract) => debtorsEmpresaCodes.includes(c.codigoEmpresa!))
-                    .sort((a: Contract, b: Contract) => a.razaoSocial! > b.razaoSocial! ? 1 : -1)
+                , viewModelContracts = ContractService.modelToView(filteredContracts)
 
-            setState({ ...state, contratos: filteredContracts, tjlp, pagamentos, debitos, devedores, totalDebt, empresas, isLoading: false })
+
+            setState({ ...state, contratos: viewModelContracts, tjlp, pagamentos, debitos, devedores, totalDebt, empresas, isLoading: false })
         }
         getData()
     }, [])

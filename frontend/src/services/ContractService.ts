@@ -6,8 +6,21 @@ import { addMonth, stringToDateObj } from "../utils/dateUtil";
 let i = 0
 export class ContractService {
 
-    static getContractStartDate = (contract: Contract) => {
+    static modelToView = (contracts: Contract[]) => {
 
+        const viewModelContracts = contracts.map((c: any) => {
+            if (!c.convalidacao)
+                c.convalidacao = 0
+            if (!c.valorDevido)
+                c.valorDevido = c.valorOutorga
+            return c
+        })
+            .sort((a: Contract, b: Contract) => a.razaoSocial! > b.razaoSocial! ? 1 : -1)
+        return viewModelContracts
+    }
+
+
+    static getContractStartDate = (contract: Contract) => {
         const
             { dataAssinatura } = contract
             , contractYear = stringToDateObj(dataAssinatura).getFullYear()

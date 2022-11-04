@@ -97,10 +97,8 @@ export const contratoTableColumns: Column[] = [
         options: {
             filter: false,
             sort: true,
-            customBodyRender: (value, tableMeta, updateValue) => {
-                const { rowData, columnIndex } = tableMeta
-                    , valorOutorga = rowData[columnIndex - 2]
-                return toCurrency(Number(value || valorOutorga))
+            customBodyRender: (value = 0, tableMeta, updateValue) => {
+                return toCurrency(Number(value))
             }
         }
     }
