@@ -2,7 +2,7 @@ import { useContext } from "react";
 import MUIDataTable, { FilterType, MUIDataTableOptions } from 'mui-datatables';
 import { Container, ThemeProvider } from "@mui/material";
 import { GlobalDataContext } from "../context/GlobalDataContext";
-import { columns } from '../config/tableColumns'
+import { contratoTableColumns } from '../config/contratoTableColumns'
 import { getMuiTheme } from "../config/tableStyles";
 import { textLabels } from "../config/tableLabels";
 import { jsonToXlsx } from "../utils/exportToXls";
@@ -36,7 +36,7 @@ export const Contratos = () => {
                 <MUIDataTable
                     title="Contratos de Outorga com saldo devedor"
                     data={contratos}
-                    columns={columns}
+                    columns={contratoTableColumns}
                     options={options}
                 />
             </ThemeProvider>

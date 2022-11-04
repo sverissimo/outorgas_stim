@@ -10,7 +10,7 @@ interface Column {
 
 //['razao_social', 'cnpj', 'codigo_empresa', 'data_assinatura', 'edital', 'n_parcelas', 'numero_contrato', 'valor_outorga']
 
-export const columns: Column[] = [
+export const contratoTableColumns: Column[] = [
     {
         name: "razaoSocial",
         label: "Razão Social",
@@ -21,14 +21,6 @@ export const columns: Column[] = [
                 return value.toUpperCase()
             },
         },
-    },
-    {
-        name: "cnpj",
-        label: "CNPJ",
-        options: {
-            filter: false,
-            sort: false,
-        }
     },
     {
         name: "codigoEmpresa",
@@ -85,6 +77,30 @@ export const columns: Column[] = [
             sort: true,
             customBodyRender: (value, tableMeta, updateValue) => {
                 return toCurrency(Number(value))
+            }
+        }
+    },
+    {
+        name: "convalidacao",
+        label: "Valor da Convalidação",
+        options: {
+            filter: false,
+            sort: true,
+            customBodyRender: (value = 0, tableMeta, updateValue) => {
+                return toCurrency(Number(value))
+            }
+        }
+    },
+    {
+        name: "valorDevido",
+        label: "Valor Devido",
+        options: {
+            filter: false,
+            sort: true,
+            customBodyRender: (value, tableMeta, updateValue) => {
+                const { rowData, columnIndex } = tableMeta
+                    , valorOutorga = rowData[columnIndex - 2]
+                return toCurrency(Number(value || valorOutorga))
             }
         }
     }

@@ -1,5 +1,5 @@
 import { MUIDataTableMeta } from "mui-datatables"
-import { columns as tableColumns } from "../config/tableColumns"
+import { contratoTableColumns as tableColumns } from "../config/contratoTableColumns"
 
 export const tableDataToJson = (columns: Array<any>, data: Array<any>) => {
     const formattedData: any[] = []
