@@ -29,7 +29,7 @@ export const homeCards: HomeCard[] = [
         cardTitle: 'Saldo',
         cardContent: cardData => [
             `${cardData} de saldo devedor**`,
-            '6 empresas representam 77,6% do saldo devedor'
+            '6 empresas representam 77,8% do saldo devedor'
         ]
     },
 ]

@@ -1,4 +1,5 @@
 import { MUIDataTableColumnOptions } from "mui-datatables"
+import { stringToDateObj } from "../utils/dateUtil"
 import { toCurrency } from "../utils/formatNumber"
 
 interface Column {
@@ -48,6 +49,12 @@ export const contratoTableColumns: Column[] = [
             customBodyRender: (value, tableMeta, updateValue) => {
                 return new Date(value).toLocaleDateString('pt-BR')
             },
+            sortCompare: (order => (obj1, obj2) => {
+                const
+                    date1 = stringToDateObj(obj1.data)
+                    , date2 = stringToDateObj(obj2.data)
+                return (date1.getTime() - date2.getTime()) * (order === 'asc' ? 1 : -1)
+            })
         }
     },
     {

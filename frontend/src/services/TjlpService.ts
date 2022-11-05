@@ -17,17 +17,20 @@ export class TjlpService {
     }
 
     applyTjlp = (i: number, adjustedTjlp: Tjlp[], amount: number) => {
-        let tjlpAmount = 0
+        let tjlpEfetiva = 0
             , tjlpRate = 0
 
         const isFirstPayment = i === 0
         if (!isFirstPayment) {
             tjlpRate = adjustedTjlp[i - 1].taxa
-            tjlpAmount = twoDigits(amount * adjustedTjlp[i - 1].taxa)
+            tjlpEfetiva = twoDigits(amount * adjustedTjlp[i - 1].taxa)
         }
+        if (amount < 0)
+            tjlpEfetiva = 0
+
         return {
             tjlpRate,
-            tjlpEfetiva: tjlpAmount
+            tjlpEfetiva
         }
     }
 }

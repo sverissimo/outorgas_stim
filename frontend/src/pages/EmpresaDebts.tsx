@@ -1,4 +1,4 @@
-import { useState, useTransition, useContext } from "react";
+import { useState, useTransition, useContext, FC } from "react";
 import { GlobalDataContext } from "../context/GlobalDataContext";
 import { EmpresaService } from "../services/EmpresaService";
 import { debtColumns } from "../config/debtSummary"
@@ -12,7 +12,7 @@ import { PaymentView } from "../interfaces/PaymentView";
 import { DataTable } from "../components/DataTable";
 import { Loading } from "../components/Loading";
 import SearchBox from "../components/SearchBox";
-import { toCurrency, toPercentage } from "../utils/formatNumber";
+import { toCurrency } from "../utils/formatNumber";
 import '../styles.scss'
 
 type State = {
@@ -28,11 +28,11 @@ type State = {
     fileName: string
 }
 
-export const EmpresaDebts = () => {
+export const EmpresaDebts: FC = () => {
 
-    const [isPending, startTransition] = useTransition();
     const
-        [state, setState] = useState({} as State)
+        [isPending, startTransition] = useTransition()
+        , [state, setState] = useState({} as State)
         , { empresas, tjlp, debitos, pagamentos } = useContext(GlobalDataContext)
 
     const showEmpresaStatement = (selectedEmpresa: Partial<Empresa>) => {
@@ -66,15 +66,8 @@ export const EmpresaDebts = () => {
             dataArray[0] = dataArray[0].toLocaleString()
             if (dataArray[1])
                 dataArray[1] = dataArray[1].replaceAll(',', ';')
-            /* dataArray[2] = toPercentage(dataArray[2] / 1000)
-            dataArray[3] = toCurrency(dataArray[3])
-            dataArray[4] = toCurrency(dataArray[4])
-            dataArray[5] = toCurrency(dataArray[5])
-            dataArray[6] = toCurrency(dataArray[6]) */
-            //console.log("🚀 ~ file: EmpresaDebts.tsx ~ line 73 ~ dataArray.forEach ~ dataArray", dataArray)
             return el
         })
-        //console.log("🚀 ~ file: EmpresaDebts.tsx ~ line 76 ~ formattedData ~ formattedData", formattedData)
         const csvData = buildHead(columns) + buildBody(formattedData)
         csvToXlsx(`${state.fileName}`, csvData)
         return false
@@ -96,7 +89,7 @@ export const EmpresaDebts = () => {
             }
             {
                 state.showStatements && state.empresaStatements &&
-                <div className="container fk">
+                <div className="container">
                     <DataTable
                         title={`Extrato - ${state.selectedEmpresa!.razaoSocial} - Saldo devedor: ${state.saldoDevedor}`}
                         data={state.empresaStatements}

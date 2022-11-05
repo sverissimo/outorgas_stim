@@ -102,6 +102,7 @@ export class DebtService {
             .getEmpresasFromContracts(contratos)
             .sort((a, b) => a.razaoSocial! > b.razaoSocial! ? 1 : -1)
             , allBalances = [] as DevedorView[]
+            , allStatements = []
 
         for (const empresa of empresas) {
             const
@@ -112,6 +113,7 @@ export class DebtService {
                 const
                     empresaStatements = new EmpresaService().getEmpresaStatements(empresaDebts, empresaPayments, tjlp)
                     , debt = empresaStatements[empresaStatements.length - 1].saldoDevedor
+                allStatements.push(empresaStatements)
 
                 if (debt > 0)
                     allBalances.push({
@@ -122,6 +124,16 @@ export class DebtService {
             }
         }
         allBalances.sort((a, b) => b.debt - a.debt)
+        /* console.log(
+            allStatements
+                .filter(s => s.some(a => a.reajuste! > 0))
+                .map(a => a.find(el => el.reajuste! > 0)!)
+                //.map(el => [...el.contratos!])
+                //.reduce((prev, curr) => prev.concat(curr))
+                .map(el => el.reajuste!)
+                .reduce((prev, curr) => prev + curr)
+            //.sort((a, b) => a > b ? 1 : -1)
+        ) */
         const
             devedores = allBalances.filter(e => e.debt >= 0)
             , totalDebt = toCurrency(devedores.map(dev => dev.debt).reduce((acc, curr) => acc + curr))

@@ -80,58 +80,44 @@ export class EmpresaService {
         let saldoDevedor = DebtService.getFirstMonthDebt(debts)
 
         let index = 0
+        let debtIndex = 0
 
         for (const tjlp of adjustedTjlp) {
             const
-                newOutorga = debts.find(d => index > 0 && isSameMonthAndYear(d.data, tjlp.mes))
-                , newOutorgaValue = newOutorga?.valorDevido || 0
-                , monthPayment = payments.find(pg => isSameMonthAndYear(pg.dataPagamento, tjlp.mes))
+                monthPayment = payments.find(pg => isSameMonthAndYear(pg.dataPagamento, tjlp.mes))
                 , valorPago = monthPayment?.valor || 0
+                , newOutorga = debts.find(d => index > 0 && isSameMonthAndYear(d.data, tjlp.mes))
+                , valorNovaOutorga = newOutorga?.valorDevido || 0
 
             let { tjlpRate, tjlpEfetiva } = tjlpService.applyTjlp(index, adjustedTjlp, saldoDevedor)
 
-            if (saldoDevedor < 0) // Não corrige se o saldo for negativo
-                tjlpEfetiva = 0
+            const saldoCorrigido = saldoDevedor + tjlpEfetiva
 
-            saldoDevedor += newOutorgaValue //Se for o caso de contratos assinados em datas diferentes                        
-            saldoDevedor = saldoDevedor - valorPago
-            /* if (tjlp.mes.match('Jan')) {
-                const a = new Date(tjlp.mes)
-                console.log("🚀 ~ file: EmpresaService.ts ~ line 99 ~ EmpresaService ~ tjlp.mes", a.getHours())
-            } */
-            //if (index === 0)
+            if (newOutorga)
+                debtIndex = debts.indexOf(newOutorga)
 
+            const reajuste = ContractService.getReajuste(tjlp.mes, debts[debtIndex].data, saldoCorrigido)
 
-            const reajuste = ContractService.getReajuste(tjlp.mes, debts[0].data, saldoDevedor + tjlpEfetiva)
-            if (reajuste) {
-                console.log("🚀 ~ file: EmpresaService.ts ~ line 108 ~ EmpresaService ~ monthPayment?.codigoEmpresa", debts[0].codigoEmpresa, saldoDevedor + tjlpEfetiva, tjlp.mes)
-                console.log("🚀 ~ file: EmpresaService.ts ~ line 100 ~ EmpresaService ~ reajuste", reajuste)
-            }
-
-            /**
-             * *******TO GET MORE CUSTOMIZED INFO ABOUT CONTRACTS:
-             * ADD HERE A CONTRACT FACTORY THAT YIELDS A DIFFERENT CLASS OF CONTRACT DEPENDING ON ARGS/PARAMS PASSED
-             * THERE SHOULD BE A ABSTRACT CONTRACT CLASS AND SPECIFIC CLASSES
-             * EX OF SUBCLASSES: 2009-10CONTRACT, 2012-13CONTRACT, 2014-16CONTRACT
-             * EACH SUBLCLASS SHOULD HAVE ITS OWN METHODS, APPLYING SPECIFIC RULES AND RETURNING DIFFERENT OUTPUTS 
-             */
-
-            const saldoAntesPg = saldoDevedor + valorPago
-            saldoDevedor = saldoDevedor + tjlpEfetiva
+            const saldoAtualizado = saldoCorrigido + reajuste + valorNovaOutorga
+            saldoDevedor = saldoAtualizado - valorPago
 
             const statement: PaymentView = {
                 mes: stringToDateObj(tjlp.mes),
                 numeroGuia: monthPayment?.numeroGuia,
                 tjlp: tjlpRate,
                 tjlpEfetiva,
-                saldoAntesPg,
+                saldoAtualizado,
                 valorPago,
-                saldoDevedor
+                saldoDevedor,
+                reajuste,
+                valorNovaOutorga,
+                contratos: debts[debtIndex].contratos
             }
             if (statement.mes <= new Date()) //Limita a listagem do débito à presente data (tjlp pode estar 2meses a frente)
                 empresaStatements.push(statement)
             index++
         }
+
         return empresaStatements
     }
 

@@ -1,45 +1,37 @@
-import { useContext } from "react";
-import MUIDataTable, { FilterType, MUIDataTableOptions } from 'mui-datatables';
-import { Container, ThemeProvider } from "@mui/material";
+import { FC, useContext } from "react";
 import { GlobalDataContext } from "../context/GlobalDataContext";
+import { DataTable } from "../components/DataTable";
 import { contratoTableColumns } from '../config/contratoTableColumns'
-import { getMuiTheme } from "../config/tableStyles";
-import { textLabels } from "../config/tableLabels";
 import { jsonToXlsx } from "../utils/exportToXls";
 import { tableDataToJson } from "../utils/tableDataToJson";
+import { MUIDataTableOptions } from 'mui-datatables';
 import '../styles.scss'
 
 
-export const Contratos = () => {
+export const Contratos: FC = () => {
 
     const { contratos } = useContext(GlobalDataContext)
 
-    const options: MUIDataTableOptions = {
-        filterType: 'dropdown' as FilterType,
-        selectableRowsHideCheckboxes: true,
-        print: false,
-        textLabels: textLabels,
-        responsive: 'simple',
+    const customOptions: MUIDataTableOptions = {
         rowsPerPage: 25,
-        rowsPerPageOptions: [10, 25, 50],
-        onDownload: (buildHead, buildBody, columns, data) => {
+        onDownload: (_, _2, columns, data) => {
             const
                 formattedData = tableDataToJson(columns, data)
                 , today = new Date().toLocaleDateString()
             jsonToXlsx(`Contratos_outorga - ${today}`, formattedData)
             return false
-        }
+        },
+        sortOrder: { name: 'razaoSocial', direction: 'asc' }
     }
+
     return (
-        <Container maxWidth={"xl"}>
-            <ThemeProvider theme={getMuiTheme()}>
-                <MUIDataTable
-                    title="Contratos de Outorga com saldo devedor"
-                    data={contratos}
-                    columns={contratoTableColumns}
-                    options={options}
-                />
-            </ThemeProvider>
-        </Container>
+        <div className="container">
+            <DataTable
+                title="Contratos de Outorga com saldo devedor"
+                data={contratos}
+                columns={contratoTableColumns}
+                customOptions={customOptions}
+            />
+        </div>
     )
 }

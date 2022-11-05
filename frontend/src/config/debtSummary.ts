@@ -50,7 +50,7 @@ export const debtColumns: MUIDataTableColumn[] = [
         }
     },
     {
-        name: "saldoAntesPg",
+        name: "saldoAtualizado",
         label: "Saldo corrigido",
         options: {
             filter: false,
