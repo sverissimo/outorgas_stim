@@ -5,10 +5,10 @@ import { GlobalDataContext } from '../context/GlobalDataContext'
 
 
 export const DebtorsList = () => {
-    const { devedores } = useContext(GlobalDataContext)
+    const
+        { devedores } = useContext(GlobalDataContext)
         , today = new Date().toLocaleDateString()
 
-    //const parseXlsData = 
     return (
         <div className='container'>
             <DataTable

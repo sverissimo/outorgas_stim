@@ -13,6 +13,7 @@ export class ContractService {
                 c.convalidacao = 0
             if (!c.valorDevido)
                 c.valorDevido = c.valorOutorga
+            c.dataAssinatura = stringToDateObj(c.dataAssinatura)
             return c
         })
             .sort((a: Contract, b: Contract) => a.razaoSocial! > b.razaoSocial! ? 1 : -1)
@@ -59,10 +60,10 @@ export class ContractService {
             &&
             parsedContractDate.getTime() > new Date(2013, 2, 21).getTime()
             , readjustmentDate = stringToDateObj(dateTracker).getFullYear() === 2014 && stringToDateObj(dateTracker).getMonth() === 0
-            , shouldReadjust = contractIsEligible && readjustmentDate
-
-
-
+            , exception = parsedContractDate.getFullYear() === 2013 && parsedContractDate.getMonth() === 5 && parsedContractDate.getDate() === 20 //Contrato 60/2013 (Balitur) edital de 2009
+            , shouldReadjust = contractIsEligible && readjustmentDate && !exception
+        /* if (exception)
+            console.log("🚀 ~ file: ContractService.ts ~ line 62 ~ ContractService ~ getReajuste ~ parsedContractDate", parsedContractDate) */
         if (!shouldReadjust)
             return 0
 

@@ -1,7 +1,7 @@
 import { useState, useTransition, useContext, FC } from "react";
 import { GlobalDataContext } from "../context/GlobalDataContext";
 import { EmpresaService } from "../services/EmpresaService";
-import { debtColumns } from "../config/debtSummary"
+import { empresaStatementsColumns } from "../config/empresaStatementsColumns"
 import { csvToXlsx, getXlsFileName } from "../utils/exportToXls";
 import { Contract } from '../interfaces/Contract'
 import { Tjlp } from "../interfaces/Tjlp";
@@ -14,6 +14,7 @@ import { Loading } from "../components/Loading";
 import SearchBox from "../components/SearchBox";
 import { toCurrency } from "../utils/formatNumber";
 import '../styles.scss'
+
 
 type State = {
     contracts: Contract[]
@@ -43,7 +44,7 @@ export const EmpresaDebts: FC = () => {
             , saldoDevedor = toCurrency(empresaStatements[empresaStatements.length - 1]?.saldoDevedor)
             , fileName = `Outorgas-Extrato ${getXlsFileName(selectedEmpresa!.razaoSocial)}`
 
-        setState({ ...state, selectedEmpresa, empresaStatements, showStatements: true, saldoDevedor, fileName });
+        setState(prevState => ({ ...prevState, selectedEmpresa, empresaStatements, showStatements: true, saldoDevedor, fileName }));
     }
 
     const handleChange = (empresaInput: string) => {
@@ -93,7 +94,7 @@ export const EmpresaDebts: FC = () => {
                     <DataTable
                         title={`Extrato - ${state.selectedEmpresa!.razaoSocial} - Saldo devedor: ${state.saldoDevedor}`}
                         data={state.empresaStatements}
-                        columns={debtColumns}
+                        columns={empresaStatementsColumns}
                         fileName={`Outorgas-Extrato ${getXlsFileName(state.selectedEmpresa!.razaoSocial)}`}
                         customDownloadHandler={customDownloadHandler}
                     />

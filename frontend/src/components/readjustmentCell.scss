@@ -1,0 +1,14 @@
+.readjustmentCellDiv{
+    display: flex;
+    justify-content: center;        
+}
+.readjustmentCellText {     
+    cursor: default;
+    color: rgb(46, 46, 96);
+    font-weight: 600;
+    text-decoration: underline;
+    &-empty {
+        color: #000;
+        cursor: default;
+    }
+}

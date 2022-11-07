@@ -47,6 +47,9 @@ export const Home: FC = () => {
                 <br />
                 ** Saldo devedor não considera os pagamentos citados, que totalizam R$426.476,93
                 <br />
+                *** Saldo devedor não considera o reajuste pela Selic dos 10 contratos de 2009 e 2 de 2010. No entanto, o valor integral desses contratos somados é de menos de 5% do saldo devedor atual.
+                As empresas devedoras signatárias de tais contratos são Samaritana, Exdil, TransTur, Vale do Ouro, Panorama e São Pedro.
+                <br />
                 Dados atualizados em 17/10/2022
             </footer>
         </div>

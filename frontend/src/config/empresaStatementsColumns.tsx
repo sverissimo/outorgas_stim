@@ -1,9 +1,11 @@
 import { MUIDataTableColumn } from "mui-datatables"
+import { ReadjustmentCell } from "../components/ReadjustmentCell"
+import { PaymentView } from "../interfaces/PaymentView"
 import { dateToFormattedString } from "../utils/dateUtil"
 import { toCurrency, toPercentage } from "../utils/formatNumber"
+//import{} from ''
 
-
-export const debtColumns: MUIDataTableColumn[] = [
+export const empresaStatementsColumns: MUIDataTableColumn[] = [
     {
         name: "mes",
         label: "Mês/ano",
@@ -50,6 +52,20 @@ export const debtColumns: MUIDataTableColumn[] = [
         }
     },
     {
+        name: "valorNovaOutorga",
+        label: "Novos contratos / reajustes",
+        options: {
+            filter: false,
+            sort: false,
+            customBodyRender: (value, tableMeta, updateValue) => {
+                const { rowIndex, tableData }: { rowIndex: number, tableData: object[] } = tableMeta
+                    , data = tableData[rowIndex] as PaymentView
+
+                return <ReadjustmentCell data={data} />
+            },
+        }
+    },
+    {
         name: "saldoAtualizado",
         label: "Saldo corrigido",
         options: {
@@ -84,5 +100,4 @@ export const debtColumns: MUIDataTableColumn[] = [
             },
         }
     },
-
 ]
