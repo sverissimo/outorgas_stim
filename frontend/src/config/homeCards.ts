@@ -22,14 +22,14 @@ export const homeCards: HomeCard[] = [
         cardTitle: 'Pagamentos',
         cardContent: () => [
             '15.786 guias registradas no SICAR',
-            '12.581 registros de pagamento até 17/10/2022*',
+            '12.581 registros de pagamento até 17/10/2022',
         ]
     },
     {
         cardTitle: 'Saldo',
         cardContent: cardData => [
-            `${cardData} de saldo devedor**`,
-            '6 empresas representam 77,8% do saldo devedor'
+            `${cardData} de saldo devedor*`,
+            '6 empresas representam 79% do saldo devedor'
         ]
     },
 ]

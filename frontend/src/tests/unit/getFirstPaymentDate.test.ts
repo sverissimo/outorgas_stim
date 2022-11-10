@@ -2,19 +2,17 @@ import missingPayments from '../mockData/missing_payments.json'
 import contracts from '../mockData/allContractsAndPayments.json'
 import { PaymentService } from '../../services/PaymentService'
 
-const
-    paymentService = new PaymentService()
-    , empresaFilter = (array: any[], codigoEmpresa: number) => array.filter(pg => pg.codigoEmpresa === codigoEmpresa)
+const empresaFilter = (array: any[], codigoEmpresa: number) => array.filter(pg => pg.codigoEmpresa === codigoEmpresa)
 
 test('Test getFirstPaymentDate method', () => {
     //Teste por amostragem utilizando contratos da Viação RioDoce (código 9030)
     const
         rioDoceMissing = empresaFilter(missingPayments, 9030)
         , rioDoceContracts = empresaFilter(contracts, 9030)
-        , rioDoceFound = paymentService.getPaymentsFromContracts(rioDoceContracts)
+        , rioDoceFound = PaymentService.getPaymentsFromContracts(rioDoceContracts)
 
     const allPayments = rioDoceFound.concat(rioDoceMissing)
-    const firstPaymentDate = paymentService.getFirstPaymentDate(allPayments)
+    const firstPaymentDate = PaymentService.getFirstPaymentDate(allPayments)
 
     //console.log("🚀 ~ file: getFirstPaymentDate.test.ts ~ line 19 ~ test ~ First Payment Date:", firstPaymentDate.toLocaleDateString())
 

@@ -6,7 +6,7 @@ import { isSameMonthAndYear, addMonth, stringToDateObj } from "../utils/dateUtil
 
 export class PaymentService {
 
-    countGuiasPerPayment = (payments: any[]) => {
+    static countGuiasPerPayment = (payments: any[]) => {
         const
             temp = []
 
@@ -31,7 +31,7 @@ export class PaymentService {
 
     }
 
-    getFirstPaymentDate = (payments: Payment[]) => {
+    static getFirstPaymentDate = (payments: Payment[]) => {
         if (payments.length === 0) {
             throw new Error('*** Cannot get firstDate of payments of an empty array!!!')
         }
@@ -51,7 +51,7 @@ export class PaymentService {
         return firstPaymentDate
     }
 
-    getPaymentsFromContracts = (contracts: Contract[]): Payment[] => {
+    static getPaymentsFromContracts = (contracts: Contract[]): Payment[] => {
         const foundPayments = [] as Payment[]
             , payments = contracts.map(c => c.pagamentos)
 
@@ -67,7 +67,7 @@ export class PaymentService {
      * @param payments 
      * @returns 
      */
-    mergePayments = (payments: Payment[]) => {
+    static mergePayments = (payments: Payment[]) => {
         const
             mergedPayments = [] as Payment[]
             , firstPaymentDate = this.getFirstPaymentDate(payments)
@@ -101,7 +101,7 @@ export class PaymentService {
         return mergedPayments
     }
 
-    sanitizePayments = (payments: Payment[], codigoEmpresa: number) => {
+    static sanitizePayments = (payments: Payment[], codigoEmpresa: number) => {
         const wrongPayments: Tuple[] = [
             ['001620-2013-0805', 9096],
             ['002653-2013-0805', 9112],
@@ -116,5 +116,23 @@ export class PaymentService {
         })
 
         return sanitizedPayments
+    }
+
+    /**Empresas que assumiram contratos vigentes */
+    static fixMissingPayments = (missingPayments: Payment[]) => {
+
+        const fixedMissingPayments = missingPayments.map(p => {
+            //  Pega os pagamentos da Paratur, que assumiu contratos da Braulino 
+            if (p.codigoEmpresa === 70028) {
+                p.codigoEmpresa = 9098
+
+            }
+            //  Pega os pagamentos da Noroeste, que assumiu contratos da Expresso Leãozinho
+            if (p.codigoEmpresa === 70009) {
+                p.codigoEmpresa = 9029
+            }
+            return p
+        })
+        return fixedMissingPayments
     }
 }

@@ -30,6 +30,17 @@ export class EmpresaService {
                 codigoEmpresa: c.codigoEmpresa
             })
         }
+        /*   const missingEmpresas = [
+              {
+                  razaoSocial: 'PARATUR TRANSPORTES E TURISMO LTDA EPP',
+                  codigoEmpresa: 70009
+              },
+              {
+                  razaoSocial: 'VIAÇÃO NOROESTE DE MINAS LTDA.',
+                  codigoEmpresa: 70028
+              }
+          ] */
+        //return empresas.concat(missingEmpresas)
         return empresas
     }
 
@@ -144,15 +155,15 @@ export class EmpresaService {
         const filteredMissingPayments = this.empresaFilter(missingPayments, codigoEmpresa)
         const filteredContracts = this.empresaFilter(contracts, codigoEmpresa)
 
-        const paymentService = new PaymentService()
-            , contractPayments = paymentService.getPaymentsFromContracts(filteredContracts)
+
+        const contractPayments = PaymentService.getPaymentsFromContracts(filteredContracts)
             , allEmpresaPayments = contractPayments.concat(filteredMissingPayments)
-            , sanitizedPayments = paymentService.sanitizePayments(allEmpresaPayments, codigoEmpresa)
+            , sanitizedPayments = PaymentService.sanitizePayments(allEmpresaPayments, codigoEmpresa)
 
         if (!allEmpresaPayments.length)
             return []
 
-        const consolidatedPayments = paymentService.mergePayments(sanitizedPayments)
+        const consolidatedPayments = PaymentService.mergePayments(sanitizedPayments)
         return consolidatedPayments
     }
 
@@ -160,6 +171,7 @@ export class EmpresaService {
         const
             empresas = this.getEmpresasFromContracts(contracts)
             , empresaCodes = empresas.map(e => e.codigoEmpresa)
+            , fixedMissingPayments = PaymentService.fixMissingPayments(missingPayments)
             , allEmpresaPayments = []
 
         let i = 0
@@ -168,7 +180,7 @@ export class EmpresaService {
             if (!codigoEmpresa)
                 continue
 
-            const empresaPayments = this.getPaymentsPerEmpresa(contracts, missingPayments, codigoEmpresa)
+            const empresaPayments = this.getPaymentsPerEmpresa(contracts, fixedMissingPayments, codigoEmpresa)
             if (empresaPayments.length)
                 allEmpresaPayments.push({
                     codigoEmpresa: codigoEmpresa,
