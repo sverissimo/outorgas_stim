@@ -21,7 +21,7 @@ describe('Test EmpresaService', () => {
     it('Test getAllEmpresaPayments method', () => {
         const
             allEmpresaPayments = empresaService.getAllEmpresaPayments(contracts, missingPayments)
-            , { count } = new PaymentService().countGuiasPerPayment(allEmpresaPayments.map(p => p.pagamentos))
+            , { count } = PaymentService.countGuiasPerPayment(allEmpresaPayments.map(p => p.pagamentos))
 
         console.log("🚀 ~ file: empresaService.test.ts ~ line 27 - Guias count: ", count)
         expect(count).toBe(12339)

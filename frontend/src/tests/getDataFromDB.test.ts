@@ -10,7 +10,7 @@ describe('Test getData from DB', () => {
         const
             result: any = await getData('pagamentos')
             , payments = result.map((p: any) => p.pagamentos)
-            , { count } = new PaymentService().countGuiasPerPayment(payments)
+            , { count } = PaymentService.countGuiasPerPayment(payments)
 
         console.log("🚀 ~ file: getDataFromDB.test.ts ~ line 21 ~ it ~ count", count)
         expect(count).toEqual(12337)
