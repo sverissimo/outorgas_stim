@@ -1,12 +1,14 @@
+from datetime import datetime
+from typing import Coroutine, List
+
 import pandas as pd
 import requests
-from datetime import datetime
 from playwright.async_api import async_playwright
+
 from config import env
-from typing import Coroutine, List
-from utils.parse_tjlp_bndes import parse_tjlp
 from domain.Empresa import Empresa
 from domain.Tjlp import Tjlp
+from utils.parse_tjlp_bndes import parse_tjlp
 
 
 class ExternalDataApi:
@@ -48,7 +50,7 @@ class ExternalDataApi:
             last_tjlp_record = last_entry[0]
 
             print('Last tjlp_update available: ', tjlp_update)
-            print('tjlp_update: ', len(tjlp_update))  
+            print('tjlp_update: ', len(tjlp_update))
             if last_tjlp_record['_id'] == tjlp_update[len(tjlp_update) - 1]['_id']:
                 print('Db already updated, skipping...')
                 await browser.close()
@@ -103,7 +105,7 @@ class ExternalDataApi:
             for month, rate in rates.items():
                 id = f'{str(month)}-{str(year)}'
                 mes = datetime(year, month, 1)
-                month_rate = round(rate/100, 6)
+                month_rate = round(rate / 100, 6)
 
                 tjlp_rate = {
                     '_id': id,
@@ -114,3 +116,21 @@ class ExternalDataApi:
                     tjlp_sef.append(tjlp_rate)
 
         return tjlp_sef
+
+    def get_auth_from_cadti(self, user, secret) -> str:
+        CADTI_HOST = env.CADTI_HOST
+
+        proxies = {
+            "http": None,
+            "https": None,
+        }
+
+        user = {'email': user, 'password': secret}
+
+        rToken = requests.post(
+            f'{CADTI_HOST}/auth/login',
+            proxies=proxies,
+            data=user
+        )
+
+        return rToken

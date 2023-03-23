@@ -1,11 +1,14 @@
 import sys
+
 from config import env
+
 sys.path.append(env.APP_FOLDER)  # nopep8
 
-from flask import jsonify, make_response
 from __main__ import app
-from data_access_layer.TjlpDao import TjlpDao
+from flask import jsonify, make_response, request, session
+
 from data_access_layer.EntityDao import EntityDao
+from data_access_layer.TjlpDao import TjlpDao
 from database.migrations.run_migrations import run_tjlp_migrations
 from services.ContractService import ContractService
 
