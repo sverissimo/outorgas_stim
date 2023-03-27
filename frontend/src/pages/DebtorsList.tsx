@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { DataTable } from '../components/DataTable'
 import { debtorListColumns } from '../config/debtorsListTable'
-import { GlobalDataContext } from '../context/GlobalDataContext'
+import { GlobalDataContext } from '../contexts/GlobalDataContext'
 
 
 export const DebtorsList = () => {

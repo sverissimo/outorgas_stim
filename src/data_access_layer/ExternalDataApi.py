@@ -119,18 +119,15 @@ class ExternalDataApi:
 
     def get_auth_from_cadti(self, user, secret) -> str:
         CADTI_HOST = env.CADTI_HOST
-
         proxies = {
             "http": None,
             "https": None,
         }
 
         user = {'email': user, 'password': secret}
-
         rToken = requests.post(
             f'{CADTI_HOST}/auth/login',
             proxies=proxies,
             data=user
         )
-
         return rToken

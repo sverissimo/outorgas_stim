@@ -1,7 +1,7 @@
 import { homeCards } from "../config/homeCards"
 import '../components/home.scss'
 import { FC, useContext } from "react"
-import { GlobalDataContext } from "../context/GlobalDataContext"
+import { GlobalDataContext } from "../contexts/GlobalDataContext"
 
 
 export const Home: FC = () => {

@@ -1,5 +1,5 @@
 import { FC, useContext } from "react";
-import { GlobalDataContext } from "../context/GlobalDataContext";
+import { GlobalDataContext } from "../contexts/GlobalDataContext";
 import { DataTable } from "../components/DataTable";
 import { contratoTableColumns } from '../config/contratoTableColumns'
 import { jsonToXlsx } from "../utils/exportToXls";

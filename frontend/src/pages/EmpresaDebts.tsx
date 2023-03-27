@@ -1,5 +1,5 @@
 import { useState, useTransition, useContext, FC } from "react";
-import { GlobalDataContext } from "../context/GlobalDataContext";
+import { GlobalDataContext } from "../contexts/GlobalDataContext";
 import { EmpresaService } from "../services/EmpresaService";
 import { empresaStatementsColumns } from "../config/empresaStatementsColumns"
 import { csvToXlsx, getXlsFileName } from "../utils/exportToXls";

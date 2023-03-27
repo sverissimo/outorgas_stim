@@ -6,7 +6,7 @@ import { Debt } from "../interfaces/Debt";
 import { Empresa } from "../interfaces/Empresa";
 import { PaymentView } from "../interfaces/PaymentView";
 import { PieChart } from "../components/PieChart";
-import { GlobalDataContext } from "../context/GlobalDataContext";
+import { GlobalDataContext } from "../contexts/GlobalDataContext";
 import '../styles.scss'
 
 

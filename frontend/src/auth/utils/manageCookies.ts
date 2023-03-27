@@ -15,6 +15,7 @@ export function deleteCookie(name: string): void {
 export function getCookie(key: string): string {
     const name = `${key}=`;
     const ca = document.cookie.split(';');
+    console.log("🚀 ~ file: manageCookies.ts:18 ~ getCookie ~ name:", name)
     for (let i = 0; i < ca.length; i++) {
         let c = ca[i];
         while (c.charAt(0) === ' ') {
