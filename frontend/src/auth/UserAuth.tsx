@@ -1,6 +1,5 @@
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import UserAuthTemplate from "./UserAuthTemplate";
-import { setCookie } from "./utils/manageCookies";
 import { Api } from "../api/Api";
 import { UserContext } from "../contexts/UserContext";
 
@@ -23,11 +22,14 @@ export const UserAuth = () => {
       const { email, password } = state
       const response = await new Api().post('/api/login', { email, password })
       if (response.status === 200) {
-        setCookie('loggedIn', 'true')
-        setUser({ ...user, isLoggedIn: true })
+        const loginExpires = new Date().getTime() + 60 * 60 * 1000
+        setUser({
+          ...user,
+          loginExpires,
+          isLoggedIn: true,
+        })
       }
-    }
-    catch (err: any) {
+    } catch (err: any) {
       console.error(err?.response?.data, 'error')
     }
   }
@@ -42,14 +44,3 @@ export const UserAuth = () => {
     </>
   )
 }
-
-
-/* //Tecla de atalho "Enter" para entrar
-useEffect(() => {
- const signIn = e => {
-   if (e.key === 'Enter')
-     handleSubmit()
- }
- document.addEventListener('keypress', signIn)
- return () => document.removeEventListener('keypress', signIn)
-}) */

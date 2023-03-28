@@ -3,7 +3,6 @@ import { ReadjustmentCell } from "../components/ReadjustmentCell"
 import { PaymentView } from "../interfaces/PaymentView"
 import { dateToFormattedString } from "../utils/dateUtil"
 import { toCurrency, toPercentage } from "../utils/formatNumber"
-//import{} from ''
 
 export const empresaStatementsColumns: MUIDataTableColumn[] = [
     {

@@ -11,17 +11,14 @@ import { Debt } from "../interfaces/Debt";
 import { isSameMonthAndYear, stringToDateObj } from "../utils/dateUtil";
 import { ContractService } from "./ContractService";
 
-
 export class EmpresaService {
-
     empresaFilter = (array: any[], codigoEmpresa: number) => {
         return array.filter(pg => pg?.codigoEmpresa == codigoEmpresa || pg?.linhaId == codigoEmpresa || pg?.linhasId == codigoEmpresa)
     }
 
     getEmpresasFromContracts = (contracts: Contract[]): Array<Partial<Empresa>> => {
-        const
-            empresas = []
-            , empresaCodes = new Set(contracts.map(c => c.codigoEmpresa))
+        const empresas = []
+        const empresaCodes = new Set(contracts.map(c => c.codigoEmpresa))
 
         for (const e of empresaCodes) {
             const c = contracts.find(c => c.codigoEmpresa == e)!
@@ -30,36 +27,24 @@ export class EmpresaService {
                 codigoEmpresa: c.codigoEmpresa
             })
         }
-        /*   const missingEmpresas = [
-              {
-                  razaoSocial: 'PARATUR TRANSPORTES E TURISMO LTDA EPP',
-                  codigoEmpresa: 70009
-              },
-              {
-                  razaoSocial: 'VIAÇÃO NOROESTE DE MINAS LTDA.',
-                  codigoEmpresa: 70028
-              }
-          ] */
-        //return empresas.concat(missingEmpresas)
+
         return empresas
     }
 
     getEmpresaDebt = (contracts: Contract[]): Debt[] => {
-
         const isSameEmpresa = new Set(contracts.map(c => c.codigoEmpresa)).size === 1
 
         if (!isSameEmpresa)
             throw new Error('Dude, don\'t mix up different companies...')
 
         const debtStatement: Debt[] = []
-            , debtDates = new Set(contracts
-                .map(contract => {
-                    const
-                        contractDate = stringToDateObj(contract.dataAssinatura)
-                        , normalizedDate = contractDate.setDate(1)
+        const debtDates = new Set(contracts
+            .map(contract => {
+                const contractDate = stringToDateObj(contract.dataAssinatura)
+                const normalizedDate = contractDate.setDate(1)
 
-                    return new Date(normalizedDate).toLocaleDateString()
-                }))
+                return new Date(normalizedDate).toLocaleDateString()
+            }))
 
         for (const date of debtDates) {
             const sameDateContracts = contracts.filter(c => {
@@ -69,7 +54,7 @@ export class EmpresaService {
                 continue
 
             const { dataVigencia, carencia } = ContractService.getContractStartDate(sameDateContracts[0])
-                , { contratos, data, valorDevido } = ContractService.aggregateContractsByDate(sameDateContracts)
+            const { contratos, data, valorDevido } = ContractService.aggregateContractsByDate(sameDateContracts)
 
             debtStatement.push({
                 contratos,
@@ -83,10 +68,9 @@ export class EmpresaService {
     }
 
     getEmpresaStatements = (debts: Debt[], payments: Payment[], tjlp: Tjlp[]) => {
-        const
-            tjlpService = new TjlpService()
-            , adjustedTjlp = tjlpService.adjustTjlp(debts, tjlp)
-            , empresaStatements = []
+        const tjlpService = new TjlpService()
+        const adjustedTjlp = tjlpService.adjustTjlp(debts, tjlp)
+        const empresaStatements = []
 
         let saldoDevedor = DebtService.getFirstMonthDebt(debts)
 
@@ -94,18 +78,18 @@ export class EmpresaService {
         let debtIndex = 0
 
         for (const tjlp of adjustedTjlp) {
-            const
-                monthPayment = payments.find(pg => isSameMonthAndYear(pg.dataPagamento, tjlp.mes))
-                , valorPago = monthPayment?.valor || 0
-                , newOutorga = debts.find(d => index > 0 && isSameMonthAndYear(d.data, tjlp.mes))
-                , valorNovaOutorga = newOutorga?.valorDevido || 0
+            const monthPayment = payments.find(pg => isSameMonthAndYear(pg.dataPagamento, tjlp.mes))
+            const valorPago = monthPayment?.valor || 0
+            const newOutorga = debts.find(d => index > 0 && isSameMonthAndYear(d.data, tjlp.mes))
+            const valorNovaOutorga = newOutorga?.valorDevido || 0
 
             let { tjlpRate, tjlpEfetiva } = tjlpService.applyTjlp(index, adjustedTjlp, saldoDevedor)
 
             const saldoCorrigido = saldoDevedor + tjlpEfetiva
 
-            if (newOutorga)
+            if (newOutorga) {
                 debtIndex = debts.indexOf(newOutorga)
+            }
 
             const reajuste = ContractService.getReajuste(tjlp.mes, debts[debtIndex].data, saldoCorrigido)
 
@@ -113,7 +97,7 @@ export class EmpresaService {
             saldoDevedor = saldoAtualizado - valorPago
 
             const statement: PaymentView = {
-                mes: stringToDateObj(tjlp.mes),
+                mes: tjlp._id,
                 numeroGuia: monthPayment?.numeroGuia,
                 tjlp: tjlpRate,
                 tjlpEfetiva,
@@ -124,7 +108,8 @@ export class EmpresaService {
                 valorNovaOutorga,
                 contratos: debts[debtIndex].contratos
             }
-            if (statement.mes <= new Date()) //Limita a listagem do débito à presente data (tjlp pode estar 2meses a frente)
+            const tjlpDate = stringToDateObj(tjlp.mes)
+            if (tjlpDate <= new Date()) //Limita a listagem do débito à presente data (tjlp pode estar 2meses a frente)
                 empresaStatements.push(statement)
             index++
         }
@@ -133,46 +118,44 @@ export class EmpresaService {
     }
 
     getAllEmpresasDebts = (contracts: Contract[]) => {
-
         const globalDebt: any[] = []
-            , empresaCodes: Set<number> = new Set(
-                this.getEmpresasFromContracts(contracts)
-                    .map(e => e.codigoEmpresa!))
+        const empresaCodes: Set<number> = new Set(
+            this.getEmpresasFromContracts(contracts)
+                .map(e => e.codigoEmpresa!))
 
         for (const codigoEmpresa of empresaCodes) {
             const empresaContracts = this.empresaFilter(contracts, codigoEmpresa)
-                , empresaDebt = this.getEmpresaDebt(empresaContracts)
+            const empresaDebt = this.getEmpresaDebt(empresaContracts)
             empresaDebt.forEach(d => globalDebt.push({
                 codigoEmpresa,
                 ...d
             }))
         }
+
         return globalDebt
     }
 
     getPaymentsPerEmpresa = (contracts: Contract[], missingPayments: Payment[], codigoEmpresa: number) => {
-
         const filteredMissingPayments = this.empresaFilter(missingPayments, codigoEmpresa)
         const filteredContracts = this.empresaFilter(contracts, codigoEmpresa)
 
-
         const contractPayments = PaymentService.getPaymentsFromContracts(filteredContracts)
-            , allEmpresaPayments = contractPayments.concat(filteredMissingPayments)
-            , sanitizedPayments = PaymentService.sanitizePayments(allEmpresaPayments, codigoEmpresa)
+        const allEmpresaPayments = contractPayments.concat(filteredMissingPayments)
+        const sanitizedPayments = PaymentService.sanitizePayments(allEmpresaPayments, codigoEmpresa)
 
-        if (!allEmpresaPayments.length)
+        if (!allEmpresaPayments.length) {
             return []
+        }
 
         const consolidatedPayments = PaymentService.mergePayments(sanitizedPayments)
         return consolidatedPayments
     }
 
     getAllEmpresaPayments = (contracts: Contract[], missingPayments: Payment[]): EmpresaPayments[] => {
-        const
-            empresas = this.getEmpresasFromContracts(contracts)
-            , empresaCodes = empresas.map(e => e.codigoEmpresa)
-            , fixedMissingPayments = PaymentService.fixMissingPayments(missingPayments)
-            , allEmpresaPayments = []
+        const empresas = this.getEmpresasFromContracts(contracts)
+        const empresaCodes = empresas.map(e => e.codigoEmpresa)
+        const fixedMissingPayments = PaymentService.fixMissingPayments(missingPayments)
+        const allEmpresaPayments = []
 
         let i = 0
 

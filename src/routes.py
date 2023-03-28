@@ -5,7 +5,7 @@ from config import env
 sys.path.append(env.APP_FOLDER)  # nopep8
 
 from __main__ import app
-from flask import jsonify, make_response, request, session
+from flask import jsonify, make_response, request
 
 from data_access_layer.EntityDao import EntityDao
 from data_access_layer.ExternalDataApi import ExternalDataApi

@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    environment {        
+    environment {
         String SCRIPTS_FOLDER = pwd()
         String ENV_FOLDER = "C:\\Jenkins\\jobs_env_vars\\outorgas"
         String PY_REL_PATH = "venv\\Scripts\\python.exe"
@@ -9,25 +9,25 @@ pipeline {
         ENV_FILE = null
         python = null
         pytest = null
-    }    
+    }
 
     stages {
         stage('#### Preparation ####') {
-             steps {                                
+             steps {
                 echo "${env.scriptsFolder}"
-                script {                                   
+                script {
                     ENV_FILE = readFile("${ENV_FOLDER}\\.env") //Utilizado pela função groovyScripts.getDotEnvValue()
-                    
-                    def groovyFilePath = env.BRANCH_NAME ? "${SCRIPTS_FOLDER}\\CI\\scripts.groovy" : "C:\\Users\\m1107819\\Coding\\outorgas\\CI\\scripts.groovy"                    
-                    groovyScripts = load groovyFilePath                    
-                    APP_FOLDER =  groovyScripts.getDotEnvValue('APP_FOLDER')                        
-                    
-                    python = "${APP_FOLDER}\\${PY_REL_PATH}"                    
+
+                    def groovyFilePath = env.BRANCH_NAME ? "${SCRIPTS_FOLDER}\\CI\\scripts.groovy" : "C:\\Users\\m1107819\\Coding\\outorgas\\CI\\scripts.groovy"
+                    groovyScripts = load groovyFilePath
+                    APP_FOLDER =  groovyScripts.getDotEnvValue('APP_FOLDER')
+
+                    python = "${APP_FOLDER}\\${PY_REL_PATH}"
                     pytest = "${APP_FOLDER}\\${PYTEST_REL_PATH}"
-                    
+
                     println "*** App folder is ---> ${APP_FOLDER}"
                     println "*** Current branch is ---> ${env.BRANCH_NAME}"
-                }                
+                }
             }
         }
         stage('#### Build ####') {
@@ -41,12 +41,12 @@ pipeline {
                     if (env.BRANCH_NAME == 'main'){
                         echo 'Build step: BACKEND -> Updating files and installing dependencies listed in requirements.txt...'
                         bat """
-                        cd ${APP_FOLDER}\\venv\\Scripts 
+                        cd ${APP_FOLDER}\\venv\\Scripts
                         activate && cd ..\\.. && cd && git pull
-                        """  
-                        
+                        """
+
                         bat """
-                        cd ${APP_FOLDER}\\venv\\Scripts 
+                        cd ${APP_FOLDER}\\venv\\Scripts
                         activate && pip install -r ..\\..\\requirements.txt
                         """
                     } else {
@@ -55,51 +55,51 @@ pipeline {
                         cd ${APP_FOLDER}\\frontend
                         git pull
                         """
-                        
+
                         bat """
                         cd ${APP_FOLDER}\\frontend
                         npm i --legacy-peer-deps && npm run build
-                        """                    
+                        """
                     }
                 }
-            }                        
-        }        
+            }
+        }
         stage('#### Test ####') {
             when{
                expression {
                     env.BRANCH_NAME == 'main'
                 }
             }
-            steps {                
+            steps {
                 bat """
                 ${python} --version
-                cd ${APP_FOLDER}\\venv\\Scripts 
+                cd ${APP_FOLDER}\\venv\\Scripts
                 activate && cd ..\\.. && ${pytest} ./src/tests/unit/
-                """                                
+                """
             }
-        } 
+        }
         stage('#### Deploy ####') {
             when{
                expression {
-                    env.BRANCH_NAME == 'main'
+                    env.BRANCH_NAME == 'deploy'
                 }
             }
-            steps {                                             
+            steps {
                 bat """
-                cd ${APP_FOLDER}\\venv\\Scripts 
+                cd ${APP_FOLDER}\\venv\\Scripts
                 activate && cd ..\\.. && pm2 restart outorgas_server
                 """
                 //activate && cd ..\\.. && pm2 restart ${APP_FOLDER}\\src\\server.py --name outorgas --interpreter ${APP_FOLDER}\\venv\\Scripts\\python.exe
             }
-        }   
+        }
     }
-    
+
      post{
         success {
-            echo '++++++++ Alright, pipeline runned sucessfully.'            
+            echo '++++++++ Alright, pipeline runned sucessfully.'
         }
         failure {
-            echo '-------- Somehting went wrong running Jenkins jobs...'            
+            echo '-------- Somehting went wrong running Jenkins jobs...'
         }
     }
 }

@@ -1,19 +1,21 @@
-import { Routes, Route } from "react-router-dom"
-import { EmpresaDebts } from "./pages/EmpresaDebts"
-import { Contratos } from "./pages/Contratos"
-import { Migrations } from "./api/Migrations"
-import { Relatorios } from "./pages/Relatorios"
-import { DebtorsList } from "./pages/DebtorsList"
-import { Home } from "./pages/Home"
 import { useContext } from "react"
+import { Routes, Route } from "react-router-dom"
+import { Migrations } from "./api/Migrations"
+import { Contratos, DebtorsList, EmpresaDebts, Home, Relatorios } from './pages'
 import { UserContext } from "./contexts/UserContext"
-import { getCookie } from "./auth/utils/manageCookies"
 import { UserAuth } from "./auth/UserAuth"
+import { Loading } from "./components/Loading"
+import { useSessionTimer } from "./auth/hooks/useSessionTimer"
 
 export const AppRouter = () => {
     const { user } = useContext(UserContext)
-    const loggedIn = getCookie('loggedIn').length > 0
-    if (!loggedIn) {
+    const { sessionExpired, isPending } = useSessionTimer()
+
+    if (isPending) {
+        return <Loading />
+    }
+
+    if (!user.isLoggedIn || sessionExpired) {
         return <UserAuth />
     }
 
@@ -27,5 +29,4 @@ export const AppRouter = () => {
             <Route path='/migrations' element={<Migrations />} />
         </Routes>
     )
-
 }
